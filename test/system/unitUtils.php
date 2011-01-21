@@ -87,36 +87,4 @@ function verifyPluginState($pluginname, $folder="system", $enabled=true)
 	{
 		XiFactory::cleanStaticCache(true);
 	}
-	
-	function _filterOrder()
-	{
-		$this->_DBO->filterColumn('#__xiec_order', 'shipping_address');
-		$this->_DBO->filterColumn('#__xiec_order', 'billing_address');
-		$this->_DBO->filterColumn('#__xiec_order', 'checked_out');
-		$this->_DBO->filterColumn('#__xiec_order', 'checked_out_time');
-		$this->_DBO->filterColumn('#__xiec_order', 'created_date');
-		$this->_DBO->filterColumn('#__xiec_order', 'modified_date');
-		$this->_DBO->filterColumn('#__xiec_order', 'discount');
-		$this->_DBO->filterColumn('#__xiec_order', 'shipping');
-		$this->_DBO->filterColumn('#__xiec_order', 'tax');		
-	}
-
-	function _filterSubscritpion()
-	{		
-		$this->_DBO->filterColumn('#__xiec_subscription', 'subscription_date');
-		$this->_DBO->filterColumn('#__xiec_subscription', 'expiration_date');
-		$this->_DBO->filterColumn('#__xiec_subscription', 'cancel_date');
-		$this->_DBO->filterColumn('#__xiec_subscription', 'checked_out');
-		$this->_DBO->filterColumn('#__xiec_subscription', 'checked_out_time');
-		$this->_DBO->filterColumn('#__xiec_subscription', 'modified_date');	
-	}
-	
-	function _filterPayment()
-	{
-		$this->_DBO->filterColumn('#__xiec_payment', 'checked_out');
-		$this->_DBO->filterColumn('#__xiec_payment', 'checked_out_time');
-		$this->_DBO->filterColumn('#__xiec_payment', 'created_date');
-		$this->_DBO->filterColumn('#__xiec_payment', 'modified_date');
-		$this->_DBO->filterColumn('#__xiec_payment', 'payment_key');
-	}
 }

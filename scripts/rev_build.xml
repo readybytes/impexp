@@ -13,13 +13,12 @@
 
 	<target name="copy_impexppkg">
 
-		<copy 	file="${source}/language/en-GB/en-GB.plg_importexport_csv.ini" 
+		<copy 	file="${source}/administrator/language/en-GB/en-GB.plg_importexport_csv.ini" 
 			tofile="${target}/source/languages/en-GB.plg_importexport_csv.ini" />
 
-		
 		<copy todir="${target}/source/">
-			<fileset dir="${source}/plugins/importexport_csv">
-				<include name="**/*.*" />
+			<fileset dir="${source}/plugins/system/importexport_csv">
+				<include name="importexport_csv*/*.*" />
 			</fileset>
 		</copy>
 		

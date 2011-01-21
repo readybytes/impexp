@@ -21,8 +21,3 @@ require_once JPATH_BASE .DS.'libraries'.DS.'joomla'.DS.'factory.php';
 // Initalize frontend framework
 $mainframe =& JFactory::getApplication('site');
 $mainframe->initialise();
-
-require_once dirname(__FILE__).DS.'xiec.php';
-
-
-
