@@ -1,9 +1,9 @@
 pkg.version=J1.5.22
-pkg.location=${user.home}/Dropbox/DevShared/setup
+pkg.location=${user.home}/Dropbox/DevShared/impexp
 
 
 ## joomla installation configuration
-joomla.owner=xiec
+joomla.owner=impexp
 joomla.version=latest
 joomla.rootpath=/var/www
 joomla.folder=${joomla.owner}${joomla.now}

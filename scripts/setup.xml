@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="XiEC Component" basedir="." default="setup" description="Phing setup script for XiEC package.">
+<project name="Import Export Plugin" basedir="." default="setup" description="Phing setup script for Import Export Plugin.">
 
 	<target name="config" description="Load configuration file">
 		<property file="global.prop"  override="true" />
@@ -79,6 +79,6 @@
 
 	<target name="copy_kit">
 		<copy 	file="${dir.packages}/${project.shortform}-${file.version}.${svn.lastrevision}.zip" 
-				tofile="${joomla.rootpath}/${joomla.folder}/xiec.zip" />
+				tofile="${joomla.rootpath}/${joomla.folder}/impexp.zip" />
 	</target>
 </project>

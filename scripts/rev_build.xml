@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Copying xiec data to SVN" basedir="." default="copy_to_svn">
+<project name="Copying Import Export Plugin data to SVN" basedir="." default="copy_to_svn">
 
 	<property name="target" value="@local.repository.location@"
 		override="true" />
@@ -7,70 +7,29 @@
 
 	<!-- Copy Target -->
 	<target name="copy_to_svn" description="copy target">
-		<phingcall target="copy_xiecpkg" />
-<!--		<phing phingfile="build_xisub.xml" inheritAll="true"-->
-<!--			target="copy_to_svn_xisub" />-->
+		<phingcall target="copy_impexppkg" />
 	</target>
 
 
-	<target name="copy_xiecpkg">
+	<target name="copy_impexppkg">
 
-		<copy file="${source}/language/en-GB/en-GB.com_xiec.ini" tofile="${target}/source/languages/site/en-GB.com_xiec.ini" />
+		<copy 	file="${source}/language/en-GB/en-GB.plg_importexport_csv.ini" 
+			tofile="${target}/source/languages/en-GB.plg_importexport_csv.ini" />
 
-		<copy file="${source}/administrator/language/en-GB/en-GB.com_xiec.ini"
-			tofile="${target}/source/languages/admin/en-GB.com_xiec.ini" />
-
-		<copy todir="${target}/source/admin">
-			<fileset dir="${source}/administrator/components/com_xiec">
+		
+		<copy todir="${target}/source/">
+			<fileset dir="${source}/plugins/importexport_csv">
 				<include name="**/*.*" />
 			</fileset>
 		</copy>
-
-		<move file="${target}/source/admin/manifest.xml" tofile="${target}/source/manifest.xml" />
-
-		<move file="${target}/source/admin/install.xiec.php" tofile="${target}/source/install.xiec.php" />
-
-		<move file="${target}/source/admin/uninstall.xiec.php" tofile="${target}/source/uninstall.xiec.php" />
-
-		<copy todir="${target}/source/site">
-			<fileset dir="${source}/components/com_xiec">
-				<include name="**/*.*" />
-			</fileset>
-		</copy>
-
+		
 		<copy todir="${target}/test">
 			<fileset dir="${source}/test/">
 				<include name="**/*.*" />
 			</fileset>
 		</copy>
 
-		<copy todir="${target}/source/admin/installer/apps/plg_xiec_system">
-			<fileset dir="${source}/plugins/system">
-				<include name="xiec*" />
-			</fileset>
-		</copy>
-
-		<copy todir="${target}/source/admin/installer/apps/plg_core_xiec">
-			<fileset dir="${source}/plugins/xiec">
-				<include name="core*" />
-			</fileset>
-		</copy>
-<!--
-		<copy todir="${target}/source/admin/installer/apps/plg_email_xiapps">
-			<fileset dir="${source}/plugins/xiapps">
-				<include name="email*" />
-			</fileset>
-		</copy>
--->
-<!--		<copy todir="${target}/source/admin/installer/apps/mod_subsubmenu">
-			<fileset dir="${source}/administrator/modules/mod_subsubmenu">
-				<include name="*.*" />
-			</fileset>
-		</copy>
--->
-
 		<copy file="${source}/build.xml" tofile="${target}/scripts/rev_build.xml" />
 		<copy file="${source}/delete.xml" tofile="${target}/scripts/rev_delete.xml" />
-<!--		<copy file="${source}/build_xisub.xml" tofile="${target}/scripts/rev_build_xisub.xml" />-->
 	</target>
 </project>

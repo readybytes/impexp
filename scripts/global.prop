@@ -1,4 +1,4 @@
-### Version 2.0
+### Version 1.0
 ### We store globally definition here
 
 # The root folder location
@@ -12,13 +12,13 @@ dir.report	=${dir.root}/data/report
 code.source	=wc
 
 #change project code names
-project.shortform	= XIEC
-project.shortform.small = xiec
+project.shortform	= IMPEXP
+project.shortform.small = impexp
 project.codename	= Kautilya
 
 
 # Output settings
-file.version		= 0.0
+file.version		= 1.0
 file.package		= ${project.shortform}_ver${file.version}
 file.compression	= gzip
 file.extension		= .zip

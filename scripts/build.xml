@@ -9,11 +9,7 @@
 	<target name="get_svn_lastrevision" depends="config">
 		<svnlastrevision workingcopy="${dir.root}" propertyname="svn.lastrevision" />
 	</target>
-<!--	
-	<target name="get_svn_lastrevision" depends="config">
-		<property name="svn.lastrevision" value="dummygit" />
-	</target>
--->
+
 	<target name="build" description="build installable package only" depends="config,get_svn_lastrevision">
 
 		<delete dir="${dir.packages}" includeemptydirs="true" />
@@ -57,167 +53,11 @@
 			    <include name="**/*.php"/>
 			</fileset>
 		</analyze>
-
-		
-<!--
- Squiz_Sniffs_Objects_DisallowObjectStringIndexSniff
- Squiz_Sniffs_Objects_ObjectMemberCommaSniff
- Squiz_Sniffs_Objects_ObjectInstantiationSniff
- Squiz_Sniffs_Debug_JSLintSniff
- Squiz_Sniffs_Debug_JavaScriptLintSniff
- Squiz_Sniffs_Classes_SelfMemberReferenceSniff
- Squiz_Sniffs_Classes_ValidClassNameSniff
- Squiz_Sniffs_Classes_ClassDeclarationSniff
- Squiz_Sniffs_Classes_LowercaseClassKeywordsSniff
- Squiz_Sniffs_Classes_DuplicatePropertySniff
- Squiz_Sniffs_Classes_ClassFileNameSniff
- Squiz_Sniffs_PHP_DisallowMultipleAssignmentsSniff
- Squiz_Sniffs_PHP_NonExecutableCodeSniff
- Squiz_Sniffs_PHP_InnerFunctionsSniff
- Squiz_Sniffs_PHP_EmbeddedPhpSniff
- Squiz_Sniffs_PHP_HeredocSniff
- Squiz_Sniffs_PHP_CommentedOutCodeSniff
- Squiz_Sniffs_PHP_DisallowInlineIfSniff
- Squiz_Sniffs_PHP_LowercasePHPFunctionsSniff
- Squiz_Sniffs_PHP_ForbiddenFunctionsSniff
- Squiz_Sniffs_PHP_EvalSniff
- Squiz_Sniffs_PHP_GlobalKeywordSniff
- Squiz_Sniffs_PHP_DisallowObEndFlushSniff
- Squiz_Sniffs_PHP_DiscouragedFunctionsSniff
- Squiz_Sniffs_PHP_DisallowComparisonAssignmentSniff
- Squiz_Sniffs_PHP_DisallowSizeFunctionsInLoopsSniff
- Squiz_Sniffs_Scope_MemberVarScopeSniff
- Squiz_Sniffs_Scope_MethodScopeSniff
- Squiz_Sniffs_Scope_StaticThisUsageSniff
- Squiz_Sniffs_CSS_DuplicateClassDefinitionSniff
- Squiz_Sniffs_CSS_ClassDefinitionOpeningBraceSpaceSniff
- Squiz_Sniffs_CSS_DuplicateStyleDefinitionSniff
- Squiz_Sniffs_CSS_SemicolonSpacingSniff
- Squiz_Sniffs_CSS_IndentationSniff
- Squiz_Sniffs_CSS_ForbiddenStylesSniff
- Squiz_Sniffs_CSS_LowercaseStyleDefinitionSniff
- Squiz_Sniffs_CSS_ClassDefinitionNameSpacingSniff
- Squiz_Sniffs_CSS_EmptyClassDefinitionSniff
- Squiz_Sniffs_CSS_ColourDefinitionSniff
- Squiz_Sniffs_CSS_MissingColonSniff
- Squiz_Sniffs_CSS_ClassDefinitionClosingBraceSpaceSniff
- Squiz_Sniffs_CSS_ColonSpacingSniff
- Squiz_Sniffs_CSS_EmptyStyleDefinitionSniff
- Squiz_Sniffs_CSS_DisallowMultipleStyleDefinitionsSniff
- Squiz_Sniffs_CSS_OpacitySniff
- Squiz_Sniffs_Files_FileExtensionSniff
- Squiz_Sniffs_Files_LineEndingsSniff
- Squiz_Sniffs_Files_LineLengthSniff
- Squiz_Sniffs_Functions_FunctionDeclarationArgumentSpacingSniff
- Squiz_Sniffs_Functions_FunctionDuplicateArgumentSniff
- Squiz_Sniffs_Functions_FunctionDeclarationSniff
- Squiz_Sniffs_Functions_MultiLineFunctionDeclarationSniff
- Squiz_Sniffs_Functions_LowercaseFunctionKeywordsSniff
- Squiz_Sniffs_Functions_GlobalFunctionSniff
- Squiz_Sniffs_Metrics_CyclomaticComplexitySniff
- Squiz_Sniffs_Metrics_NestingLevelSniff
- Squiz_Sniffs_ControlStructures_ControlSignatureSniff
- Squiz_Sniffs_ControlStructures_InlineIfDeclarationSniff
- Squiz_Sniffs_ControlStructures_SwitchDeclarationSniff
- Squiz_Sniffs_ControlStructures_ElseIfDeclarationSniff
- Squiz_Sniffs_ControlStructures_LowercaseDeclarationSniff
- Squiz_Sniffs_ControlStructures_ForLoopDeclarationSniff
- Squiz_Sniffs_ControlStructures_ForEachLoopDeclarationSniff
- Squiz_Sniffs_NamingConventions_ValidFunctionNameSniff
- Squiz_Sniffs_NamingConventions_ValidVariableNameSniff
- Squiz_Sniffs_NamingConventions_ConstantCaseSniff
- Squiz_Sniffs_Strings_DoubleQuoteUsageSniff
- Squiz_Sniffs_Strings_EchoedStringsSniff
- Squiz_Sniffs_Strings_ConcatenationSpacingSniff
- Squiz_Sniffs_Formatting_OperatorBracketSniff
- Squiz_Sniffs_Formatting_OutputBufferingIndentSniff
- Squiz_Sniffs_Formatting_MultipleStatementAlignmentSniff
- Squiz_Sniffs_Operators_ComparisonOperatorUsageSniff
- Squiz_Sniffs_Operators_IncrementDecrementUsageSniff
- Squiz_Sniffs_Operators_ValidLogicalOperatorsSniff
- Squiz_Sniffs_Commenting_FunctionCommentSniff
- Squiz_Sniffs_Commenting_ClassCommentSniff
- Squiz_Sniffs_Commenting_EmptyCatchCommentSniff
- Squiz_Sniffs_Commenting_PostStatementCommentSniff
- Squiz_Sniffs_Commenting_DocCommentAlignmentSniff
- Squiz_Sniffs_Commenting_InlineCommentSniff
- Squiz_Sniffs_Commenting_FileCommentSniff
- Squiz_Sniffs_Commenting_BlockCommentSniff
- Squiz_Sniffs_Commenting_ClosingDeclarationCommentSniff
- Squiz_Sniffs_Commenting_LongConditionClosingCommentSniff
- Squiz_Sniffs_Commenting_VariableCommentSniff
- Squiz_Sniffs_Commenting_FunctionCommentThrowTagSniff
- Squiz_Sniffs_CodeAnalysis_EmptyStatementSniff
- Squiz_Sniffs_Arrays_ArrayDeclarationSniff
- Squiz_Sniffs_Arrays_ArrayBracketSpacingSniff
- Generic_Sniffs_CodeAnalysis_UnusedFunctionParameterSniff
- Generic_Sniffs_Commenting_TodoSniff
- Generic_Sniffs_ControlStructures_InlineControlStructureSniff
- Generic_Sniffs_Formatting_DisallowMultipleStatementsSniff
- Generic_Sniffs_Formatting_SpaceAfterCastSniff
- Generic_Sniffs_NamingConventions_ConstructorNameSniff
- Generic_Sniffs_NamingConventions_UpperCaseConstantNameSniff
- Generic_Sniffs_Metrics_CyclomaticComplexitySniff
- Generic_Sniffs_Metrics_NestingLevelSniff
- Generic_Sniffs_PHP_DisallowShortOpenTagSniff
- Generic_Sniffs_Strings_UnnecessaryStringConcatSniff
- PEAR_Sniffs_ControlStructures_MultiLineConditionSniff
- PEAR_Sniffs_Files_IncludingFileSniff
- PEAR_Sniffs_Formatting_MultiLineAssignmentSniff
- PEAR_Sniffs_Functions_FunctionCallArgumentSpacingSniff
- PEAR_Sniffs_Functions_FunctionCallSignatureSniff
- Zend_Sniffs_Debug_CodeAnalyzerSniff
--->
-		<!-- phpcodesniffer
-			standard="PHPCS"  	showSniffs="false"  
-			file="${dir.tmp}" 	allowedFileExtensions="php,css,js" 
-			haltonwarning="false" 	haltonerror="false"
-			sniffs="
- Squiz_Sniffs_Objects_DisallowObjectStringIndexSniff
- Squiz_Sniffs_Objects_ObjectMemberCommaSniff
- Squiz_Sniffs_Objects_ObjectInstantiationSniff
- Squiz_Sniffs_Classes_SelfMemberReferenceSniff
- Squiz_Sniffs_Classes_ValidClassNameSniff
- Squiz_Sniffs_Classes_LowercaseClassKeywordsSniff
- Squiz_Sniffs_Classes_DuplicatePropertySniff
- Squiz_Sniffs_Classes_ClassFileNameSniff
- Squiz_Sniffs_PHP_DisallowMultipleAssignmentsSniff
- Squiz_Sniffs_PHP_InnerFunctionsSniff
- Squiz_Sniffs_PHP_LowercasePHPFunctionsSniff
- Squiz_Sniffs_PHP_ForbiddenFunctionsSniff
- Squiz_Sniffs_PHP_EvalSniff
- Squiz_Sniffs_PHP_GlobalKeywordSniff
- Squiz_Sniffs_PHP_DisallowObEndFlushSniff
- Squiz_Sniffs_PHP_DiscouragedFunctionsSniff
- Squiz_Sniffs_PHP_DisallowComparisonAssignmentSniff
- Squiz_Sniffs_PHP_DisallowSizeFunctionsInLoopsSniff
- Squiz_Sniffs_Scope_MemberVarScopeSniff
- Squiz_Sniffs_Scope_MethodScopeSniff
- Squiz_Sniffs_Scope_StaticThisUsageSniff
- Squiz_Sniffs_Files_FileExtensionSniff
- Squiz_Sniffs_Files_LineLengthSniff
- Squiz_Sniffs_Functions_FunctionDuplicateArgumentSniff
- Squiz_Sniffs_Functions_GlobalFunctionSniff
- Squiz_Sniffs_NamingConventions_ValidFunctionNameSniff
- Squiz_Sniffs_NamingConventions_ValidVariableNameSniff
- Squiz_Sniffs_NamingConventions_ConstantCaseSniff
- Squiz_Sniffs_Operators_ComparisonOperatorUsageSniff
- Squiz_Sniffs_Operators_ValidLogicalOperatorsSniff
- Generic_Sniffs_CodeAnalysis_UnusedFunctionParameterSniff
- Generic_Sniffs_NamingConventions_ConstructorNameSniff
- Generic_Sniffs_NamingConventions_UpperCaseConstantNameSniff
- Generic_Sniffs_Metrics_NestingLevelSniff
- Generic_Sniffs_PHP_DisallowShortOpenTagSniff
- Generic_Sniffs_Strings_UnnecessaryStringConcatSniff
-					">
-			<formatter type="summary" outfile="${dir.report}/zend.phpcs.txt"  usefile="true"/>
-		</phpcodesniffer-->
-		
+	
 	<exec dir="${dir.tmp}" command="find . | xargs -l1 grep -Hi xitodo  | sort > ${dir.report}/xitodo.txt " escape="false" />
 	<exec dir="${dir.tmp}" command="find . | xargs -l1 grep -H  JSITE_PATH | sort > ${dir.report}/jsite-path.txt " escape="false" />
 	<exec dir="${dir.tmp}" command="find . | xargs -l1 egrep -H '_REQUEST|_POST|_GET|_SESSION|_GLOBAL' | sort  > ${dir.report}/post-get-request.txt " escape="false" />
 	<exec dir="${dir.tmp}" command="find  . | xargs -l1 egrep -H 'require_once|include_once| require | include ' | sort  > ${dir.report}/require.txt "  escape="false"  />
-
 
 	</target>
 </project>

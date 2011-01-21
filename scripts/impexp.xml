@@ -4,14 +4,14 @@
 	2. just build the part and put at right location
 	
  -->
-<project name="XiEC builder" basedir="." default="build" description="Phing build script for XiEC system">
+<project name="IMPEXP builder" basedir="." default="build" description="Phing build script for Import Export Plugin">
 
 	<target name="config" description="Load configuration file">
-		<property file="xiec.prop"  override="true" />
+		<property file="impexp.prop"  override="true" />
 	</target>
 
-	<target name="build" description="Build Installable XiEC Component " depends="config">
-		<echo msg="Building the XiEC component...." />
+	<target name="build" description="Build Installable Import Export Plugin" depends="config">
+		<echo msg="Building the Import Export Plugin...." />
 <!-- Nothing to be done
 		<delete file="${dir.packages}/${file.package}${svn.lastrevision}${file.extension}" />
 		<zip destfile="${dir.packages}/${file.package}${svn.lastrevision}${file.extension}" 
