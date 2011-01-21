@@ -1,0 +1,83 @@
+./admin/controllers/app.php:			//XITODO : enqueue message that item is already checkedout
+./admin/controllers/config.php:		//XITODO : Not Imp : convert config id to key
+./admin/controllers/plan.php:		//XITODO : SECURITY : Should we html_encode the data ?			
+./admin/installer/apps/plg_core_xiec/core.php:		//XITODO : Consider Previous State also
+./admin/installer/apps/plg_core_xiec/core.php:			//XITODO : This should be done via lib itself.
+./admin/installer/helper.php:		//XITODO : return error log $errorLog
+./admin/installer/installer.php:			//XITODO : delete the folder of successfull installed files
+./admin/installer/installer.php:		//XITODO: findout how much patches have been already applied
+./admin/installer/patches/install.sql:/* XITODO : Discounts will be implemented in 1.0
+./admin/templates/default/order/default_order_subscription.php:				<td><?php echo $this->subscription->get('status');?></td>	<?php // XITODO : use name instead of id?>
+./admin/templates/default/payment/default_edit.php:			<?php // XITODO : Below mentioned record should be processed via payment app to show it. ?>
+./admin/templates/default/plan/default_edit.php:<?php //XITODO : move to tmpl ?>
+./admin/templates/default/support/default.php://XITODO : Show some system related information like , version , db version etc.
+./site/controllers/payment.php:		//XITODO : render the document here itself, with only status message.
+./site/controllers/payment.php:	 * XITODO : Should be changed to payment key
+./site/controllers/plan.php:		// XITODO: move this block of code to saome where else
+./site/elements/timer.php:		// XITODO : Javascript clean up
+./site/helpers/format.php://XITODO : On Start Trigger also ask for Formatter Class,
+./site/libraries/app/offlinepay/offlinepay.php:		// XITODO : editing of transaction record will be available in future
+./site/libraries/app/offlinepay/offlinepay.php:		//XITODO : Save data from post
+./site/libraries/app/paypal/paypal.php:        //XITODO : check if we need to open a SSL connection or not, also make sure url is https
+./site/libraries/app/paypal/paypal.php:			// XITODO : update status of payment
+./site/libraries/base/abstract/controller.php:		//XITODO : Move boolmap into global boolmap , so it can be changed at any place
+./site/libraries/base/abstract/model.php:		//XITODO : Generate a 500 Error Here
+./site/libraries/base/abstract/view.php:		// XITODO : controller will handle the error
+./site/libraries/base/abstract/view.php:			// XITODO : remove it from here
+./site/libraries/base/abstract/view.php:		// XITODO : Route it properly
+./site/libraries/base/abstract/view.php:		//XITODO : we can add here multiple templates, so from global params
+./site/libraries/base/ajax/response.php:		//XITODO : Trigger Event.
+./site/libraries/base/controller.php:			//XITODO: add ajax error message via response
+./site/libraries/base/controller.php:					//XITODO : Convert it to str_replace, so that code can be somewaht clean from magic numbers
+./site/libraries/base/controller.php:			//XITODO : enqueue message that item is already checkedout
+./site/libraries/base/controller.php:		//XITODO : User proper variable names
+./site/libraries/base/controller.php:		//XITODO : verify form token
+./site/libraries/base/date.php:		//XITODO : check if strinf or timetamp, and work accordingly
+./site/libraries/base/date.php:			//XITODO : convert to integer before adding
+./site/libraries/base/date.php://XITODO : Improve it for our purpose
+./site/libraries/base/error.php:	//XITODO : add assertError. assertWarn, assertMessage function
+./site/libraries/base/factory.php:		//XITODO : Implement reset logic for whole component
+./site/libraries/base/helper/app.php:			//XITODO : prepend new path
+./site/libraries/base/helper/plugin.php://	//XITODO : Also support object based calls
+./site/libraries/base/helper/plugin.php:		//XITODO trigger plugins as per visibility
+./site/libraries/base/html/elements.php:		// XITODO : clean attr concept
+./site/libraries/base/html/elements.php:	// XITODO : rename it to apps
+./site/libraries/base/html/elements.php:		// XITODO : use disable property
+./site/libraries/base/lib.php:			//XITODO : should be done for JParams only
+./site/libraries/base/lib.php:			//XITODO : try to calculate type of app from ID if given
+./site/libraries/base/model.php:	//XITODO : Add preProcess and postProcess for all
+./site/libraries/base/model.php:		//XITODO : add warning message here.
+./site/libraries/base/model.php:	 * XITODO Method to order rows.
+./site/libraries/base/model.php:	 * XITODO Method to switch boolean column values.
+./site/libraries/base/model.php:		// XITODO : unit test case for sorting
+./site/libraries/base/model.php:    	//XITODO Use DB Quoting
+./site/libraries/base/plugin.php://XITODO : Add "defined('_JEXEC') or die();" Check in Template files
+./site/libraries/base/plugin.php://XITODO : Autoload Joomla Classes too.
+./site/libraries/base/plugin.php://XITODO : Convert die(); to die('Restricted access');
+./site/libraries/base/plugin.php:        //XITODO : Move paths to addPath function, so that it can be extended.
+./site/libraries/base/query.php:		//XITODO : Add limit and limitstart support in query class
+./site/libraries/base/status.php:		//XITODO : Cache the results
+./site/libraries/base/status.php:		//XITODO : Cache the results
+./site/libraries/base/table.php:		// XITODO : Add Testcase
+./site/libraries/base/table.php:		//XITODO: Add Test case
+./site/libraries/base/table.php:		//XITODO: Add Test case
+./site/libraries/base/text.php:	//XITODO : we might want to jsSafe default value to be true
+./site/libraries/base/time.php:	//XITODO : implement it
+./site/libraries/base/time.php://XITODO : Improve XiTime class for our purpose
+./site/libraries/base/view.php:		//XITODO : remove this send response, let the start file do it
+./site/libraries/base/view.php:	//XITODO : Restructure this function.
+./site/libraries/lib/app.php:		//XITODO : 
+./site/libraries/lib/order.php:		//XITODO : Is it ok to store current timestamp ?
+./site/libraries/lib/user.php:		// XITODO : bind params before using it
+./site/libraries/model/app.php:	//XITODO : Apply validation when it is applied all over
+./site/libraries/model/config.php:	// XITODO : Apply validation when it is applied all over
+./site/libraries/model/order.php:	// XITODO : Apply validation when it is applied all over
+./site/libraries/model/planapp.php:	// XITODO : Apply validation when it is applied all over
+./site/libraries/model/planapp.php:		// XITODO :needs to be improved
+./site/libraries/model/plan.php:	// XITODO : Apply validation when it is applied all over
+./site/libraries/model/subscription.php:	// XITODO : Apply validation when it is applied all over
+./site/media/js/ideas.js://XITODO : Show tooltip for inputs
+./site/media/js/xi.ajax.js:		//XITODO:
+./site/media/js/xi.ajax.js:	    //XITODO : send component name , task , other data also
+./site/media/js/xi.validation.js://XITODO : Show tooltip for inputs
+./site/views/payment/view.html.php:		// XITODO :show a thanks of cancel message

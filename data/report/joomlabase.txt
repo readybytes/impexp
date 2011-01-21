@@ -1,0 +1,37 @@
+../packages/tmp/admin/installer/installer.php:96:			JFactory::getApplication()->enqueueMessage($msg);
+../packages/tmp/admin/installer/apps/plg_xiec_system/xiec.php:34:		$document =& JFactory::getDocument();
+../packages/tmp/admin/installer/apps/plg_xiec_system/xiec.php:99:        $app = JFactory::getApplication();
+../packages/tmp/admin/installer/helper.php:62:		$db	= JFactory::getDBO();
+../packages/tmp/admin/installer/helper.php:96:		$db		=& JFactory::getDBO();
+../packages/tmp/admin/installer/helper.php:111:		$db		=& JFactory::getDBO();
+../packages/tmp/site/libraries/base/database.php:16:class XiDatabase extends JDatabase
+../packages/tmp/site/libraries/base/factory.php:10:class XiFactory extends JFactory
+../packages/tmp/site/libraries/base/factory.php:85:		$conf =& JFactory::getConfig();
+../packages/tmp/site/libraries/base/factory.php:108:				'JDatabase::getInstance: Could not connect to database <br />'
+../packages/tmp/site/libraries/base/document.php:13: * We have extended JDocument class so that we can control what to do
+../packages/tmp/site/libraries/base/document.php:18:class XiDocument extends JDocument
+../packages/tmp/site/libraries/base/table.php:11:abstract class XiTable extends JTable
+../packages/tmp/site/libraries/base/ajax.php:46://		global $mainframe;
+../packages/tmp/site/libraries/base/ajax.php:49://		//$reqURI   = $mainframe->getCfg('live_site');
+../packages/tmp/site/libraries/base/ajax.php:98://		global $mainframe;
+../packages/tmp/site/libraries/base/ajax.php:101://		$compress	= $mainframe->getCfg('gzip');
+../packages/tmp/site/libraries/base/ajax.php:169:		global $mainframe , $my;
+../packages/tmp/site/libraries/base/helper/table.php:21:		$db		 	=&	JFactory::getDBO();
+../packages/tmp/site/libraries/base/helper/ajax.php:15:		global $mainframe , $my;
+../packages/tmp/site/libraries/base/helper/form.php:407:			// see also: pluralization snippet by Paul Osman in JControllerForm's constructor.
+../packages/tmp/site/libraries/base/form/field/timezone.php:58:			$value = JFactory::getConfig()->get('offset');
+../packages/tmp/site/libraries/base/form/field/sql.php:46:		$db = JFactory::getDBO();
+../packages/tmp/site/libraries/base/form/field/calendar.php:60:		$config = JFactory::getConfig();
+../packages/tmp/site/libraries/base/form/field/calendar.php:61:		$user	= JFactory::getUser();
+../packages/tmp/site/libraries/base/form/field/calendar.php:70:					$date = JFactory::getDate($this->value, 'UTC');
+../packages/tmp/site/libraries/base/form/field/calendar.php:82:					$date = JFactory::getDate($this->value, 'UTC');
+../packages/tmp/site/libraries/base/controller.php:14: * By extending JController,
+../packages/tmp/site/libraries/base/controller.php:19:abstract class XiController extends JController
+../packages/tmp/site/libraries/base/html/grid.php:33:		$user   =& JFactory::getUser();
+../packages/tmp/site/libraries/base/query.php:10: * This files is modified version of JDatabaseQuery Class from Joomla 1.6
+../packages/tmp/site/libraries/base/route.php:14:abstract class XiRoute extends JRoute
+../packages/tmp/site/libraries/app/paypal/tmpl/payment.before.php:111:	<input type='hidden' name='return' 			value='<?php echo JRoute::_( $vars->return_url ); ?>'>
+../packages/tmp/site/libraries/app/paypal/tmpl/payment.before.php:112:	<input type='hidden' name='cancel_return' 	value='<?php echo JRoute::_( $vars->cancel_url ); ?>'>
+../packages/tmp/site/libraries/app/paypal/tmpl/payment.before.php:113:	<input type="hidden" name="notify_url" 		value="<?php echo JRoute::_( $vars->notify_url ); ?>" />
+egrep: ../packages/tmp/site/media/images/datatables/Sorting: No such file or directory
+egrep: icons.psd: No such file or directory
