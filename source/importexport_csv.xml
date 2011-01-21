@@ -13,7 +13,10 @@
 	<filename plugin="importexport_csv">importexport_csv.php</filename>
 	<folder>importexport_csv</folder>
   </files>
-  
+  <languages>
+	<language tag="en-GB">languages/en-GB.plg_importexport_csv.ini</language>
+  </languages>
+
   <params addpath="/plugins/system/importexport_csv">
 	<param name="fileUploaded" type="uploader" default="0" label="Upload CSV File" description="Upload CSV File" />	
   	<param name="exportUserData" type="exportlink" default="0" label="Export User Data" description="Export User Data" />	
