@@ -1,0 +1,21 @@
+pkg.version=J1.5.22
+pkg.location=${user.home}/Dropbox/DevShared/setup
+
+
+## joomla installation configuration
+joomla.owner=xiec
+joomla.version=latest
+joomla.rootpath=/var/www
+joomla.folder=${joomla.owner}${joomla.now}
+joomla.sitename=${joomla.folder}
+joomla.dbuser=${joomla.owner}${joomla.now}
+joomla.dbpassword=password${joomla.now}
+joomla.dbname=${joomla.owner}${joomla.now}
+joomla.dbprefix=j${joomla.random3}_
+joomla.createUserQuery="CREATE USER '${joomla.dbuser}'@'localhost' IDENTIFIED BY '${joomla.dbpassword}';"
+joomla.bakpath=./${joomla.version}
+joomla.dbdump=${joomla.rootpath}/${joomla.folder}/database.sql
+
+## default admin account should be
+joomla.admin=admin
+joomla.password=ssv445
