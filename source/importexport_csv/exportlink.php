@@ -28,7 +28,7 @@ class JElementExportlink extends JElement
 		$link =JRoute::_('index.php?plugin=importexportCSV&task=export&tmpl=component', false);
 		$text = JText::_('Export User Data');        
         
-        $html = '<a href ="'.$link.'" >'
+        $html = '<a id="exportPopup" href ="'.$link.'" >'
                 .$text
         	 	.'</a>';
         return $html;

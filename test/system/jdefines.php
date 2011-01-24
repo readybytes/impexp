@@ -19,9 +19,9 @@ $_SERVER['HTTP_HOST'] = JOOMLA_LOCATION;
 define('TIMEOUT_SEC',30000);
 define('JOOMLA_ADMIN_USERNAME', 'admin');
 define('JOOMLA_ADMIN_PASSWORD',	'ssv445');
-define('XIEC_TEST_MODE',	true);
+
 //these files should have been copied by phing during setup of joomla
 define('IMPEXP_PKG',		JOOMLA_LOCATION.'/impexp.zip');
 
 // include xiec specific define files
-require_once dirname(__FILE__). DS. "xiec.php";
+//require_once dirname(__FILE__). DS. "importexport_csv.php";

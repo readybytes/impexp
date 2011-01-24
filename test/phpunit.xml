@@ -8,9 +8,9 @@
 	>
 
 	<testsuites>
-	  <testsuite name="Installation Test Suite">
+	  <testsuite name="Test Suite">
 	    <!--<directory>./install/</directory>-->
-	    <directory>./install</directory>
+	    <directory>./test/admin</directory>
 	  </testsuite>
 	</testsuites>
 	
@@ -19,4 +19,3 @@
 	</listeners>
 	
 </phpunit>
-

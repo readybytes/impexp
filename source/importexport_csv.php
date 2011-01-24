@@ -48,11 +48,11 @@ class plgSystemImportExport_csv extends JPlugin
 				$html="Instead of existing users, All Users are successfully imported. <br />";
 				$html.= "Imported users are added in following file:<br />";
 				$filename="importuser.csv";
-				$html.= "<a href=". JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.$filename.">Imported Users</a>";
+				$html.= "<a id='importeduser' href=". JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.$filename.">Imported Users</a>";
 				$html.= "<br />";
 				$html.= "Existing users are added in following file:<br />";
 				$filename="existuser.csv";
-				$html.= "<a href=". JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.$filename.">Existing Users</a>";
+				$html.= "<a id='existuser' href=". JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.$filename.">Existing Users</a>";
 			}
 				
 						
