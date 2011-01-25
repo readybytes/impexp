@@ -47,12 +47,12 @@ class ExportTest extends XiSelTestCase
     $this->assertTrue($this->isElementPresent($element));
   }
   
-  function xtestImportWorking()
+  function testImportWorking()
   {
   	$this->open(JOOMLA_LOCATION."administrator/index.php?plugin=importexportCSV&task=uploadFile&tmpl=component");
    	$this->waitPageLoad("1000000");
    	
-   	$this->type('fileUploaded', JOOMLA_FTP_LOCATION.'/user.csv'); 
+   	$this->type('fileUploaded', JOOMLA_FTP_LOCATION.DS.'test'.DS.'test'.DS.'admin'.DS.'user.csv'); 
    	$this->click('btnUpload');
    	$this->waitPageLoad();
 
