@@ -84,6 +84,7 @@ class plgSystemImportExport_csv extends JPlugin
 			$csvUser[$user->id]['name'] 	= $user->name;		// second : name
 			$csvUser[$user->id]['email'] 	= $user->email;		// third : email
 			$csvUser[$user->id]['password'] = $user->password;	// first : password
+			$csvUser[$user->id]['usertype'] = $user->usertype;
 		}
 		
 		foreach($jsUserData as $fields){
@@ -120,6 +121,7 @@ class plgSystemImportExport_csv extends JPlugin
 		echo '","'.JText::_('name');
 		echo '","'.JText::_('email');
 		echo '","'.JText::_('password');
+		echo '","'.JText::_('UserType');
 		//echo ",".XiusText::_('password');
 			
 		foreach($fields as $f)
@@ -127,10 +129,10 @@ class plgSystemImportExport_csv extends JPlugin
 				
 		foreach($users as $id => $data){
 			// do not export admin user	
-			if($data['username'] == 'admin')
+			if($data['usertype'] == 'Administrator' || $data['usertype'] == 'Super Administrator')
 				continue;
 						
-			echo "\n".'"'.$data['username'].'","'.$data['name'].'","'.$data['email'].'","'.$data['password'];
+			echo "\n".'"'.$data['username'].'","'.$data['name'].'","'.$data['email'].'","'.$data['password'].'","'.$data['usertype'];
 			foreach($fields as $f){
 				if(array_key_exists($f->id, $data))
 					echo '","'.nl2br($data[$f->id]);
@@ -253,13 +255,17 @@ class plgSystemImportExport_csv extends JPlugin
 	{
 		$user 		= clone(JFactory::getUser());
 		$authorize	= JFactory::getACL();
-		$newUsertype = 'Registered';
+		//$newUsertype = 'Registered';
+		$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered';
 		//error_reporting(E_ALL ^ E_NOTICE); 
 		//Update user values
+		if($newUsertype=="")
+			$newUsertype='Registered';
 		$user->set('id', 0);
 		$user->set('usertype', $newUsertype);
 		$user->set('gid', $authorize->get_group_id( '', $newUsertype, 'ARO' ));		
 		$name = array_key_exists('name',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['name']] : $userValues[$joomlaFieldMapping['username']];
+		
 		
 		if(!array_key_exists($joomlaFieldMapping['username'],$userValues)) 
 			return false;
@@ -273,6 +279,7 @@ class plgSystemImportExport_csv extends JPlugin
 						'email'		=> $userValues[$joomlaFieldMapping['email']],
 						'password'	=> $userValues[$joomlaFieldMapping['password']],
 						'password2'	=> $userValues[$joomlaFieldMapping['password']],
+						'usertype'	=> $newUsertype,
 						'block'		=> 0
 					 );
 					 
@@ -593,7 +600,3 @@ class plgSystemImportExport_csv extends JPlugin
 	}
 		
 }
-
-
-
-
