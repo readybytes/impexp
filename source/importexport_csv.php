@@ -45,15 +45,26 @@ class plgSystemImportExport_csv extends JPlugin
 			else if($stage == 'createUser')
 				$html = $this->_createUser();
 			else if($stage == 'complete'){
-				$html="Instead of existing users, All Users are successfully imported. <br />";
-				$html.= "Imported users are added in following file:<br />";
-				$filename="importuser.csv";
-				$html.= "<a id='importeduser' href=". JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.$filename.">Imported Users</a>";
-				$html.= "<br />";
-				$html.= "Existing users are added in following file:<br />";
-				$filename="existuser.csv";
-				$html.= "<a id='existuser' href=". JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.$filename.">Existing Users</a>";
-			}
+				ob_start(); ?>
+				<div style="overflow:hidden;">
+				<div style="width:48%;float:left;color:6699cc; border:1px solid #6699cc;padding:5px 0;fontweight:bold;font-size:16px;">Imported user's file link:</div>
+				<div style="width:48%;float:left;margin-left:1%;padding:10px 0;">
+				<a id='importeduser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.'importuser.csv';?>" style="background:#6699cc; padding:5px 0;
+				border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
+				-moz-border-radius: 5px; border-radius: 5px;padding:8px 0;width:100px;text-align:center;">Imported Users</a>
+				</div>
+				
+				<div style="color:6699cc;width:48%;float:left; border:1px solid #6699cc;padding:5px 0;fontweight:bold;font-size:16px;">Existing user's file link:</div>
+				<div style="width:48%;float:left;margin-left:1%;padding:10px 0;">
+				<a id='existuser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv' .DS.'existuser.csv'; ?>" style="background:#6699cc; padding:5px 0;
+				border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
+				-moz-border-radius: 5px; border-radius: 5px;padding:8px 0;width:100px;text-align:center;">Existing Users</a>
+				</div>
+				</div>
+			<?php 
+			$html = ob_get_contents();
+			ob_clean();
+			} 
 				
 						
 			$document = JFactory::getDocument();
@@ -394,8 +405,10 @@ class plgSystemImportExport_csv extends JPlugin
 		$this->_addMappingScript($columns);
 		ob_start();
 		?>
+		<div style="padding:0;border:2px solid #ccc;">
 		<form action="<?php echo JRoute::_($currentUrl, false); ?>" method="post" name="adminForm" id="adminForm" >
-		<span><?php echo JText::_('Please map the fields of CSV files to Your Joomla setup.'); ?></span>
+		<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;"><?php echo JText::_('Please map the fields of CSV files to Your Joomla setup.'); ?></span></div>
+		<div style="padding:0 10px;">
 		<ol>
 			<li>Three fields must exists Username, Password, Email for Joomla User Table Fields.</li>
 			<li>There must be one to one mapping, one field must be selected for one field of your joomla setup.</li>						
@@ -422,8 +435,13 @@ class plgSystemImportExport_csv extends JPlugin
 		}
 		?>
 		<input type="hidden" name="importCSVStage" value="importData" />
-		<input type="submit" value="Import Data" onclick="return importMappingCheck();" /></input>		
-		</form><?php 
+		<input type="submit" value="Import Data" onclick="return importMappingCheck();" style="background:#6699cc; padding:5px 0;
+		border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
+		-moz-border-radius: 5px; border-radius: 5px;" />	
+		</div>
+		</form>
+		</div>
+		<?php 
 		$content = ob_get_contents();
 		ob_clean();
 		return $content;
@@ -549,19 +567,26 @@ class plgSystemImportExport_csv extends JPlugin
 		$this->_addUploaderScript();
 		ob_start();
 		?>
+		<div style="padding:0;border:2px solid #ccc;">
+		<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;">CSV Uploder</span></div>
 		<form enctype="multipart/form-data"  action="<?php echo JRoute::_($currentUrl); ?>" method="post" name="adminForm" id="adminForm" >
-		<span><?php echo JText::_('Please upload the CSV File'); ?></span><br />
+		<div style="padding:20px 5px;">
+		<div style="padding:20px 0; margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('Please Upload the CSV File'); ?></div>
 		<input type="file" id="fileUploaded" name="fileUploaded" title="Please Upload your CSV file" />
 		<br /><br />
-		<span><?php echo JText::_('You have Password in format of ');?> : </span><br />
+		<div style="padding:20px 0;margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('You have Password in format of ');?> : </div>
 		<select name="passwordFormat" >
 			<option value="joomla">Joomla Encrypted</option>
 			<option value="plain">Plain</option>			
 		</select>
 		<input type="hidden" name="importCSVStage" value="fieldMapping" />
 		<br /><br />
-		<input type="submit" name="btnUpload" value="Upload and Parse file" onclick="return importCSVFormCheck();" />
+		<input type="submit" name="btnUpload" value="Upload and Parse file" onclick="return importCSVFormCheck();" 	style="background:#6699cc; padding:5px 0;
+		border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
+		-moz-border-radius: 5px; border-radius: 5px;" />
+		</div>
 		</form>
+		</div>
 		<?php 
 		$html = ob_get_contents();
 		ob_clean();
