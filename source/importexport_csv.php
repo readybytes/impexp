@@ -46,20 +46,25 @@ class plgSystemImportExport_csv extends JPlugin
 				$html = $this->_createUser();
 			else if($stage == 'complete'){
 				ob_start(); ?>
-				<div style="overflow:hidden;">
-				<div style="width:48%;float:left;color:6699cc; border:1px solid #6699cc;padding:5px 0;fontweight:bold;font-size:16px;">Imported user's file link:</div>
-				<div style="width:48%;float:left;margin-left:1%;padding:10px 0;">
-				<a id='importeduser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.'importuser.csv';?>" style="background:#6699cc; padding:5px 0;
-				border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
-				-moz-border-radius: 5px; border-radius: 5px;padding:8px 0;width:100px;text-align:center;">Imported Users</a>
-				</div>
+				<div style="overflow:hidden;width: 80%;margin: auto;">
+					<div style="text-align: center;font-style: italic;font-size: 18px;color: #666;border-bottom: 1px solid #eee;">Except existing users, All Users have been imported successfully.
+					</div>
 				
-				<div style="color:6699cc;width:48%;float:left; border:1px solid #6699cc;padding:5px 0;fontweight:bold;font-size:16px;">Existing user's file link:</div>
-				<div style="width:48%;float:left;margin-left:1%;padding:10px 0;">
-				<a id='existuser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv' .DS.'existuser.csv'; ?>" style="background:#6699cc; padding:5px 0;
-				border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
-				-moz-border-radius: 5px; border-radius: 5px;padding:8px 0;width:100px;text-align:center;">Existing Users</a>
-				</div>
+					<div style="width:100%;margin:20px 0;text-align:center;">
+						
+						
+							<a id='importeduser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.'importuser.csv';?>" 
+							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">Download Imported users</a>
+						
+					</div>
+				
+					<div style="width:100%;margin:10px 0;text-align:center;">
+						
+						
+							<a id='existuser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv' .DS.'existuser.csv'; ?>" 
+							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">Download Existing users(not imported)</a>
+						
+					</div>
 				</div>
 			<?php 
 			$html = ob_get_contents();
