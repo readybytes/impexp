@@ -5,6 +5,10 @@ jimport( 'joomla.plugin.plugin' );
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
 
+//includes file containing functions and html code
+require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'uploadHtml.php');
+require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'GetData.php');
+
 class plgSystemImportExport_csv extends JPlugin
 {
 	var $_debugMode = 0;
@@ -31,13 +35,20 @@ class plgSystemImportExport_csv extends JPlugin
 
 		if($task=='export'){
 			$html = '';
-			$users = $this->_getUserData();
+			//$users = $this->_getUserData();
+			$userdata	=	new GetData();
+			$users=$userdata->_getUserData();
 			$this->_getDataInCSV($users);
 		}		
 		if($task=='uploadFile'){
 			$html = '';
 			if($stage == 'upload')
-				$html = $this->_getUploaderHtml();
+			{
+				$upload_html=new UploadHTML();
+				$html = $upload_html->_getUploaderHtml();
+				
+			}
+				
 			else if($stage == 'fieldMapping')
 				$html = $this->_getMappingHtml();
 			else if($stage == 'importData')
@@ -45,32 +56,9 @@ class plgSystemImportExport_csv extends JPlugin
 			else if($stage == 'createUser')
 				$html = $this->_createUser();
 			else if($stage == 'complete'){
-				ob_start(); ?>
-				<div style="overflow:hidden;width: 80%;margin: auto;">
-					<div style="text-align: center;font-style: italic;font-size: 18px;color: #666;border-bottom: 1px solid #eee;">Except existing users, All Users have been imported successfully.
-					</div>
-				
-					<div style="width:100%;margin:20px 0;text-align:center;">
-						
-						
-							<a id='importeduser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.'importuser.csv';?>" 
-							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">Download Imported users</a>
-						
-					</div>
-				
-					<div style="width:100%;margin:10px 0;text-align:center;">
-						
-						
-							<a id='existuser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv' .DS.'existuser.csv'; ?>" 
-							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">Download Existing users(not imported)</a>
-						
-					</div>
-				</div>
-			<?php 
-			$html = ob_get_contents();
-			ob_clean();
-			} 
-				
+				$on_complete=new UploadHTML();
+				$html = $on_complete->complete();
+			}
 						
 			$document = JFactory::getDocument();
 			$document->setBuffer($html, 'component');
@@ -78,38 +66,6 @@ class plgSystemImportExport_csv extends JPlugin
 			echo JResponse::toString(JFactory::getApplication()->getCfg('gzip'));
 			exit;		
 		}
-	}
-	
-	function _getUserData()
-	{
-		$db = JFactory::getDBO();
-		$sql = " SELECT * FROM ".$db->nameQuote('#__users');
-		$db->setQuery($sql); 
-		$joomlaUsers = $db->loadObjectList('id');
-
-		$sql = " SELECT * FROM ".$db->nameQuote('#__community_fields_values')
-			  ." ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC";
-		$db->setQuery($sql); 
-		$jsUserData = $db->loadObjectList();
-		
-		$userIds = array_keys($joomlaUsers);
-		
-		$csvUser=array();
-		foreach($joomlaUsers as $user){			
-			$csvUser[$user->id]['username'] = $user->username;	// first : username
-			$csvUser[$user->id]['name'] 	= $user->name;		// second : name
-			$csvUser[$user->id]['email'] 	= $user->email;		// third : email
-			$csvUser[$user->id]['password'] = $user->password;	// first : password
-			$csvUser[$user->id]['usertype'] = $user->usertype;
-		}
-		
-		foreach($jsUserData as $fields){
-			if(!array_key_exists($fields->user_id, $csvUser))
-				continue;
-				
-			$csvUser[$fields->user_id][$fields->field_id] =  preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $fields->value));
-		}
-		return $csvUser;	
 	}
 	
 	function _getCustomFieldIds()
@@ -407,7 +363,11 @@ class plgSystemImportExport_csv extends JPlugin
 		$index = 0;
 		$html  = '';
 		$currentUrl = JURI::getInstance()->toString();
-		$this->_addMappingScript($columns);
+		
+		// get uploader html
+		$uploadhtml	=	new UploadHTML();
+		$uploadhtml->_addMappingScript($columns);
+
 		ob_start();
 		?>
 		<div style="padding:0;border:2px solid #ccc;">
@@ -450,46 +410,6 @@ class plgSystemImportExport_csv extends JPlugin
 		$content = ob_get_contents();
 		ob_clean();
 		return $content;
-	}
-	
-	function _addMappingScript($coulumn)
-	{
-		$index=0;
-		ob_start();
-		?>
-			function importMappingCheck(){
-				var element;
-				var count=0;
-				var str;
-				var username='false';
-				var pass='false';
-				var email='false';
-				while(1){
-				 element= document.getElementById('csvField'+count);
-				 if(element==null)
-				 	break;
-				 str = element.value.toLowerCase();
-				 if(str=='joomla_username')
-				 	username='true';
-				 if(str=='joomla_email')
-				 	email='true';
-				 if(str=='joomla_password')
-				 	pass='true';
-				 count=count+1;
-				}
-				if(username!='true' || email!='true' || pass!='true'){				
-					alert ('Username, Password or Email field is not map');
-					return false;
-				}
-				return true;
-							
-			}
-		<?php 
-		$content = ob_get_contents();
-		ob_clean();
-		
-		$document = JFactory::getDocument()->addScriptDeclaration($content);
-		return true;
 	}
 	
 	function _setIndexingInSession(&$file)
@@ -564,60 +484,6 @@ class plgSystemImportExport_csv extends JPlugin
 			$html .= '<option value="custom_'.$c->id.'">'.JString::ucfirst($c->name).'</option>';
 		}
 		return $html;
-	}
-	
-	function _getUploaderHtml()
-	{
-		$currentUrl = JURI::getInstance()->toString();
-		$this->_addUploaderScript();
-		ob_start();
-		?>
-		<div style="padding:0;border:2px solid #ccc;">
-		<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;">CSV Uploder</span></div>
-		<form enctype="multipart/form-data"  action="<?php echo JRoute::_($currentUrl); ?>" method="post" name="adminForm" id="adminForm" >
-		<div style="padding:20px 5px;">
-		<div style="padding:20px 0; margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('Please Upload the CSV File'); ?></div>
-		<input type="file" id="fileUploaded" name="fileUploaded" title="Please Upload your CSV file" />
-		<br /><br />
-		<div style="padding:20px 0;margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('You have Password in format of ');?> : </div>
-		<select name="passwordFormat" >
-			<option value="joomla">Joomla Encrypted</option>
-			<option value="plain">Plain</option>			
-		</select>
-		<input type="hidden" name="importCSVStage" value="fieldMapping" />
-		<br /><br />
-		<input type="submit" name="btnUpload" value="Upload and Parse file" onclick="return importCSVFormCheck();" 	style="background:#6699cc; padding:5px 0;
-		border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
-		-moz-border-radius: 5px; border-radius: 5px;" />
-		</div>
-		</form>
-		</div>
-		<?php 
-		$html = ob_get_contents();
-		ob_clean();
-		return $html;
-	}
-	
-	function _addUploaderScript()
-	{
-		ob_start();
-		?>
-		function importCSVFormCheck(){
-			var file = document.getElementById('fileUploaded');
-			var str = file.value.toLowerCase();
-			var length = str.length;			
-			if(str.slice(length-3, length) != 'csv'){
-				alert('Please check the file Uploaded. It must be a CSV file.');
-				return false;
-			}			
-			return true;
-		}
-		<?php 
-		$content = ob_get_contents();
-		ob_clean();
-		
-		$document = JFactory::getDocument()->addScriptDeclaration($content);
-		return true;
 	}
 	
 	function _checkUsernameinJoomla($username,$email){

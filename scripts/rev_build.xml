@@ -18,16 +18,10 @@
 
 		<copy todir="${target}/source/">
 			<fileset dir="${source}/plugins/system/">
-				<include name="importexport_csv.*" />
+				<include name="importexport_csv*/*" />
 			</fileset>
 		</copy>
-		
-		<copy todir="${target}/source/">
-			<fileset dir="${source}/plugins/system/importexport_csv">
-				<include name="importexport_csv/*.*" />
-			</fileset>
-		</copy>
-		 
+				
 		<copy todir="${target}/test">
 			<fileset dir="${source}/test/">
 				<include name="**/*.*" />
