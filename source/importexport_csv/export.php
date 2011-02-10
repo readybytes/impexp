@@ -4,11 +4,11 @@ class ImpexpPluginExport
 {
 	function createCSV()
 	{
-		$users	=	$this->_getUserData();		
-		$this->_setDataInCSV($users);
+		$users	=	$this->getUserData();		
+		$this->setDataInCSV($users);
 	}
 	
-	function _getUserData()
+	function getUserData()
 		{
 			$db = JFactory::getDBO();
 			$sql = " SELECT * FROM ".$db->nameQuote('#__users');
@@ -40,9 +40,9 @@ class ImpexpPluginExport
 			return $csvUser;
 		}
 	
-	function _setDataInCSV($users)
+	function setDataInCSV($users)
 		{
-				$fields = $this->_getCustomFieldIds();
+				$fields = $this->getCustomFieldIds();
 			ob_start();
 			
 			header('Content-type: application/csv');
@@ -76,9 +76,8 @@ class ImpexpPluginExport
 			exit;
 			$content = ob_get_contents();
 			ob_clean();
-	}
-
-	function _getCustomFieldIds()
+		}
+	function getCustomFieldIds()
 	{
 			$db	=& JFactory::getDBO();
 			$query  = "  SELECT * "
