@@ -140,8 +140,9 @@ class ImpexpPluginImport
 				
 				// save fields mapping in session		
 				if($mysess->has('fieldMapping', 'importCSV'))
+					{
 					 $mysess->clear('fieldMapping', 'importCSV');
-					 
+					} 
 				$mysess->set('fieldMapping', $fieldMapping, 'importCSV');
 				
 				//Deleting csv files
@@ -166,7 +167,7 @@ class ImpexpPluginImport
 		function createUser($mysess, $storagePath)
 			{
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'libraries'.DS.'core.php');
-				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');						
+				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');
 				
 				$fieldMapping = $mysess->get('fieldMapping', array(), 'importCSV');
 				$fileIndex    = $mysess->get('fileIndex', array(), 'importCSV');
@@ -206,7 +207,7 @@ class ImpexpPluginImport
 					$importuser[$icount]['username'] = $userValues[$useroffset];
 					$importuser[$icount]['email'] = $userValues[$emailoffset];
 					//$existuser[$count]['password']=$userValues[$fieldMapping['joomla']['password']];
-					$icount++;			
+					$icount++;		
 					$newUserId = ImpexpPluginHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess);
 		
 					// TODO : what if enable to save usrs
@@ -229,7 +230,7 @@ class ImpexpPluginImport
 						
 		function complete()
 		{
-			ob_start();
+			ob_start();			
 			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'complete.php');
 			
 			$content=ob_get_contents();

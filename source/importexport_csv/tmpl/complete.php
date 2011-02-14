@@ -9,7 +9,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 					<div style="width:100%;margin:20px 0;text-align:center;">
 						
 						
-							<a id='importeduser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.'importuser.csv';?>" 
+							<a id='importeduser' href="<?php echo JURI::root().'plugins/system/importexport_csv/importuser.csv';?>" 
 							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">Download Imported users</a>
 						
 					</div>
@@ -17,7 +17,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 					<div style="width:100%;margin:10px 0;text-align:center;">
 						
 						
-							<a id='existuser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv' .DS.'existuser.csv'; ?>" 
+							<a id='existuser' href="<?php echo JURI::root().'plugins/system/importexport_csv/existuser.csv'; ?>" 
 							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">Download Existing users(not imported)</a>
 						
 					</div>
