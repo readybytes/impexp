@@ -4,6 +4,7 @@ require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS
 
 class ImpexpPluginImport
 {
+	var $count = 0;
 	function getUploaderHtml()
 		{
 			$currentUrl = JURI::getInstance()->toString();		
@@ -62,7 +63,7 @@ class ImpexpPluginImport
 			$indexing['start'] = ftell($file);
 			
 			while(($data = fgetcsv($file, 0, "\n")) !== FALSE){
-				if($index % 500 == 0){
+				if($index % 1000 == 0){
 					$indexing['end'] = ftell($file);
 					array_push($fileIndex, $indexing);
 					$indexing['start'] = ftell($file);
@@ -142,6 +143,7 @@ class ImpexpPluginImport
 				if($mysess->has('fieldMapping', 'importCSV'))
 					{
 					 $mysess->clear('fieldMapping', 'importCSV');
+					 $mysess->clear('count');
 					} 
 				$mysess->set('fieldMapping', $fieldMapping, 'importCSV');
 				
@@ -164,7 +166,7 @@ class ImpexpPluginImport
 				return $fields;
 			}
 				
-		function createUser($mysess, $storagePath)
+		function createUser($mysess, $storagePath,$count)
 			{
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'libraries'.DS.'core.php');
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');
@@ -184,7 +186,7 @@ class ImpexpPluginImport
 				$html='';
 				$file = fopen($storagePath.'import.csv', "r");
 				fseek($file, $index['start']);
-				$count=0;
+				
 				$icount=0;
 				$existuser=array();
 				$importuser=array();
@@ -223,8 +225,14 @@ class ImpexpPluginImport
 				
 				//Add imported user in file
 				ImpexpPluginHelper::getExistUserInCSV($importuser,'importuser.csv');
+				  
+				echo "<br/><br/>";
+				JText::printf('DO NOT CLOSE THIS WINDOW WHILE IMPORTING USER DATA');
+				echo "<br/><br/>";
+				echo "  Number of Users Imported up to :  ".$count;
 				
-				$currentUrl = JURI::getInstance();		
+				$mysess->set('count',$count);
+				$currentUrl = JURI::getInstance();
 				JFactory::getapplication()->redirect(JRoute::_($currentUrl->toString(), false));		
 			}
 						

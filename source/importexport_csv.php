@@ -36,8 +36,8 @@ class plgSystemImportExport_csv extends JPlugin
 			return true;
 
 		if($task=='export'){
-			$this->export->createCSV();
-			}
+			$this->export->createCSV($this->storagePath);
+		}
 
 		if($task=='uploadFile'){
 			
@@ -50,8 +50,10 @@ class plgSystemImportExport_csv extends JPlugin
 			else if($stage == 'importData')
 				$html = $this->import->importData($this->mysess);
 			
-			else if($stage == 'createUser')
-				$html = $this->import->createUser($this->mysess, $this->storagePath);
+			else if($stage == 'createUser'){
+				$count=$this->mysess->get('count',0);
+				$html = $this->import->createUser($this->mysess, $this->storagePath, $count);				
+			}
 			
 			else if($stage == 'complete')
 				$html	=	$this->import->complete();
