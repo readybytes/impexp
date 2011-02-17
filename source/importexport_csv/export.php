@@ -1,8 +1,6 @@
 <?php 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-define ('IMPEXP_LIMIT',1000);
-
 class ImpexpPluginExport 
 {
 	function createCSV($storagePath)
