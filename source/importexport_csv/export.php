@@ -1,58 +1,60 @@
 <?php 
+defined( '_JEXEC' ) or die( 'Restricted access' );
+
+define ('IMPEXP_LIMIT',1000);
 
 class ImpexpPluginExport 
 {
 	function createCSV($storagePath)
 	{
-		//XITODO : count through query
+		$usertype=array('Administrator','Super Administrator');
+
 		$db = JFactory::getDBO();
-		$sql = "SELECT * FROM ".$db->nameQuote('#__users');
+		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users');
 		$db->setQuery($sql);
-		$joomlaUsers = $db->loadObjectList('id');
-		$total_user = count($joomlaUsers);
-	
-		
+		$total_user = $db->loadResult();
+
+		//open a file which contain the data fetched from the database
 		$fp=fopen($storagePath.'exportdata.csv',"w");
 		$fields = $this->getCustomFieldIds();
 
 		//fetch limited data from database and store it into a temporary file	
-		$limit=1000;
-		for($start=0;$start<=$total_user;$start=$start+$limit)
+		for($start=0;$start<=$total_user;$start=$start+IMPEXP_LIMIT)
 		{	
-			$users	=	$this->getUserData($start,$limit);
-			foreach($users as $id => $data){
+			$users	=	$this->getUserData($start);
+			foreach($users as $id => $data)
+			{
 				// do not export admin user
-				//XITODO : store in configurtion, so user can change behaviour
-				if($data['usertype'] == 'Administrator' || $data['usertype'] == 'Super Administrator')
-					continue;
-							
-				//XITODO : use impode for better understanding and readability
-				$csvdata= "\n".'"'.$data['username'].'","'.$data['name'].'","'.$data['email'].'","'.$data['password'].'","'.$data['usertype'];
-				foreach($fields as $f){
-					if(array_key_exists($f->id, $data))
-						$csvdata.= '","'.nl2br($data[$f->id]);
-					else 
-						$csvdata.= '", "';
-				  }
-				
-				$csvdata.= '"';
-				fwrite($fp,$csvdata);
-			  }
+				if(!in_array($data['usertype'],$usertype))
+				{
+					$csvdata="\n".'"'.$data['username'].'", "'.$data['name'].'", "'.$data['email'].'", "'.$data['password'].'", "'.$data['usertype'];
+					foreach($fields as $f)
+					{
+						if(array_key_exists($f->id, $data))
+							$csvdata.=implode('","',$data);
+						
+						else 
+							$csvdata.= '", "';
+					}
+					$csvdata.= '"';
+					fwrite($fp,$csvdata);
+				}
+			}
 	    }
 			fclose($fp);
 			$this->setDataInCSV($storagePath);
 	}
 	
-	function getUserData($start,$limit)
+	function getUserData($start)
 		{
 			//get limited User data from database
 			$db = JFactory::getDBO();
-			$sql = " SELECT * FROM ".$db->nameQuote('#__users')."LIMIT ".$start.",".$limit;
+			$sql = " SELECT * FROM ".$db->nameQuote('#__users')."LIMIT ".$start.",".IMPEXP_LIMIT;
 			$db->setQuery($sql); 
 			$joomlaUsers = $db->loadObjectList('id');
 			
 			$sql = " SELECT * FROM ".$db->nameQuote('#__community_fields_values')
-				  ."ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC "." LIMIT ".$start.",".$limit ;
+				  ."ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC "." LIMIT ".$start.",".IMPEXP_LIMIT ;
 			$db->setQuery($sql); 
 			$jsUserData = $db->loadObjectList();
 
@@ -94,15 +96,8 @@ class ImpexpPluginExport
 			foreach($fields as $f)
 				echo '","'.JText::_($f->name);
 
-			//XITODO  : use file_get_contents
-			if (($fp = fopen($storagePath.'exportdata.csv', "r")) !== FALSE) 
-			 {
-				while (($data = fgetcsv($fp)) !== FALSE)
-				{
-					echo '"'.implode('", "',$data).'"'."\n";
-				}
-			 }
-		    fclose($fp);
+			echo file_get_contents($storagePath.'exportdata.csv');
+			 
 			exit;
 			$content = ob_get_contents();
 			ob_clean();

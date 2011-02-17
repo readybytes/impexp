@@ -63,7 +63,7 @@ class ImpexpPluginImport
 			$indexing['start'] = ftell($file);
 			
 			while(($data = fgetcsv($file, 0, "\n")) !== FALSE){
-				if($index % 1000 == 0){
+				if($index % IMPEXP_LIMIT == 0){
 					$indexing['end'] = ftell($file);
 					array_push($fileIndex, $indexing);
 					$indexing['start'] = ftell($file);

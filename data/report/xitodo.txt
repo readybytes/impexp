@@ -1,0 +1,4 @@
+./importexport_csv/export.php:		//XITODO : count through query
+./importexport_csv/export.php:				//XITODO : store in configurtion, so user can change behaviour
+./importexport_csv/export.php:			//XITODO  : use file_get_contents
+./importexport_csv/export.php:				//XITODO : use impode for better understanding and readability
