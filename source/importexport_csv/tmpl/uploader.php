@@ -2,6 +2,18 @@
 if(!defined('_JEXEC')) die('Restricted access');
 
 ?>
+<script>
+function importCSVFormCheck(){
+	var file = document.getElementById('fileUploaded');
+	var str = file.value.toLowerCase();
+	var length = str.length;			
+	if(str.slice(length-3, length) != 'csv'){
+		alert('Please check the file Uploaded. It must be a CSV file.');
+		return false;
+	}			
+	return true;
+}
+</script>
 <div style="padding:0;border:2px solid #ccc;">
 	<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;">CSV Uploder</span></div>
 		<form enctype="multipart/form-data"  action="<?php echo JRoute::_($currentUrl); ?>" method="post" name="adminForm" id="adminForm" >
