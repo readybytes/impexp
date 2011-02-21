@@ -8,8 +8,7 @@ class XiUnitTestCase extends PHPUnit_Framework_TestCase
   {
   	$filter['debug']=1;
     $filter['error_reporting']=6143;
-    $this->updateJoomlaConfig($filter);
-  	XiFactory::getErrorObject(true);
+    $this->updateJoomlaConfig($filter);  	
   }
 
 

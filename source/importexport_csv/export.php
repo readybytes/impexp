@@ -39,6 +39,10 @@ class ImpexpPluginExport
 				}
 			}
 	    }
+	    	if(defined('TESTMODE'))
+	    	{
+	    		return true;
+	    	}
 			fclose($fp);
 			$this->setDataInCSV($storagePath);
 	}
@@ -47,7 +51,9 @@ class ImpexpPluginExport
 		{
 			//get limited User data from database
 			$db = JFactory::getDBO();
-			$sql = " SELECT * FROM ".$db->nameQuote('#__users')."LIMIT ".$start.",".IMPEXP_LIMIT;
+			$sql = " SELECT * FROM ".$db->nameQuote('#__users')
+					." WHERE ".$db->nameQuote('block'). "=". "0"
+					." LIMIT ".$start.",".IMPEXP_LIMIT;
 			$db->setQuery($sql); 
 			$joomlaUsers = $db->loadObjectList('id');
 			

@@ -4,7 +4,7 @@ require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS
 
 class ImpexpPluginImport
 {
-	var $count = 0;
+	var $importuser_count = 0;
 	function getUploaderHtml()
 		{
 			$currentUrl = JURI::getInstance()->toString();		
@@ -151,6 +151,10 @@ class ImpexpPluginImport
 				ImpexpPluginHelper::deleteCSV('existuser.csv','Username and E-mails which are already exist.');
 				ImpexpPluginHelper::deleteCSV('importuser.csv','Username and E-mails which are imported.');
 				
+				if(defined('TESTMODE')){
+					return true;
+				}
+					
 				$currentUrl = JURI::getInstance()->toString();
 				JFactory::getapplication()->redirect(JRoute::_($currentUrl.'&importCSVStage=createUser', false));
 			}	
@@ -166,7 +170,7 @@ class ImpexpPluginImport
 				return $fields;
 			}
 				
-		function createUser($mysess, $storagePath,$count)
+		function createUser($mysess, $storagePath,$importuser_count)
 			{
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'libraries'.DS.'core.php');
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');
@@ -186,7 +190,7 @@ class ImpexpPluginImport
 				$html='';
 				$file = fopen($storagePath.'import.csv', "r");
 				fseek($file, $index['start']);
-				
+				$count=0;
 				$icount=0;
 				$existuser=array();
 				$importuser=array();
@@ -203,13 +207,20 @@ class ImpexpPluginImport
 						$existuser[$count]['email'] = $userValues[$emailoffset];
 						//$existuser[$count]['password']=$userValues[$fieldMapping['joomla']['password']];
 						$count++;
+						$importuser_count++;
+
+						//$newUserId    = ImpexpPluginHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess,$checkUsername);
+						//$cUser        = ImpexpPluginHelper::storeCommunityUser($checkUsername, $userValues,$fieldMapping['jsfield']);
+						//$customFields = ImpexpPluginHelper::storeCustomFields($checkUsername, $userValues, $fieldMapping['custom']);	
+						
 						continue;
 					}
 					
 					$importuser[$icount]['username'] = $userValues[$useroffset];
 					$importuser[$icount]['email'] = $userValues[$emailoffset];
 					//$existuser[$count]['password']=$userValues[$fieldMapping['joomla']['password']];
-					$icount++;		
+					$icount++;	
+					$importuser_count++;	
 					$newUserId = ImpexpPluginHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess);
 		
 					// TODO : what if enable to save usrs
@@ -229,9 +240,9 @@ class ImpexpPluginImport
 				echo "<br/><br/>";
 				JText::printf('DO NOT CLOSE THIS WINDOW WHILE IMPORTING USER DATA');
 				echo "<br/><br/>";
-				echo "  Number of Users Imported up to :  ".$count;
+				echo "  Number of Users Imported up to :  ".$importuser_count;
 				
-				$mysess->set('count',$count);
+				$mysess->set('count',$importuser_count);
 				$currentUrl = JURI::getInstance();
 				JFactory::getapplication()->redirect(JRoute::_($currentUrl->toString(), false));		
 			}
