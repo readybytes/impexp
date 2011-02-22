@@ -23,6 +23,7 @@ class plgSystemImportExport_csv extends JPlugin
 		$this->storagePath  = JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS;
 		$this->export = new ImpexpPluginExport();
 		$this->import = new ImpexpPluginImport();
+		JFactory::getLanguage()->load('plg_importexport_csv', JPATH_ADMINISTRATOR);
 	}
 	
 	function onAfterRoute()

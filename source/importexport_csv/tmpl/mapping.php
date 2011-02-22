@@ -35,12 +35,12 @@ if(!defined('_JEXEC')) die('Restricted access');
 
 <div style="padding:0;border:2px solid #ccc;">
 				<form action="<?php echo JRoute::_($currentUrl, false); ?>" method="post" name="adminForm" id="adminForm" >
-					<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;"><?php echo JText::_('Please map the fields of CSV files to Your Joomla setup.'); ?></span></div>
+					<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;"><?php echo JText::_('PLEASE_MAP_FIELDS_OF_CSV_IN_JOOMLA_SETUP'); ?></span></div>
 				<div style="padding:0 10px;">
 					<ol>
-						<li>Three fields must exists Username, Password, Email for Joomla User Table Fields.</li>
-						<li>There must be one to one mapping, one field must be selected for one field of your joomla setup.</li>						
-						<li>Date fields in CSV file must be in SQL date formate.</li>
+						<li><?php echo JText::_('THREE_FIELDS_MUST_EXIST'); ?></li>
+						<li><?php echo JText::_('THERE_MUST_BE_ONE_TO_ONE_MAPPING');?></li>						
+						<li><?php echo JText::_('DATE_FIELD_MUST_BE_IN_SQL_FORMAT');?></li>
 					</ol>			
 					<br />
 		<?php  
@@ -51,7 +51,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 				<div style="width:20%; float:left"><span><?php echo $c;?></span></div>
 				<div style="width:70%; float:right">
 					<select id="csvField<?php echo $index;?>" name="csvField<?php echo $index;?>">
-						<option value=0><?php echo JText::_('None');?></option>
+						<option value=0><?php echo JText::_('NONE');?></option>
 						<?php echo $optionHtml;
 						$index++;?>
 					</select>

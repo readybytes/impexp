@@ -29,7 +29,7 @@ class JElementUploader extends JElement
 		JHTML::_('behavior.modal', "a.uploaderPopup");
         $buttonMap = new JObject();
         $buttonMap->set('modal', true);
-        $buttonMap->set('text', JText::_('Upload File'));
+        $buttonMap->set('text', JText::_('UPLOAD_FILE'));
         $buttonMap->set('name', 'image');
         $buttonMap->set('modalname', 'uploaderPopup');
         $buttonMap->set('options', "{handler: 'iframe', size: {x: 600, y: 500}}");

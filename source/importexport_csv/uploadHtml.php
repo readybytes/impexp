@@ -14,13 +14,13 @@ class UploadHTML
 		?>
 
 		<div style="padding:0;border:2px solid #ccc;">
-			<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;">CSV Uploder</span></div>
+			<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;"><?php echo JText::_('CSV_UPLOADER'); ?></span></div>
 				<form enctype="multipart/form-data"  action="<?php echo JRoute::_($currentUrl); ?>" method="post" name="adminForm" id="adminForm" >
 					<div style="padding:20px 5px;">
-					<div style="padding:20px 0; margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('Please Upload the CSV File'); ?></div>
+					<div style="padding:20px 0; margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('PLEASE_UPLOAD_THE_CSV_FILE'); ?></div>
 					<input type="file" id="fileUploaded" name="fileUploaded" title="Please Upload your CSV file" />
 					<br /><br />
-					<div style="padding:20px 0;margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('You have Password in format of ');?> : </div>
+					<div style="padding:20px 0;margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('YOU_HAVE_PASSWORD_IN_FORM_OF');?> : </div>
 					<select name="passwordFormat" >
 						<option value="joomla">Joomla Encrypted</option>
 						<option value="plain">Plain</option>			
@@ -105,14 +105,14 @@ class UploadHTML
 	{
 		ob_start(); ?>
 				<div style="overflow:hidden;width: 80%;margin: auto;">
-					<div style="text-align: center;font-style: italic;font-size: 18px;color: #666;border-bottom: 1px solid #eee;">Except existing users, All Users have been imported successfully.
+					<div style="text-align: center;font-style: italic;font-size: 18px;color: #666;border-bottom: 1px solid #eee;"><?php echo JText::_('EXCEPT_EXISTING_USERS_ALL_USER_IMPORTED_SUCCESSFULLY'); ?>
 					</div>
 				
 					<div style="width:100%;margin:20px 0;text-align:center;">
 						
 						
 							<a id='importeduser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.'importuser.csv';?>" 
-							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">Download Imported users</a>
+							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;"><?php echo JText::_('DOWNLOAD_IMPORTED_USERS'); ?></a>
 						
 					</div>
 				
@@ -120,7 +120,7 @@ class UploadHTML
 						
 						
 							<a id='existuser' href="<?php echo JURI::root().DS.'plugins'.DS.'system'.DS.'importexport_csv' .DS.'existuser.csv'; ?>" 
-							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">Download Existing users(not imported)</a>
+							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;"><?php echo JText::_('DOWNLOAD_EXISTING_USERS'); ?></a>
 						
 					</div>
 				</div>
