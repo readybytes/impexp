@@ -29,7 +29,7 @@ class ImpexpPluginExport
 					foreach($fields as $f)
 					{
 						if(array_key_exists($f->id, $data))
-							$csvdata.=implode('","',$data);
+							$csvdata.='","'.$data[$f->id];
 						
 						else 
 							$csvdata.= '", "';
@@ -58,7 +58,7 @@ class ImpexpPluginExport
 			$joomlaUsers = $db->loadObjectList('id');
 			
 			$sql = " SELECT * FROM ".$db->nameQuote('#__community_fields_values')
-				  ."ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC "." LIMIT ".$start.",".IMPEXP_LIMIT ;
+				  ."ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC ";
 			$db->setQuery($sql); 
 			$jsUserData = $db->loadObjectList();
 

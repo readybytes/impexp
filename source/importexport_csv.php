@@ -53,7 +53,7 @@ class plgSystemImportExport_csv extends JPlugin
 				$html = $this->import->importData($this->mysess);
 			
 			else if($stage == 'createUser'){
-				$importuser_count = $this->mysess->get('count',0);
+				$importuser_count = $this->mysess->get('impexp_count',0);
 				$html = $this->import->createUser($this->mysess, $this->storagePath, $importuser_count);				
 			}
 			

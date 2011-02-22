@@ -4,7 +4,6 @@ require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS
 
 class ImpexpPluginImport
 {
-	var $importuser_count = 0;
 	function getUploaderHtml()
 		{
 			$currentUrl = JURI::getInstance()->toString();		
@@ -143,7 +142,7 @@ class ImpexpPluginImport
 				if($mysess->has('fieldMapping', 'importCSV'))
 					{
 					 $mysess->clear('fieldMapping', 'importCSV');
-					 $mysess->clear('count');
+					 $mysess->clear('impexp_count');
 					} 
 				$mysess->set('fieldMapping', $fieldMapping, 'importCSV');
 				
@@ -242,7 +241,7 @@ class ImpexpPluginImport
 				echo "<br/><br/>";
 				echo "  Number of Users Imported up to :  ".$importuser_count;
 				
-				$mysess->set('count',$importuser_count);
+				$mysess->set('impexp_count',$importuser_count);
 				$currentUrl = JURI::getInstance();
 				JFactory::getapplication()->redirect(JRoute::_($currentUrl->toString(), false));		
 			}

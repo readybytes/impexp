@@ -57,7 +57,7 @@ class ImportExportTest extends XiUnitTestCase
 		$this->assertEquals($custom,$mapping);
 	}		
 	
-	function xtestgetUserData()
+	function testgetUserData()
 	{
 		$this->includefile();
 
