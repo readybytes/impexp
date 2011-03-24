@@ -5,8 +5,7 @@
 **/
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
-
-class JElementUploader extends JElement
+class JFormFieldUploader extends JFormField
 {
 	/**
 	 * Element name
@@ -14,9 +13,9 @@ class JElementUploader extends JElement
 	 * @access	protected
 	 * @var		string
 	 */
-	var	$_name = 'Profiletypes';
+	public $type = "Uploader";
 
-	function fetchElement($name, $value, &$node, $control_name)
+	protected function getInput()
 	{			
 		$html  = $this->getUploaderLink();
 

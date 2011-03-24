@@ -1,6 +1,6 @@
 <?php
 
-require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'helper.php');
+require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'helper.php');
 
 class ImpexpPluginImport
 {
@@ -8,7 +8,7 @@ class ImpexpPluginImport
 		{
 			$currentUrl = JURI::getInstance()->toString();		
 			ob_start();
-			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'uploader.php');
+			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'uploader.php');
 				
 			$html = ob_get_contents();
 			ob_clean();
@@ -47,7 +47,7 @@ class ImpexpPluginImport
 		// get uploader html
 		
 		ob_start();
-		require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'mapping.php');
+		require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'mapping.php');
 		
 		$content = ob_get_contents();
 		ob_clean();
@@ -83,8 +83,7 @@ class ImpexpPluginImport
 		function getJoomlaFieldOptions()
 			{
 				$db	=& JFactory::getDBO();			
-				$userTable = new JTable('#__users','id', $db);
-				$allColumns = $userTable->_db->getTableFields('#__users');
+				$allColumns = $db->getTableFields('#__users');
 				
 				$columns = $allColumns['#__users'];
 				$html  = '<option disabled="disabled"></option>';
@@ -99,8 +98,7 @@ class ImpexpPluginImport
 		function getJSFieldOptions()
 			{
 				$db	=& JFactory::getDBO();			
-				$userTable = new JTable('#__community_users','userid', $db);
-				$allColumns = $userTable->_db->getTableFields('#__community_users');
+				$allColumns = $db->getTableFields('#__community_users');
 				
 				$columns = $allColumns['#__community_users'];
 				$html  = '<option disabled="disabled"></option>';
@@ -249,7 +247,7 @@ class ImpexpPluginImport
 		function complete()
 		{
 			ob_start();			
-			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'complete.php');
+			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'complete.php');
 			
 			$content=ob_get_contents();
 			ob_clean();

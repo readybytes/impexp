@@ -36,10 +36,8 @@ function updateJoomlaConfig($filter)
 		$fname = JPATH_CONFIGURATION.DS.'configuration.php';
 
 		system("sudo chmod 777 $fname");
-
-  		if (!JFile::write($fname,
-  				$config->toString('PHP', 'config', array('class' => 'JConfig')) )
-  		    )
+		$configString = $config->toString('PHP', array('class' => 'JConfig', 'closingtag' => false));
+  		if (!JFile::write($fname, $configString) )
 		{
 			echo JText::_('ERRORCONFIGFILE');
 		}
@@ -51,8 +49,8 @@ function verifyPluginState($pluginname, $folder="system", $enabled=true)
   {
 
 		$db			=& JFactory::getDBO();
-		$query	= 'SELECT '.$db->nameQuote('published')
-				.' FROM ' . $db->nameQuote( '#__plugins' )
+		$query	= 'SELECT '.$db->nameQuote('enabled')
+				.' FROM ' . $db->nameQuote( '#__extensions' )
 	          	.' WHERE '.$db->nameQuote('element').'='.$db->Quote($pluginname)
 	          	. ' AND ' . $db->nameQuote('folder').'='.$db->Quote($folder)
 	          	;

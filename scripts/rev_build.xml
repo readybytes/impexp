@@ -17,8 +17,8 @@
 			tofile="${target}/source/languages/en-GB.plg_importexport_csv.ini" />
 
 		<copy todir="${target}/source/">
-			<fileset dir="${source}/plugins/system/">
-				<include name="importexport_csv**" />
+			<fileset dir="${source}/plugins/system/importexport_csv/">
+				<include name="**" />
 			</fileset>
 		</copy>
 				

@@ -19,10 +19,10 @@ class InstallTest extends XiSelTestCase
     $this->waitPageLoad("60000");
       
 	$this->type("install_url", IMPEXP_PKG);
-    $this->click("//form[@name='adminForm']/table[3]/tbody/tr[2]/td[2]/input[2]");
+    $this->click("//input[@value='Install' and @type='button' and @onclick='Joomla.submitbutton4()']");
    
     $this->waitPageLoad();
-    $this->assertTrue($this->isTextPresent("Install Plugin Success"));
+    $this->assertTrue($this->isTextPresent("Installing plugin was successful."));
     $this->assertFalse($this->isElementPresent("//dl[@id='system-error']/dd/ul/li"));
 	
   } 

@@ -8,22 +8,22 @@ jimport('joomla.filesystem.folder');
 define('IMPEXP_LIMIT',1000);
 
 //includes file containing functions and html code
-require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'export.php');
-require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'import.php');
+require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'export.php');
+require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'import.php');
 
 class plgSystemImportExport_csv extends JPlugin
 {
 	var $_debugMode = 0;
 	var $mysess     = null;
 	var $storagePath= null;
-	function __construct( &$subject, $params )
+	function __construct( &$subject, $config )
 	{
-		parent::__construct( $subject, $params );
+		parent::__construct($subject, $config);
+		$this->loadLanguage();
 		$this->mysess = JFactory::getSession();
-		$this->storagePath  = JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS;
+		$this->storagePath  = JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS;
 		$this->export = new ImpexpPluginExport();
 		$this->import = new ImpexpPluginImport();
-		JFactory::getLanguage()->load('plg_importexport_csv', JPATH_ADMINISTRATOR);
 	}
 	
 	function onAfterRoute()
@@ -43,6 +43,7 @@ class plgSystemImportExport_csv extends JPlugin
 		}
 
 		if($task=='uploadFile'){
+			JRequest::setVar('option','');
 			
 			if($stage == 'upload')
 				$html = $this->import->getUploaderHtml();

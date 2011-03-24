@@ -1,9 +1,8 @@
-./importexport_csv/exportdata.csv:"supert", "supert", "latinmtr@hotmail.com", "5d86e164348941a23ac637d946ce0af3:m8eTU2caHy3dHjSvbC3yXll4vi2Sab2r", "Registered", "", "", "","Will include some info here later!", "", "", "", "", "", "", "", "", ""
-./importexport_csv/import.php:require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'helper.php');
-./importexport_csv/import.php:			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'complete.php');
-./importexport_csv/import.php:		require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'mapping.php');
-./importexport_csv/import.php:			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'uploader.php');
+./importexport_csv/import.php:require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'helper.php');
+./importexport_csv/import.php:			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'complete.php');
+./importexport_csv/import.php:		require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'mapping.php');
+./importexport_csv/import.php:			require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'tmpl' .DS. 'uploader.php');
 ./importexport_csv/import.php:				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'libraries'.DS.'core.php');
 ./importexport_csv/import.php:				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');
-./importexport_csv.php:require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'export.php');
-./importexport_csv.php:require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'import.php');
+./importexport_csv.php:require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'export.php');
+./importexport_csv.php:require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'import.php');

@@ -9,14 +9,14 @@ class ImportExportTest extends XiUnitTestCase
 	
 	function includefile()
 	{
-		require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv.php');
+		require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv.php');
 	}
 	
 	function testsetIndexingInSession()
 	{	
 		$this->includefile();
 		$mysess = JFactory::getSession();
-		$storagePath = JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS;
+		$storagePath = JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS;
 		$file 	 = fopen($storagePath.'import.csv', "r");
 		$indexing = ImpexpPluginImport::setIndexingInSession($file,$mysess);
 		$this->assertTrue($indexing);
@@ -28,8 +28,8 @@ class ImportExportTest extends XiUnitTestCase
 		$this->includefile();
 		
 		//check whether deleteCSV deleting the contents or not		
-		JFile::copy(JPATH_ROOT.DS.'test'.DS.'test'.DS.'admin'.DS.'user.csv',JPATH_ROOT.DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.'existuser.csv');		
-		JFile::copy(JPATH_ROOT.DS.'test'.DS.'test'.DS.'admin'.DS.'user.csv',JPATH_ROOT.DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.'importuser.csv');
+		JFile::copy(JPATH_ROOT.DS.'test'.DS.'test'.DS.'admin'.DS.'user.csv',JPATH_ROOT.DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS. 'importexport_csv'.DS.'existuser.csv');		
+		JFile::copy(JPATH_ROOT.DS.'test'.DS.'test'.DS.'admin'.DS.'user.csv',JPATH_ROOT.DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS. 'importexport_csv'.DS.'importuser.csv');
 		$mysess = JFactory::getSession();
 		$import = new ImpexpPluginImport();
 		$this->assertTrue($import->importData($mysess));
@@ -124,7 +124,7 @@ class ImportExportTest extends XiUnitTestCase
 	function testcreateCSV()
 	{
 		$this->includefile();
-		$storagePath = JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS;
+		$storagePath = JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS;
 		$createCSV = new ImpexpPluginExport();
 		$this->assertTrue($createCSV->createCSV($storagePath));
 	}

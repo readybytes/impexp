@@ -5,7 +5,7 @@ class ImpexpPluginExport
 {
 	function createCSV($storagePath)
 	{
-		$usertype=array('Administrator','Super Administrator');
+		$usertype='deprecated';
 
 		$db = JFactory::getDBO();
 		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users');
@@ -23,7 +23,7 @@ class ImpexpPluginExport
 			foreach($users as $id => $data)
 			{
 				// do not export admin user
-				if(!in_array($data['usertype'],$usertype))
+				if($data['usertype'] != $usertype)
 				{
 					$csvdata="\n".'"'.$data['username'].'", "'.$data['name'].'", "'.$data['email'].'", "'.$data['password'].'", "'.$data['usertype'];
 					foreach($fields as $f)

@@ -8,6 +8,7 @@ define('SCREENSHOT_URL','http://'.SEL_RC_SERVER.'/selRC');
 
 define('JOOMLA_HOST','localhost');
 
+jimport('joomla.filesystem.folder');
 if(!JFolder::exists(SCREENSHOT_PATH)){
 	
 	if(!JFolder::create(SCREENSHOT_PATH,0777))

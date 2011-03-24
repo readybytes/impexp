@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<install version="1.5" type="plugin" group="system" method="upgrade">
+<extension version="1.6.0" type="plugin" group="system" method="upgrade">
   <name>Import/Export User Data For JS</name>
   <version>@global.version@.@svn.lastrevision@</version>
   <creationDate>Dec 2010</creationDate>
@@ -16,11 +16,14 @@
   <languages>
 	<language tag="en-GB">languages/en-GB.plg_importexport_csv.ini</language>
   </languages>
+ <config>
+   <fields name="params">
+      <fieldset name="basic" addfieldpath="/plugins/system/importexport_csv/importexport_csv">
 
-  <params addpath="/plugins/system/importexport_csv">
-	<param name="fileUploaded" type="uploader" default="0" label="Upload CSV File" description="Upload CSV File" />	
-  	<param name="exportUserData" type="exportlink" default="0" label="Export User Data" description="Export User Data" />	
-  </params>
-  
-</install>
+         <field name="fileUploaded" type="uploader" default="0" label="Upload CSV File" description="Upload CSV File"  />
+      	<field name="exportUserData" type="exportlink" default="0" label="Export User Data" description="Export User Data"  />
+      </fieldset>
+   </fields>
+  </config>
+</extension>
 

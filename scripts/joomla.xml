@@ -20,12 +20,12 @@
 		<exec command="mv -f ${joomla.rootpath}/${joomla.folder}/Joomla_${pkg.version}/* ${joomla.rootpath}/${joomla.folder}" passthru="true" />
 
 		<copy file="${pkg.location}/database_${pkg.version}.sql" tofile="${joomla.rootpath}/${joomla.folder}/database.sql" overwrite="true"/>
-		<copy file="${pkg.location}/configuration.php" tofile="${joomla.rootpath}/${joomla.folder}/configuration.php" overwrite="true"/>
+		<copy file="${pkg.location}/configuration_${pkg.version}.php" tofile="${joomla.rootpath}/${joomla.folder}/configuration.php" overwrite="true"/>
 
 		<!-- replace configuration-->
 		<reflexive>
 			<fileset dir="${joomla.rootpath}/${joomla.folder}">
-			    <include name="configuration.php" />
+			   <include name="configuration.php" />
 			    <include name="database.sql" />
 			</fileset>
 			 <filterchain>

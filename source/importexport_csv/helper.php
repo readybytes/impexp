@@ -15,16 +15,14 @@ class ImpexpPluginHelper
 	function storeJoomlaUser($userValues, $joomlaFieldMapping, $mysess)
 		{
 			$user 		= clone(JFactory::getUser());
-			$authorize	= JFactory::getACL();
-			//$newUsertype = 'Registered';
+			
 			$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered';
 			//error_reporting(E_ALL ^ E_NOTICE); 
 			//Update user values
 			if($newUsertype=="")
-				$newUsertype='Registered';
+				$newUsertype=2;
 			$user->set('id', 0);
 			$user->set('usertype', $newUsertype);
-			$user->set('gid', $authorize->get_group_id( '', $newUsertype, 'ARO' ));		
 			$name = array_key_exists('name',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['name']] : $userValues[$joomlaFieldMapping['username']];
 			
 			
@@ -50,7 +48,6 @@ class ImpexpPluginHelper
 			}	
 				
 			jimport('joomla.user.helper');
-				$user->set('activation', JUtility::getHash( JUserHelper::genRandomPassword()) );
 				$user->set('block', '0');
 	
 			// Create the user table object
@@ -70,7 +67,13 @@ class ImpexpPluginHelper
 					   ." SET ".$db->nameQuote('password') ." = ".$db->Quote($userValues[$joomlaFieldMapping['password']])
 					   ." WHERE ".$db->nameQuote('id') ." = ".$db->Quote($user->id);
 				$db->setQuery($sql);
-				$db->query();			
+				$db->query();
+
+				$sql1 = " UPDATE ".$db->nameQuote('#__user_usergroup_map')
+					   ." SET ".$db->nameQuote('group_id') ." = ".$db->Quote($newUsertype)
+					   ." WHERE ".$db->nameQuote('user_id') ." = ".$db->Quote($user->id);
+				$db->setQuery($sql1);
+				$db->query();
 			}
 			return $user->id;
 		}			

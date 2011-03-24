@@ -5,8 +5,7 @@
 **/
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
-
-class JElementExportlink extends JElement
+class JFormFieldExportlink extends JFormField
 {
 	/**
 	 * Element name
@@ -14,9 +13,9 @@ class JElementExportlink extends JElement
 	 * @access	protected
 	 * @var		string
 	 */
-	var	$_name = 'Export Link';
+	public $type = 'Export Link';
 
-	function fetchElement($name, $value, &$node, $control_name)
+	protected function getInput()
 	{			
 		$html  = $this->getExportLink();
 
@@ -26,7 +25,7 @@ class JElementExportlink extends JElement
 	function getExportLink()
 	{
 		$link =JRoute::_('index.php?plugin=importexportCSV&task=export&tmpl=component', false);
-		$text = JText::_('EXPORT_USER_DATA');        
+		$text = JText::_('Export User Data');        
         
         $html = '<a id="exportPopup" href ="'.$link.'" >'
                 .$text

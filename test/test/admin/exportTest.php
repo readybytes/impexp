@@ -12,15 +12,24 @@ class ExportTest extends XiSelTestCase
   	$this->adminLogin();
    	 
   	$db			= JFactory::getDBO();
-	$query	= 'SELECT '.$db->nameQuote('id')
-				.' FROM ' . $db->nameQuote( '#__plugins' )
+	$query	= 'SELECT '.$db->nameQuote('extension_id')
+				.' FROM ' . $db->nameQuote( '#__extensions' )
 	          	.' WHERE '.$db->nameQuote('element').'= "importexport_csv"';
 
 	$db->setQuery($query);
 	$pid= $db->loadResult();
-   	$this->open(JOOMLA_LOCATION."administrator/index.php?option=com_plugins&view=plugin&client=site&task=edit&cid[]=".$pid);
-   	$this->waitPageLoad("60000");
-   	 
+//   	$this->open(JOOMLA_LOCATION."administrator/index.php?option=com_plugins&view=plugin&layout=edit&extension_id=".$pid);
+//   	$this->waitPageLoad("60000");
+
+	//in joomla1.6 you can not access a resource directly by copy pasting the url
+	$this->click("link=Plug-in Manager");
+    $this->waitPageLoad("30000");
+	$this->type("filter_search", "Import");
+    $this->click("//button[@type='submit']");
+    $this->waitPageLoad("30000");
+	$this->click("link=Import/Export User Data For JS");
+	$this->waitPageLoad("60000");
+	
 	$this->assertTrue($this->isTextPresent("Export User Data"));
 	
 	$element = " //a[@id='exportPopup']";
@@ -32,15 +41,23 @@ class ExportTest extends XiSelTestCase
   	$this->adminLogin();
    	 
   	$db			=& JFactory::getDBO();
-	$query	= 'SELECT '.$db->nameQuote('id')
-				.' FROM ' . $db->nameQuote( '#__plugins' )
+	$query	= 'SELECT '.$db->nameQuote('extension_id')
+				.' FROM ' . $db->nameQuote( '#__extensions' )
 	          	.' WHERE '.$db->nameQuote('element').'= "importexport_csv"';
 
 	$db->setQuery($query);
 	$pid= $db->loadResult();
-   	$this->open(JOOMLA_LOCATION."administrator/index.php?option=com_plugins&view=plugin&client=site&task=edit&cid[]=".$pid);
-   	$this->waitPageLoad("60000");
-   	 
+//   	$this->open(JOOMLA_LOCATION."administrator/index.php?option=com_plugins&view=plugin&layout=edit&extension_id=".$pid);
+//   	$this->waitPageLoad("60000");
+	//XITODO: replace with XPath
+	$this->click("link=Plug-in Manager");
+    $this->waitPageLoad("30000");
+	$this->type("filter_search", "Import");
+    $this->click("//button[@type='submit']");
+    $this->waitPageLoad("30000");
+	$this->click("link=Import/Export User Data For JS");
+	$this->waitPageLoad("60000");
+	
 	$this->assertTrue($this->isTextPresent("Upload CSV File"));
 	
 	$element = " //a[@id='uploaderPopup']";

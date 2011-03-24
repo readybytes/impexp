@@ -69,9 +69,9 @@ class XiSelTestCase extends PHPUnit_Extensions_SeleniumTestCase
     $this->open(JOOMLA_LOCATION."/administrator/index.php?option=com_login");
     $this->waitForPageToLoad("30000");
 
-    $this->type("modlgn_username", JOOMLA_ADMIN_USERNAME);
-    $this->type("modlgn_passwd", JOOMLA_ADMIN_PASSWORD);
-    $this->click("//form[@id='form-login']/div[1]/div/div/a");
+    $this->type("mod-login-username", JOOMLA_ADMIN_USERNAME);
+    $this->type("mod-login-password", JOOMLA_ADMIN_PASSWORD);
+    $this->click("//input[@value='Log in']");
 
     $this->waitForPageToLoad();
     $this->assertTrue($this->isTextPresent("Logout"));
@@ -82,21 +82,21 @@ class XiSelTestCase extends PHPUnit_Extensions_SeleniumTestCase
     $this->open(JOOMLA_LOCATION."/index.php");
     $this->waitForPageToLoad("30000");
 
-    $this->type("modlgn_username", $username);
-    $this->type("modlgn_passwd", $password);
-    $this->click("//form[@id='form-login']/fieldset/input");
+    $this->type("modlgn-username", $username);
+    $this->type("modlgn-passwd", $password);
+    $this->click("Submit");
     $this->waitForPageToLoad();
-    $this->assertEquals("Log out", $this->getValue("//form[@id='form-login']/div[2]/input"));
+    $this->assertEquals("Log out", $this->getValue("//form[@id='login-form']/div[2]/input[1]"));
   }
 
   function frontLogout()
   {
   	$this->open(JOOMLA_LOCATION."/index.php");
     $this->waitForPageToLoad("30000");
-    $this->assertEquals("Log out", $this->getValue("//form[@id='form-login']/div[2]/input"));
-    $this->click("//form[@id='form-login']/div[2]/input");
+    $this->assertEquals("Log out", $this->getValue("//form[@id='login-form']/div[2]/input"));
+    $this->click("//form[@id='login-form']/div[2]/input");
     $this->waitForPageToLoad("30000");
-    $this->assertTrue($this->isElementPresent("modlgn_username"));
+    $this->assertTrue($this->isElementPresent("modlgn-username"));
   }
 
   function waitPageLoad($time=TIMEOUT_SEC,$errorCheck=true)
@@ -140,9 +140,9 @@ class XiSelTestCase extends PHPUnit_Extensions_SeleniumTestCase
 
 		system("sudo chmod 777 $fname");
 
-  		if (!JFile::write($fname,
-  				$config->toString('PHP', 'config', array('class' => 'JConfig')) )
-  		    )
+		$configString = $config->toString('PHP', array('class' => 'JConfig', 'closingtag' => false));
+  		
+		if (!JFile::write($fname,$configString))
 		{
 			echo JText::_('ERRORCONFIGFILE');
 		}
@@ -153,8 +153,8 @@ class XiSelTestCase extends PHPUnit_Extensions_SeleniumTestCase
   {
 
 		$db			=& JFactory::getDBO();
-		$query	= 'UPDATE ' . $db->nameQuote( '#__plugins' )
-				. ' SET '.$db->nameQuote('published').'='.$db->Quote($action)
+		$query	= 'UPDATE ' . $db->nameQuote( '#__extensions' )
+				. ' SET '.$db->nameQuote('enabled').'='.$db->Quote($action)
 	          	.' WHERE '.$db->nameQuote('element').'='.$db->Quote($pluginname);
 
 		$db->setQuery($query);
@@ -176,8 +176,8 @@ class XiSelTestCase extends PHPUnit_Extensions_SeleniumTestCase
   {
 
 		$db			=& JFactory::getDBO();
-		$query	= 'SELECT '.$db->nameQuote('published')
-				.' FROM ' . $db->nameQuote( '#__plugins' )
+		$query	= 'SELECT '.$db->nameQuote('enabled')
+				.' FROM ' . $db->nameQuote( '#__extensions' )
 	          	.' WHERE '.$db->nameQuote('element').'='.$db->Quote($pluginname);
 
 		$db->setQuery($query);
