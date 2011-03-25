@@ -235,9 +235,9 @@ class ImpexpPluginImport
 				ImpexpPluginHelper::getExistUserInCSV($importuser,'importuser.csv');
 				  
 				echo "<br/><br/>";
-				echo JText::_('DO_NOT_CLOSE_THIS_WINDOW_WHILE_IMPORTING_USER_DATA');
+				echo JText::_('PLG_IMPORTEXPORT_CSV_DO_NOT_CLOSE_THIS_WINDOW_WHILE_IMPORTING_USER_DATA');
 				echo "<br/><br/>";
-				echo JText::_('NUMBER_OF_USERS_IMPORTED').$importuser_count;
+				echo JText::_('PLG_IMPORTEXPORT_CSV_NUMBER_OF_USERS_IMPORTED').$importuser_count;
 				
 				$mysess->set('impexp_count',$importuser_count);
 				$currentUrl = JURI::getInstance();

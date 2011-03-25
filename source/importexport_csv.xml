@@ -14,14 +14,14 @@
 	<folder>importexport_csv</folder>
   </files>
   <languages>
-	<language tag="en-GB">languages/en-GB.plg_importexport_csv.ini</language>
+	<language tag="en-GB">languages/en-GB.plg_system_importexport_csv.ini</language>
   </languages>
  <config>
    <fields name="params">
       <fieldset name="basic" addfieldpath="/plugins/system/importexport_csv/importexport_csv">
 
-         <field name="fileUploaded" type="uploader" default="0" label="Upload CSV File" description="Upload CSV File"  />
-      	<field name="exportUserData" type="exportlink" default="0" label="Export User Data" description="Export User Data"  />
+         <field name="fileUploaded" type="uploader" default="0" label="PLG_IMPORTEXPORT_UPLOAD_CSV_FILE" description="Upload CSV File"  />
+      	<field name="exportUserData" type="exportlink" default="0" label="PLG_IMPORTEXPORT_EXPORT_USER_DATE" description="Export User Data"  />
       </fieldset>
    </fields>
   </config>

@@ -18,13 +18,12 @@ class ExportTest extends XiSelTestCase
 
 	$db->setQuery($query);
 	$pid= $db->loadResult();
-//   	$this->open(JOOMLA_LOCATION."administrator/index.php?option=com_plugins&view=plugin&layout=edit&extension_id=".$pid);
-//   	$this->waitPageLoad("60000");
 
 	//in joomla1.6 you can not access a resource directly by copy pasting the url
-	$this->click("link=Plug-in Manager");
+	$this->click("//a[@class='icon-16-plugin']");
     $this->waitPageLoad("30000");
-	$this->type("filter_search", "Import");
+	//search for import export plugin
+	$this->type("//input[@id='filter_search']","Import");
     $this->click("//button[@type='submit']");
     $this->waitPageLoad("30000");
 	$this->click("link=Import/Export User Data For JS");
@@ -47,12 +46,10 @@ class ExportTest extends XiSelTestCase
 
 	$db->setQuery($query);
 	$pid= $db->loadResult();
-//   	$this->open(JOOMLA_LOCATION."administrator/index.php?option=com_plugins&view=plugin&layout=edit&extension_id=".$pid);
-//   	$this->waitPageLoad("60000");
-	//XITODO: replace with XPath
-	$this->click("link=Plug-in Manager");
+	$this->click("//a[@class='icon-16-plugin']");
     $this->waitPageLoad("30000");
-	$this->type("filter_search", "Import");
+	//search for import export plugin
+    $this->type("//input[@id='filter_search']","Import");
     $this->click("//button[@type='submit']");
     $this->waitPageLoad("30000");
 	$this->click("link=Import/Export User Data For JS");

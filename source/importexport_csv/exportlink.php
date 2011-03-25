@@ -25,7 +25,7 @@ class JFormFieldExportlink extends JFormField
 	function getExportLink()
 	{
 		$link =JRoute::_('index.php?plugin=importexportCSV&task=export&tmpl=component', false);
-		$text = JText::_('Export User Data');        
+		$text = JText::_('PLG_IMPORTEXPORT_CSV_EXPORT_USER_DATA');        
         
         $html = '<a id="exportPopup" href ="'.$link.'" >'
                 .$text

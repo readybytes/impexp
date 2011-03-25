@@ -18,10 +18,10 @@ function importCSVFormCheck(){
 	<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;">CSV Uploder</span></div>
 		<form enctype="multipart/form-data"  action="<?php echo JRoute::_($currentUrl); ?>" method="post" name="adminForm" id="adminForm" >
 		<div style="padding:20px 5px;">
-		<div style="padding:20px 0; margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('PLEASE_UPLOAD_THE_CSV_FILE'); ?></div>
+		<div style="padding:20px 0; margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_PLEASE_UPLOAD_THE_CSV_FILE'); ?></div>
 		<input type="file" id="fileUploaded" name="fileUploaded" title="Please Upload your CSV file" />
 		<br /><br />
-		<div style="padding:20px 0;margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('YOU_HAVE_PASSWORD_IN_FORM_OF');?> : </div>
+		<div style="padding:20px 0;margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_YOU_HAVE_PASSWORD_IN_FORM_OF');?> : </div>
 		<select name="passwordFormat" >
 			<option value="joomla">Joomla Encrypted</option>
 			<option value="plain">Plain</option>			

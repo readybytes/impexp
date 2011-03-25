@@ -112,10 +112,11 @@ class ImportExportTest extends XiUnitTestCase
             $obj->visible = 1;
             $obj->required = 1;
             $obj->searchable = 1;
+            $obj->registration = 1;
             $obj->options = "Male\nFemale";
             $obj->fieldcode = 'FIELD_GENDER';
-            $obj->regshow = 1;
-            $obj->registration = 1;
+            $obj->params = '';
+            
         $field = array(2 => $obj);
 		$customfield = ImpexpPluginExport::getCustomFieldIds();
 		$this->assertEquals($field,$customfield);

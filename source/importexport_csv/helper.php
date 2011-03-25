@@ -52,7 +52,7 @@ class ImpexpPluginHelper
 	
 			// Create the user table object
 			$table 	= JTable::getInstance('user', 'JTable');
-			$user->params = $user->_params->toString();
+			//$user->params = $user->get('_params')->toString();
 			$table->bind($user->getProperties());
 	
 			//Store the user data in the database
