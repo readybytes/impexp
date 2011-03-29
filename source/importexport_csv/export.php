@@ -25,14 +25,14 @@ class ImpexpPluginExport
 				// do not export admin user
 				if($data['usertype'] != $usertype)
 				{
-					$csvdata="\n".'"'.$data['username'].'", "'.$data['name'].'", "'.$data['email'].'", "'.$data['password'].'", "'.$data['usertype'];
+					$csvdata="\n".'"'.$data['username'].'","'.$data['name'].'","'.$data['email'].'","'.$data['password'].'","'.$data['usertype'];
 					foreach($fields as $f)
 					{
 						if(array_key_exists($f->id, $data))
 							$csvdata.='","'.$data[$f->id];
 						
 						else 
-							$csvdata.= '", "';
+							$csvdata.= '","';
 					}
 					$csvdata.= '"';
 					fwrite($fp,$csvdata);
