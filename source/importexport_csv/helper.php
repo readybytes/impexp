@@ -16,11 +16,11 @@ class ImpexpPluginHelper
 		{
 			$user 		= clone(JFactory::getUser());
 			
-			$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered';
+			$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : '2';
 			//error_reporting(E_ALL ^ E_NOTICE); 
 			//Update user values
 			if($newUsertype=="")
-				$newUsertype=2;
+				$newUsertype='2';
 			$user->set('id', 0);
 			$user->set('usertype', $newUsertype);
 			$name = array_key_exists('name',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['name']] : $userValues[$joomlaFieldMapping['username']];
