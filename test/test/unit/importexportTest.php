@@ -70,10 +70,11 @@ class ImportExportTest extends XiUnitTestCase
 		//when there is limited data in database
 		$this->_DBO->loadSql($this->getSqlPath().DS.'testgetUserDataValue.start.sql');
 		$userData = ImpexpPluginExport::getUserData(0);		
-		$csvData = array (64 => array ( 'username' => 'shansmith01', 'name' => 'Shannon', 'email' => 'shannon@nomadsworld.com', 'password' => 'd164259c3e82d79bca1ffc6d6db5986c:EizmMsVD0SrcA1cNNENjUyRRxbGrwfhs', 'usertype' => 'Registered', 21 => 'Free Member', 28 => 'default', 29 => '1', ),
-							65 => array ( 'username' => 'pembaris', 'name' => 'pembaris', 'email' => 'pembaris@gmail.com', 'password' => '9c57460b92ecf9741c40e55deb061f6f:h1JXinxGbBEe9jb4wcOaQIzOsw0PVQWO', 'usertype' => 'Registered', 21 => 'Free Member', 28 => 'default', 29 => '1', ),
-							66 => array ( 'username' => 'collaborator', 'name' => 'collaborator', 'email' => 'collaborator@bonbon.net', 'password' => 'cf3e4436268bb1cfde6e5f516cad7640:brhPLEExGWTQbMw9CMlIiI7zAdi17i56', 'usertype' => 'Registered', 21 => 'Free Member', 28 => 'default', 29 => '1' ));
+		$csvData = array (64 => array ( 'username' => 'shansmith01', 'name' => 'Shannon', 'email' => 'shannon@nomadsworld.com', 'password' => 'd164259c3e82d79bca1ffc6d6db5986c:EizmMsVD0SrcA1cNNENjUyRRxbGrwfhs', 'usertype' => '2', 2 => 'Male', 3=>'', 4=>'', 6=>'', 7=>'', 8=>'', 9=>'', 10=>'', 11=>'India', 12=>'', 14=>'', 15 => '', ),
+							65 => array ( 'username' => 'pembaris', 'name' => 'pembaris', 'email' => 'pembaris@gmail.com', 'password' => '9c57460b92ecf9741c40e55deb061f6f:h1JXinxGbBEe9jb4wcOaQIzOsw0PVQWO', 'usertype' => '2', 2 => 'Male', 3=>'', 4=>'', 6=>'', 7=>'', 8=>'', 9=>'', 10=>'', 11=>'United States', 12=>'', 14=>'xyz', 15 => 'xyz', ),
+							66 => array ( 'username' => 'collaborator', 'name' => 'collaborator', 'email' => 'collaborator@bonbon.net', 'password' => 'cf3e4436268bb1cfde6e5f516cad7640:brhPLEExGWTQbMw9CMlIiI7zAdi17i56', 'usertype' => '2', 2 => 'Female', 3=>'', 4=>'', 6=>'', 7=>'', 8=>'', 9=>'', 10=>'', 11=>'Iceland', 12=>'', 14=>'', 15 => '' ));
 		$this->assertEquals($csvData, $userData);
+		$this->_DBO->loadSql($this->getSqlPath().DS.'testgetUserDataValue.end.sql');
 		
 	}
 	
