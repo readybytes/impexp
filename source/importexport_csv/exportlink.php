@@ -27,7 +27,8 @@ class JFormFieldExportlink extends JFormField
 		$link =JRoute::_('index.php?plugin=importexportCSV&task=export&tmpl=component', false);
 		$text = JText::_('PLG_IMPORTEXPORT_CSV_EXPORT_USER_DATA');        
         
-        $html = '<a id="exportPopup" href ="'.$link.'" >'
+        $html = '<a style="font-size:12px;font-weight:bold;position:relative; top:16px;" 
+        		id="exportPopup" href ="'.$link.'" >'
                 .$text
         	 	.'</a>';
         return $html;

@@ -34,7 +34,8 @@ class JFormFieldUploader extends JFormField
         $buttonMap->set('options', "{handler: 'iframe', size: {x: 600, y: 500}}");
         $buttonMap->set('link', $link);
         
-        $html = '<a id="'.$buttonMap->modalname.'" '
+        $html = '<a style="font-size:12px;font-weight:bold;position:relative; top:5px;"
+        			id="'.$buttonMap->modalname.'" '
         	 	.' class="'.$buttonMap->modalname.'" '
         	 	.' title="'.$buttonMap->text.'" '
         	 	.' href ="'.$buttonMap->link.'" '
