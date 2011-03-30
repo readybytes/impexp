@@ -10,14 +10,6 @@ class ExportTest extends XiSelTestCase
   function testExport()
   {
   	$this->adminLogin();
-   	 
-  	$db			= JFactory::getDBO();
-	$query	= 'SELECT '.$db->nameQuote('extension_id')
-				.' FROM ' . $db->nameQuote( '#__extensions' )
-	          	.' WHERE '.$db->nameQuote('element').'= "importexport_csv"';
-
-	$db->setQuery($query);
-	$pid= $db->loadResult();
 
 	//in joomla1.6 you can not access a resource directly by copy pasting the url
 	$this->click("//a[@class='icon-16-plugin']");
@@ -38,14 +30,7 @@ class ExportTest extends XiSelTestCase
   function testImport()
   {
   	$this->adminLogin();
-   	 
-  	$db			=& JFactory::getDBO();
-	$query	= 'SELECT '.$db->nameQuote('extension_id')
-				.' FROM ' . $db->nameQuote( '#__extensions' )
-	          	.' WHERE '.$db->nameQuote('element').'= "importexport_csv"';
 
-	$db->setQuery($query);
-	$pid= $db->loadResult();
 	$this->click("//a[@class='icon-16-plugin']");
     $this->waitPageLoad("30000");
 	//search for import export plugin
@@ -100,5 +85,32 @@ class ExportTest extends XiSelTestCase
     
     $element = " //a[@id='importeduser']";
     $this->assertTrue($this->isElementPresent($element));
+  }
+  
+   function testimportUser()
+   {
+   	$this->adminLogin();
+   	
+  	$this->open(JOOMLA_LOCATION."administrator/index.php?plugin=importexportCSV&task=uploadFile&tmpl=component");
+   	$this->waitPageLoad("1000000");
+   	
+   	$this->type('fileUploaded', JOOMLA_FTP_LOCATION.DS.'test'.DS.'test'.DS.'admin'.DS.'user1.csv'); 
+   	$this->click('btnUpload');
+   	$this->waitPageLoad();
+
+   	$this->select('csvField0','Username');
+   	$this->select('csvField3','Password');
+   	$this->select('csvField2','Email');
+   	$this->select("csvField4", "Usertype");
+   	$this->click('//input[@value="Import Data"]');
+   	$this->waitPageLoad();
+
+   	$element = " //a[@id='existuser']";
+    $this->assertTrue($this->isElementPresent($element));
+    
+    $element = " //a[@id='importeduser']";
+    $this->assertTrue($this->isElementPresent($element));
+    
+    $this->_DBO->addTable('#__user_usergroup_map');
   }
 }
