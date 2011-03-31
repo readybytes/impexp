@@ -1,4 +1,4 @@
-### Version 1.0
+### Version 1.6
 ### We store globally definition here
 
 # The root folder location
@@ -18,7 +18,7 @@ project.codename	= Kautilya
 
 
 # Output settings
-file.version		= 1.0
+file.version		= 1.6
 file.package		= ${project.shortform}_ver${file.version}
 file.compression	= gzip
 file.extension		= .zip
