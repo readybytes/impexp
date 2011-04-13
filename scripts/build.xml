@@ -2,8 +2,9 @@
 <project name="Package Builder" basedir="." default="build" description="Phing build script for package.">
 
 	<target name="config" description="Load configuration file">
-		<property file="global.prop"  	override="false" />
-		<property file="build.prop"  	override="false" />
+		<php expression="(PHP_OS == 'WINNT') ? '_win' :'_unix'" returnProperty="IF_OS"/>
+		<property file="global${IF_OS}.prop"  	override="false" />
+		<property file="build${IF_OS}.prop"  	override="false" />
 	</target>
 
 	<target name="get_svn_lastrevision" depends="config">
@@ -16,8 +17,7 @@
 		<delete dir="${dir.tmp}" includeemptydirs="true" />
 
 		<mkdir dir="${dir.packages}" />
-		<mkdir dir="${dir.tmp}" />
-
+		
 		<phingcall target="export_from_wc" />		
 		<phing phingfile="${project.shortform.small}.xml" inheritAll="true" target="build" />
 
@@ -28,12 +28,8 @@
 
 	<!-- Global Target -->
 	<target name="export_from_wc" description="Export files from a local working copy" depends="config">
-		<copy todir="${dir.tmp}">
-			<fileset dir="${dir.src}">
-				<include name="**" />
-			</fileset>
-		</copy>
-		
+		<exec command="svn export ${dir.src}  ${dir.tmp}" />
+
 		<!-- Apply the version change to all files. -->
 		<reflexive>
 			<fileset dir="${dir.tmp}">
@@ -47,17 +43,18 @@
 			</filterchain>
 		</reflexive>
 	
-		<!-- apply only if linux is OS -->
-		<analyze analyzerPath="/usr/local/bin/joomlaxi/zca" disable="var-ref-notmodified,if-if-else,include-var" >
-			<fileset dir="${dir.tmp}">
-			    <include name="**/*.php"/>
-			</fileset>
-		</analyze>
-	
-	<exec dir="${dir.tmp}" command="find . | xargs -l1 grep -Hi xitodo  | sort > ${dir.report}/xitodo.txt " escape="false" />
-	<exec dir="${dir.tmp}" command="find . | xargs -l1 grep -H  JSITE_PATH | sort > ${dir.report}/jsite-path.txt " escape="false" />
-	<exec dir="${dir.tmp}" command="find . | xargs -l1 egrep -H '_REQUEST|_POST|_GET|_SESSION|_GLOBAL' | sort  > ${dir.report}/post-get-request.txt " escape="false" />
-	<exec dir="${dir.tmp}" command="find  . | xargs -l1 egrep -H 'require_once|include_once| require | include ' | sort  > ${dir.report}/require.txt "  escape="false"  />
-
+			
+		<!-- apply only if linux is OS --> 
+<!--		<if>
+			<equals arg1="${host.fstype}" arg2="UNIX" />
+			<then>
+				<zendcodeanalyzer analyzerPath="/usr/local/bin/joomlaxi/zca" disable="var-ref-notmodified,if-if-else,include-var" >
+					<fileset dir="${dir.tmp}">
+						<include name="**/*.php" />
+					</fileset>
+				</zendcodeanalyzer>
+			</then>
+		</if>
+-->
 	</target>
 </project>

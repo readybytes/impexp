@@ -4,13 +4,13 @@
 		colors="true" 
 		syntaxCheck="false"
 		bootstrap="./bootstrap.php"
-		stopOnFailure="true" 
+		stopOnFailure="false" 
 	>
 
 	<testsuites>
 	  <testsuite name="Test Suite">
 	    <!--<directory>./install/</directory>-->
-		<directory>./test/unit</directory>
+	<directory>./test/unit/</directory>
 	    <directory>./test/admin</directory>
 	  </testsuite>
 	</testsuites>

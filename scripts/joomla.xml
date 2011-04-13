@@ -2,7 +2,7 @@
 <!-- $Id: build.xml shyam $ -->
 <project name="Joomla Installation" basedir="." default="setup" description="Installing Joomla.">
 
-	<target name="setup" depends="install_joomla, create_database">
+	<target name="setup" depends="install_joomla, config_joomla, create_database">
 	    <echo msg="Build done." />
 	</target>	
 
@@ -11,16 +11,13 @@
 	</target>
 
 
-	<target name="install_joomla" depends="jconfig">
-		<!-- Copy Joomla Folder to ROOT // FOLDERNAME  -->
-		<mkdir dir="${joomla.rootpath}/${joomla.folder}" />
+	<target name="config_joomla" depends="jconfig">
 
-		<mkdir dir="${joomla.rootpath}/${joomla.folder}" />
-		<exec command="tar -xvzf ${pkg.location}/Joomla_${pkg.version}.tar.gz -C ${joomla.rootpath}/${joomla.folder}" />
+<!--		<exec command="tar -xvzf ${pkg.location}/Joomla_${pkg.version}.tar.gz -C ${joomla.rootpath}/${joomla.folder}" />
 		<exec command="mv -f ${joomla.rootpath}/${joomla.folder}/Joomla_${pkg.version}/* ${joomla.rootpath}/${joomla.folder}" passthru="true" />
-
-		<copy file="${pkg.location}/database_${pkg.version}.sql" tofile="${joomla.rootpath}/${joomla.folder}/database.sql" overwrite="true"/>
-		<copy file="${pkg.location}/configuration_${pkg.version}.php" tofile="${joomla.rootpath}/${joomla.folder}/configuration.php" overwrite="true"/>
+-->
+		<copy file="${pkg.location}/${pkg.version}/database.sql" tofile="${joomla.rootpath}/${joomla.folder}/database.sql" overwrite="true"/>
+		<copy file="${pkg.location}/${pkg.version}/configuration.php" tofile="${joomla.rootpath}/${joomla.folder}/configuration.php" overwrite="true"/>
 
 		<!-- replace configuration-->
 		<reflexive>
@@ -42,18 +39,40 @@
 		</reflexive>
 		<echo msg="Joomla files copied .." />
 		
+	</target>
+
+	<target name="install_joomla" depends="jconfig">
+		<echo msg="Installing Joomla Files..." />
+		<!-- Copy Joomla Folder to ROOT // FOLDERNAME  -->
+		<mkdir dir="${joomla.rootpath}/${joomla.folder}" />
+
+		<untar todir="${joomla.rootpath}/${joomla.folder}">
+			<fileset dir="${pkg.location}/${pkg.version}">
+				<include name="Joomla.tar.gz"/>
+			</fileset>
+		</untar>
+
+
+		<copy todir="${joomla.rootpath}/${joomla.folder}" >
+		  <fileset dir="${joomla.rootpath}/${joomla.folder}/Joomla/">
+			<include name="**" />
+		  </fileset>
+		</copy>
+		<delete dir="${joomla.rootpath}/${joomla.folder}/Joomla/" includeemptydirs="true" verbose="true" failonerror="true" />
+
+		
 		<!--  change owner of files to www-data -->
 		<exec command="sudo chown -R www-data ." dir="${joomla.rootpath}/${joomla.folder}" />
 
 	</target>
 
-
 	<target name="create_database" depends="jconfig">
-		<!-- fill data base -->
-		<exec command="sudo mysql -uroot -ppassword --execute='CREATE DATABASE ${joomla.dbname};'" passthru="true" />
-		<exec command="sudo mysql -uroot -ppassword --execute=${joomla.createUserQuery}" passthru="true" />
-		<exec command="sudo mysql -uroot -ppassword --execute='GRANT ALL PRIVILEGES ON ${joomla.dbname}.* TO ${joomla.dbuser};'"  passthru="true" />
-		<!-- <exec command="sudo mysql -uroot -ppassword - -execute='FLUSH PRIVILEGES';"  passthru="true" /> -->
-		<exec command="sudo mysql -uroot -ppassword --database=${joomla.dbname} --execute='source ${joomla.dbdump}' "  passthru="true" />
+		<echo msg="Creating database and dumping sql into it." />
+		<exec command="${joomla.mysqlpath} -uroot -ppassword --execute=${joomla.createDBQuery}" passthru="true" />
+		<exec command="${joomla.mysqlpath} -uroot -ppassword --execute=${joomla.createUserQuery}" passthru="true" />
+		<exec command="${joomla.mysqlpath} -uroot -ppassword --execute=${joomla.createAcessQuery}"  passthru="true" />
+		<exec command="${joomla.mysqlpath} -uroot -ppassword --database=${joomla.dbname} --execute=${joomla.importDBQuery} "  passthru="true" />
+		<echo msg="Database work done." />
 	</target>
+
 </project>

@@ -2,7 +2,8 @@
 <project name="Import Export Plugin" basedir="." default="setup" description="Phing setup script for Import Export Plugin.">
 
 	<target name="config" description="Load configuration file">
-		<property file="global.prop"  override="true" />
+		<php expression="(PHP_OS == 'WINNT') ? '_win' : '_unix'" returnproperty="IF_OS" />
+		<property file="global${IF_OS}.prop"  override="true" />	
 		<!--property name="svn.lastrevision" value="dummygit" / -->		
 		<svnlastrevision workingcopy="${dir.root}" propertyname="svn.lastrevision" />
 		<if>
@@ -16,8 +17,15 @@
 		</if>
 		<echo msg="${joomla.now}" />
 		
+		<if>
+		 <isset property="${pkg.version}"/>
+		  <then>
+		 	<echo msg="pkg.version already set to ${pkg.version}" />
+		 </then>
+		</if>
+		
 		<php expression="rand(100,999)" returnProperty="joomla.random3"/>
-		<property file="setup.prop"  override="false" />
+		<property file="setup${IF_OS}.prop"  override="false" />
 	</target>
 	
 	<target name="setup" description="build installable package only" depends="config">
@@ -56,12 +64,7 @@
 
 	<target name="copy_testcase">
 		<!-- Copy testcases -->
-		<copy todir="${joomla.rootpath}/${joomla.folder}/test">
-			<fileset dir="${dir.root}/test">
-			     <include name="**/*.*" />
-			</fileset>
-		</copy>
-
+		<exec command="svn export ${dir.root}/test ${joomla.rootpath}/${joomla.folder}/test" />
 		<exec command="sudo chmod -R test" dir="${joomla.rootpath}/${joomla.folder}" />
 
 		<!-- replace configuration-->
@@ -79,6 +82,6 @@
 
 	<target name="copy_kit">
 		<copy 	file="${dir.packages}/${project.shortform}-${file.version}.${svn.lastrevision}.zip" 
-				tofile="${joomla.rootpath}/${joomla.folder}/impexp.zip" />
+				tofile="${joomla.rootpath}/${joomla.folder}/${project.shortform.small}.zip" />
 	</target>
 </project>

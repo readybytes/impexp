@@ -12,7 +12,11 @@ joomla.dbuser=${joomla.owner}${joomla.now}
 joomla.dbpassword=password${joomla.now}
 joomla.dbname=${joomla.owner}${joomla.now}
 joomla.dbprefix=j${joomla.random3}_
+joomla.mysqlpath=mysql
 joomla.createUserQuery="CREATE USER '${joomla.dbuser}'@'localhost' IDENTIFIED BY '${joomla.dbpassword}';"
+joomla.createDBQuery="CREATE DATABASE ${joomla.dbname};"
+joomla.createAcessQuery="GRANT ALL PRIVILEGES ON ${joomla.dbname}.* TO ${joomla.dbuser};"
+joomla.importDBQuery="source ${joomla.dbdump}"
 joomla.bakpath=./${joomla.version}
 joomla.dbdump=${joomla.rootpath}/${joomla.folder}/database.sql
 
