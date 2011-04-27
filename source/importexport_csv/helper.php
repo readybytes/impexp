@@ -19,7 +19,13 @@ class ImpexpPluginHelper
 			$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : '2';
 			//error_reporting(E_ALL ^ E_NOTICE); 
 			//Update user values
-			if($newUsertype=="")
+						
+			$length=JString::strlen($newUsertype);
+			if($length>1){
+				$newUsertype= ImpexpPluginHelper::getUserTypeId($newUsertype);
+			}
+			
+			if($newUsertype=="" || $newUsertype==null)
 				$newUsertype='2';
 			$user->set('id', 0);
 			$user->set('usertype', $newUsertype);
@@ -76,10 +82,18 @@ class ImpexpPluginHelper
 				$db->query();
 			}
 			return $user->id;
-		}			
+		}	
+				
+	function getUserTypeId($usertype){
+		$db = JFactory::getDBO();
+		$query = " SELECT id FROM ".$db->nameQuote('#__usergroups')
+		       ." WHERE ".$db->nameQuote('title') ." = ".$db->Quote($usertype);
+		$db->setQuery($query, 0, 1);
+		return $db->loadResult();
+	}
 	
 	function storeCommunityUser($userid, $userValues,$jsFieldMapping)
-		{
+	{
 			$user = clone(CFactory::getUser($userid));
 			if(empty($jsFieldMapping))
 				return true;
