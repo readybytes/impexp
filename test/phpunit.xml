@@ -1,6 +1,6 @@
 <phpunit 
-		backupGlobals="false" 
-		backupStaticAttributes="true" 
+		backupGlobals="true" 
+		backupStaticAttributes="false" 
 		colors="true" 
 		syntaxCheck="false"
 		bootstrap="./bootstrap.php"

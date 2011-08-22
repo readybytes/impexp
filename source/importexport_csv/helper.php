@@ -12,14 +12,15 @@ class ImpexpPluginHelper
 			return $db->loadResult();
 		}
 				
-	function storeJoomlaUser($userValues, $joomlaFieldMapping, $mysess)
+	function storeJoomlaUser($userValues, $joomlaFieldMapping, $mysess, $overwrite_user_id = null)
 		{
+			$overwrite  = $mysess->get('overwrite');
 			$user 		= clone(JFactory::getUser());
 			
 			$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : '2';
 			//error_reporting(E_ALL ^ E_NOTICE); 
-			//Update user values
-						
+		
+			//Update user values			
 			$length=JString::strlen($newUsertype);
 			if($length>1){
 				$newUsertype= ImpexpPluginHelper::getUserTypeId($newUsertype);
@@ -27,7 +28,16 @@ class ImpexpPluginHelper
 			
 			if($newUsertype=="" || $newUsertype==null)
 				$newUsertype='2';
-			$user->set('id', 0);
+		    //handling overwrite option
+			if($overwrite == false)
+			{
+				 $user->set('id', 0);
+			}
+			else 
+			{
+				$user->set('id', $overwrite_user_id);
+			}
+			
 			$user->set('usertype', $newUsertype);
 			$name = array_key_exists('name',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['name']] : $userValues[$joomlaFieldMapping['username']];
 			
@@ -98,8 +108,17 @@ class ImpexpPluginHelper
 			if(empty($jsFieldMapping))
 				return true;
 				
-			foreach($jsFieldMapping as $key => $value){
-				$user->set($key, $userValues[$value]);
+			foreach($jsFieldMapping as $key => $value)
+			{
+				if(('_'.$key) == '_params')
+				{
+				  $userValues[$value] = str_replace('\n', ',',$userValues[$value]);
+                  $user->_cparams->bind($userValues[$value]);
+				}
+				else 
+				{
+				$user->set('_'.$key, $userValues[$value]);
+				}
 			}
 			
 			if(!$user->save())

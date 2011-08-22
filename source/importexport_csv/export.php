@@ -12,10 +12,8 @@ class ImpexpPluginExport
 		$db->setQuery($sql);
 		$total_user = $db->loadResult();
 
-		//open a file which contain the data fetched from the database
-		$fp=fopen($storagePath.'exportdata.csv',"w");
 		$fields = $this->getCustomFieldIds();
-
+        $fp = $storagePath.'exportdata.csv';
 		//fetch limited data from database and store it into a temporary file	
 		for($start=0;$start<=$total_user;$start=$start+IMPEXP_LIMIT)
 		{	
@@ -34,8 +32,19 @@ class ImpexpPluginExport
 						else 
 							$csvdata.= '","';
 					}
+					//export js fields 
+					$JSfield_name = array('status','points','posted_on','avatar','thumb','invite','params','alias','profile_id','watermark_hash','storage','search_email','friends','groups');
+					foreach ($JSfield_name as $name)
+					{
+					    if(!empty($data[$name])){
+					    	$csvdata.='","'.$data[$name];
+						}	
+					    else{ 
+					    	$csvdata.='","';
+						}
+					}
 					$csvdata.= '"';
-					fwrite($fp,$csvdata);
+                    JFile::write($fp, $csvdata);
 				}
 			}
 	    }
@@ -79,6 +88,34 @@ class ImpexpPluginExport
 					
 				$csvUser[$fields->user_id][$fields->field_id] =  preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $fields->value));
 			}
+			//jomsocial data
+			$db = JFactory::getDBO();
+			$sql = " SELECT * FROM ".$db->nameQuote('#__community_users')
+			       ."ORDER BY ".$db->nameQuote('userid')." ASC";
+			$db->setQuery($sql); 
+		    $JomSocialuser =  $db->loadObjectList('userid');
+
+		   foreach($JomSocialuser as $user)
+		   {
+		   	    if(!array_key_exists($user->userid, $csvUser)){
+					continue;
+				}
+
+				$JSfield_name = array('status','points','posted_on','avatar','thumb','invite','params','alias','profile_id','watermark_hash','storage','search_email','friends','groups');
+			    
+				foreach ($JSfield_name as $name)
+				{
+					if ($name=='params')
+					{ 
+						$csvUser[$user->userid][$name]     = str_replace(',','\\n',$user->$name); 
+					}
+					else 
+					{
+					$csvUser[$user->userid][$name]     = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $user->$name));
+			        }
+				}
+		   }
+		 
 			return $csvUser;
 		}
 	
@@ -99,6 +136,10 @@ class ImpexpPluginExport
 			
 			foreach($fields as $f)
 				echo '","'.JText::_($f->name);
+		    
+		   $JSfield_name = array('status','points','posted_on','avatar','thumb','invite','params','alias','profile_id','watermark_hash','storage','search_email','friends','groups');
+			foreach ($JSfield_name as $name)
+		        echo '","'.JText::_($name);
 
 			echo file_get_contents($storagePath.'exportdata.csv');
 			 

@@ -21,7 +21,9 @@ class ImpexpPluginImport
 		if(!isset($fileCSV['tmp_name']) || empty($fileCSV['tmp_name'])){
 			return $this->getUploaderHtml();
 		}
-		
+		//set overwrite in session
+		$overwrite  = JRequest::getVar('overwrite','0');
+        $mysess->set('overwrite',$overwrite);
 		// set password format value in session
 		$mysess->set('passwordFormat', JRequest::getVar('passwordFormat','joomla'), 'importCSV');
 		
@@ -174,7 +176,8 @@ class ImpexpPluginImport
 				
 				$fieldMapping = $mysess->get('fieldMapping', array(), 'importCSV');
 				$fileIndex    = $mysess->get('fileIndex', array(), 'importCSV');
-				
+				 $overwrite    = $mysess->get('overwrite');
+				 
 				// if session expired then what
 				if(empty($fieldMapping) || empty($fileIndex)){
 					$currentUrl = JURI::getInstance();
@@ -191,27 +194,43 @@ class ImpexpPluginImport
 				$icount=0;
 				$existuser=array();
 				$importuser=array();
-				while(($data = fgetcsv($file, 1, "\n")) !== FALSE && ftell($file) <= $index['end']) {
-					$userValues = explode(',', JString::str_ireplace("\"", '', array_shift($data)));
-					
+				while(($data = fgetcsv($file, 1, "\n")) !== FALSE && ftell($file) <= $index['end']) 
+				{    
+                    //handling ',' existance in between the value
+
+				     $value= explode(',"',array_shift($data));
+				 	foreach ($value as $k=>$v){
+					  //$userValues[$k] = JString::str_ireplace("\"",'',$v);
+                      if(substr($v,-1,1)=='"')
+					    $userValues[$k] =substr($v,0,-1);
+					  else 
+					    $userValues[$k] =$v;
+				 	}
 					if(empty($userValues)) continue;
 					$fieldJ= $fieldMapping['joomla'];
 					$useroffset=$fieldJ['username'];
 					$emailoffset=$fieldJ['email'];
 					$checkUsername	=	ImpexpPluginHelper::checkUsernameinJoomla($userValues[$useroffset],$userValues[$emailoffset]);
+					$overwrite_user_id = $checkUsername;
 					if($checkUsername){
 						$existuser[$count]['username'] = $userValues[$useroffset];
 						$existuser[$count]['email'] = $userValues[$emailoffset];
 						//$existuser[$count]['password']=$userValues[$fieldMapping['joomla']['password']];
 						$count++;
 						$importuser_count++;
-
+                          if($overwrite == true)
+						  {                        
+							$newUserId    = ImpexpPluginHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess,$overwrite_user_id);
+							if(!$newUserId) continue;
+							$cUser        = ImpexpPluginHelper::storeCommunityUser($newUserId , $userValues,$fieldMapping['jsfield']);
+							$customFields = ImpexpPluginHelper::storeCustomFields($newUserId , $userValues, $fieldMapping['custom']);	
+						  }
+                            continue;
 						//$newUserId    = ImpexpPluginHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess,$checkUsername);
 						//$cUser        = ImpexpPluginHelper::storeCommunityUser($checkUsername, $userValues,$fieldMapping['jsfield']);
 						//$customFields = ImpexpPluginHelper::storeCustomFields($checkUsername, $userValues, $fieldMapping['custom']);	
 						
-						continue;
-					}
+				}
 					
 					$importuser[$icount]['username'] = $userValues[$useroffset];
 					$importuser[$icount]['email'] = $userValues[$emailoffset];
@@ -220,7 +239,7 @@ class ImpexpPluginImport
 					$importuser_count++;	
 					$newUserId = ImpexpPluginHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess);
 		
-					// TODO : what if enable to save usrs
+					// TODO : what if enable to save users
 					if(!$newUserId) continue;
 					$cUser  = ImpexpPluginHelper::storeCommunityUser($newUserId, $userValues,$fieldMapping['jsfield']);
 					$customFields = ImpexpPluginHelper::storeCustomFields($newUserId, $userValues, $fieldMapping['custom']);
@@ -235,13 +254,33 @@ class ImpexpPluginImport
 				ImpexpPluginHelper::getExistUserInCSV($importuser,'importuser.csv');
 				  
 				echo "<br/><br/>";
-				echo JText::_('PLG_IMPORTEXPORT_CSV_DO_NOT_CLOSE_THIS_WINDOW_WHILE_IMPORTING_USER_DATA');
-				echo "<br/><br/>";
-				echo JText::_('PLG_IMPORTEXPORT_CSV_NUMBER_OF_USERS_IMPORTED').$importuser_count;
+				?>
+			    <div style="overflow:hidden;width: 80%;margin: auto;">
+				 <div style="text-align: center;font-style: italic;font-size: 18px;color: #666;border-bottom: 1px solid #eee;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_DO_NOT_CLOSE_THIS_WINDOW_WHILE_IMPORTING_USER_DATA'); echo "<br/><br/>";?>
+				 </div>
+				 <div style="width:100%;margin:20px 0;text-align:center;color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;">
+				 <?php echo JText::_('PLG_IMPORTEXPORT_CSV_NUMBER_OF_USERS_IMPORTED').$importuser_count;?>		
+				 </div>
+		        </div>	 
+			 <?php 
 				
 				$mysess->set('impexp_count',$importuser_count);
 				$currentUrl = JURI::getInstance();
-				JFactory::getapplication()->redirect(JRoute::_($currentUrl->toString(), false));		
+				?>
+				<script>
+			   window.onload = function()
+			   {
+				  setTimeout("redirect()", 3000);
+			   }
+			
+			   function redirect()
+			  {
+				window.location = "<?php echo JRoute::_($currentUrl->toString()); ?>"			
+					
+			  }
+			   </script>
+			   <?php 
+			//JFactory::getapplication()->redirect(JRoute::_($currentUrl->toString(), false));		
 			}
 						
 		function complete()

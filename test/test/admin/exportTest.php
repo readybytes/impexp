@@ -77,6 +77,7 @@ class ExportTest extends XiSelTestCase
    	$this->select('csvField2','Email');
    	$this->click('//input[@value="Import Data"]');
    	$this->waitPageLoad();
+   	sleep(30);
    	
    	$this->isTextPresent('Instead of existing users, All Users are successfully imported.');
    	
@@ -104,7 +105,8 @@ class ExportTest extends XiSelTestCase
    	$this->select("csvField4", "Usertype");
    	$this->click('//input[@value="Import Data"]');
    	$this->waitPageLoad();
-
+    sleep(30);
+    
    	$element = " //a[@id='existuser']";
     $this->assertTrue($this->isElementPresent($element));
     

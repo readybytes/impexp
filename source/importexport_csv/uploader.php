@@ -31,7 +31,7 @@ class JFormFieldUploader extends JFormField
         $buttonMap->set('text', JText::_('PLG_IMPORTEXPORT_CSV_UPLOAD_FILE'));
         $buttonMap->set('name', 'image');
         $buttonMap->set('modalname', 'uploaderPopup');
-        $buttonMap->set('options', "{handler: 'iframe', size: {x: 600, y: 500}}");
+        $buttonMap->set('options', "{handler: 'iframe', size: {x: 600, y: 450}}");
         $buttonMap->set('link', $link);
         
         $html = '<a style="font-size:12px;font-weight:bold;position:relative; top:5px;"

@@ -40,6 +40,10 @@ function importCSVFormCheck(){
 		</select>
 		<input type="hidden" name="importCSVStage" value="fieldMapping" />
 		<br /><br />
+		<?php echo JText::_('Do you want to overwrite users');?>
+		<input type="radio"  name="overwrite" value="0" checked="true">No</input>
+		<input type="radio"  name="overwrite" value="1">Yes</input>
+		<br /><br />
 		<input type="submit" name="btnUpload" value="Upload and Parse file" onclick="return importCSVFormCheck();" 	style="background:#6699cc; padding:5px 0;
 		border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
 		-moz-border-radius: 5px; border-radius: 5px;" />
