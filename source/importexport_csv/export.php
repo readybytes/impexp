@@ -13,7 +13,7 @@ class ImpexpPluginExport
 		$total_user = $db->loadResult();
 
 		$fields = $this->getCustomFieldIds();
-        $fp = $storagePath.'exportdata.csv';
+       $fp=fopen($storagePath.'exportdata.csv',"w");
 		//fetch limited data from database and store it into a temporary file	
 		for($start=0;$start<=$total_user;$start=$start+IMPEXP_LIMIT)
 		{	
@@ -44,7 +44,7 @@ class ImpexpPluginExport
 						}
 					}
 					$csvdata.= '"';
-                    JFile::write($fp, $csvdata);
+                    fwrite($fp,$csvdata);
 				}
 			}
 	    }
@@ -105,15 +105,20 @@ class ImpexpPluginExport
 			    
 				foreach ($JSfield_name as $name)
 				{
-					if ($name=='params')
-					{ 
-						$csvUser[$user->userid][$name]     = str_replace(',','\\n',$user->$name); 
+		           if($name == 'params')
+					{
+						if(strrpos($user->$name,',') == true)
+						{
+					    $csvUser[$user->userid][$name]     = str_ireplace(',','\\n',$str);
+						}
+						else 
+					    $csvUser[$user->userid][$name]     = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $user->$name));
 					}
 					else 
 					{
 					$csvUser[$user->userid][$name]     = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $user->$name));
-			        }
-				}
+					}
+		     } 
 		   }
 		 
 			return $csvUser;
