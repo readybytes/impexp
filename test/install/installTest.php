@@ -33,8 +33,8 @@ class InstallTest extends XiSelTestCase
    	 
    	 $this->open(JOOMLA_LOCATION."administrator/index.php?option=com_plugins");
    	 $this->waitPageLoad("60000");
-   	 
-   	 $this->assertTrue($this->changePluginState('importexport_csv',1));
-   	 
+   	 $this->select("filter_folder", "label=system");
+     $this->waitForPageToLoad("30000");
+     $this->assertTrue($this->changePluginState('importexport_csv',1));
    }
 }
