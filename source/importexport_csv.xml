@@ -22,7 +22,7 @@
       <fieldset name="basic" addfieldpath="/plugins/system/importexport_csv/importexport_csv">
 
          <field name="fileUploaded" type="uploader" default="0" label="PLG_IMPORTEXPORT_UPLOAD_CSV_FILE" description="Upload CSV File"  />
-      	<field name="exportUserData" type="exportlink" default="0" label="PLG_IMPORTEXPORT_EXPORT_USER_DATE" description="Export User Data"  />
+      	<field name="exportUserData" type="exportlink" default="0" label="PLG_IMPORTEXPORT_CSV_EXPORT_USER_DATA" description="Export User Data"  />
       </fieldset>
    </fields>
   </config>

@@ -38,11 +38,11 @@ class plgSystemImportExport_csv extends JPlugin
 		if($plugin != 'importexportCSV')
 			return true;
 
-		if($task=='export'){
+		if($task == 'export'){
 			$this->export->createCSV($this->storagePath);
 		}
 
-		if($task=='uploadFile'){
+		if($task == 'uploadFile'){
 			JRequest::setVar('option','');
 			
 			if($stage == 'upload')
@@ -60,7 +60,7 @@ class plgSystemImportExport_csv extends JPlugin
 			}
 			
 			else if($stage == 'complete')
-				$html	=	$this->import->complete();
+				$html = $this->import->complete();
 						
 			$document = JFactory::getDocument();
 			$document->setBuffer($html, 'component');

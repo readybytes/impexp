@@ -3,19 +3,28 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 
 class ImpexpPluginExport 
 {
+    function getExportHtml()
+    {
+    	ob_start();
+		require_once(dirname(__FILE__) . DS .'tmpl'. DS .'download.php');
+		$html = ob_get_contents();
+		ob_clean();
+		return $html;
+    }
+    
 	function createCSV($storagePath)
 	{
 		$usertype='deprecated';
-
-		$db = JFactory::getDBO();
+        $db = JFactory::getDBO();
 		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users');
 		$db->setQuery($sql);
 		$total_user = $db->loadResult();
 
 		$fields = $this->getCustomFieldIds();
-       $fp=fopen($storagePath.'exportdata.csv',"w");
+        $fp=fopen($storagePath.'exportdata.csv',"a");
 		//fetch limited data from database and store it into a temporary file	
-		for($start=0;$start<=$total_user;$start=$start+IMPEXP_LIMIT)
+		$start  = JRequest::getVar('end',0);	
+		if($start<=$total_user)
 		{	
 			$users	=	$this->getUserData($start);
 			foreach($users as $id => $data)
@@ -47,11 +56,16 @@ class ImpexpPluginExport
                     fwrite($fp,$csvdata);
 				}
 			}
-	    }
-	    	if(defined('TESTMODE'))
+			
+	       if(defined('TESTMODE'))
 	    	{
 	    		return true;
 	    	}
+			        $end=$start+IMPEXP_LIMIT;
+			        fclose($fp);                 
+				    self::refreshExport($end);
+	    }
+	    	
 			fclose($fp);
 			$this->setDataInCSV($storagePath);
 	}
@@ -65,9 +79,23 @@ class ImpexpPluginExport
 					." LIMIT ".$start.",".IMPEXP_LIMIT;
 			$db->setQuery($sql); 
 			$joomlaUsers = $db->loadObjectList('id');
-			
-			$sql = " SELECT * FROM ".$db->nameQuote('#__community_fields_values')
-				  ."ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC ";
+			$arrayJUser=array();
+		    foreach($joomlaUsers as $joomlaUser)
+		    {
+		    	$arrayJUser[] = $joomlaUser->id;
+		    }
+		    
+		    $matches = implode(',', $arrayJUser);
+		    if(!empty($arrayJUser))
+		    {   
+		    	$condition=" WHERE ".$db->nameQuote('user_id')." IN ($matches) ";
+		    }
+		    else 
+		    {
+		        $condition = "";	
+		    } 
+		    $sql = " SELECT * FROM ".$db->nameQuote('#__community_fields_values')
+				     .$condition." ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC";
 			$db->setQuery($sql); 
 			$jsUserData = $db->loadObjectList();
 
@@ -90,8 +118,17 @@ class ImpexpPluginExport
 			}
 			//jomsocial data
 			$db = JFactory::getDBO();
-			$sql = " SELECT * FROM ".$db->nameQuote('#__community_users')
-			       ."ORDER BY ".$db->nameQuote('userid')." ASC";
+			
+			if(!empty($arrayJUser))
+		    { 
+		    	$condition = " WHERE ".$db->nameQuote('userid')." IN ($matches)";
+			}
+		    else 
+		    {
+		        $condition = "";
+		    }  
+		    $sql = " SELECT * FROM ".$db->nameQuote('#__community_users')
+			       .$condition."ORDER BY ".$db->nameQuote('userid')." ASC";
 			$db->setQuery($sql); 
 		    $JomSocialuser =  $db->loadObjectList('userid');
 
@@ -127,8 +164,6 @@ class ImpexpPluginExport
 	function setDataInCSV($storagePath)
 		{
 			$fields = $this->getCustomFieldIds();
-			ob_start();
-		
 			header('Content-type: application/csv');
 			header("Content-type: application/octet-stream");
 	    	header("Content-Disposition: attachment; filename=user.csv");
@@ -147,11 +182,11 @@ class ImpexpPluginExport
 		        echo '","'.JText::_($name);
 
 			echo file_get_contents($storagePath.'exportdata.csv');
-			 
+			//delete exportdata.csv file
+			JFile::delete($storagePath.'exportdata.csv');
 			exit;
-			$content = ob_get_contents();
-			ob_clean();
-		}
+			
+	 }
 	function getCustomFieldIds()
 	{
 			$db	=& JFactory::getDBO();
@@ -163,4 +198,30 @@ class ImpexpPluginExport
 			return $db->loadObjectList('id');	
 	
 	}
+	
+    function refreshExport($end)
+	{  
+		 $currentUrl = JURI::getInstance();
+	     $currentUrl->setVar('end',$end);
+	     $html=self::getExportHtml();
+	     ?>
+			  <script>
+			       window.onload = function()
+			      {
+				    setTimeout("redirect()", 2000);
+			      }
+			
+			      function redirect()
+			      {
+				   window.location = "<?php echo JRoute::_($currentUrl->toString()); ?>"			
+				  }
+			 </script>
+		  <?php 
+		  $document = JFactory::getDocument();
+		  $document->setBuffer($html,'component');
+          //JFactory::getApplication()->render();
+      	  echo $html;
+		  //echo JResponse::toString(JFactory::getApplication()->getCfg('gzip'));
+		  exit;		     
+    }
 }
