@@ -6,6 +6,7 @@ jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
 
 define('IMPEXP_LIMIT',1000);
+define('EXP_LIMIT', 200);
 
 //includes file containing functions and html code
 require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'export.php');
@@ -39,7 +40,7 @@ class plgSystemImportExport_csv extends JPlugin
 			return true;
 
 		if($task == 'export'){
-			$this->export->createCSV($this->storagePath);
+			$this->export->createCSV($this->storagePath,$this->mysess);
 		}
 
 		if($task == 'uploadFile'){

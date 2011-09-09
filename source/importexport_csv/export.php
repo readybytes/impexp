@@ -12,7 +12,7 @@ class ImpexpPluginExport
 		return $html;
     }
     
-	function createCSV($storagePath)
+	function createCSV($storagePath,$mysess)
 	{
 		$usertype='deprecated';
         $db = JFactory::getDBO();
@@ -22,11 +22,20 @@ class ImpexpPluginExport
 
 		$fields = $this->getCustomFieldIds();
         $fp=fopen($storagePath.'exportdata.csv',"a");
-		//fetch limited data from database and store it into a temporary file	
+		//get the starting position from where to start processing 	
 		$start  = JRequest::getVar('end',0);	
+		//clear variables from session if exist
+		if($start == 0 && $mysess->has('limit') && $mysess->has('isSet'))
+		{
+			$mysess->clear('limit');
+			$mysess->clear('isSet');
+		}
+		
 		if($start<=$total_user)
 		{	
-			$users	=	$this->getUserData($start);
+			//get limit from session that is to be used for processing
+			$limit = $mysess->get('limit',EXP_LIMIT);
+			$users	=	$this->getUserData($start,$limit,$mysess);
 			foreach($users as $id => $data)
 			{
 				// do not export admin user
@@ -61,108 +70,92 @@ class ImpexpPluginExport
 	    	{
 	    		return true;
 	    	}
-			        $end=$start+IMPEXP_LIMIT;
-			        fclose($fp);                 
-				    self::refreshExport($end);
+			$end=$start+$limit;
+			fclose($fp);                 
+			self::refreshExport($end);
 	    }
 	    	
 			fclose($fp);
 			$this->setDataInCSV($storagePath);
 	}
 	
-	function getUserData($start)
+	function getUserData($start,$limit,$mysess)
 		{
-			//get limited User data from database
+			$startTime = JProfiler::getmicrotime();
+			$csvUser = array();
 			$db = JFactory::getDBO();
-			$sql = " SELECT * FROM ".$db->nameQuote('#__users')
-					." WHERE ".$db->nameQuote('block'). "=". "0"
-					." LIMIT ".$start.",".IMPEXP_LIMIT;
+			
+		    //select desired fields from #__users and #__community_users tables
+			$sql = " SELECT juser.`id`, juser.`username`, juser.`name`,juser.`email`, juser.`password`, juser.`usertype`,"
+			        ." cuser.`status`,cuser.`points`,cuser.`posted_on`,cuser.`avatar`,cuser.`thumb`,cuser.`invite`,cuser.`params`,cuser.`alias`,cuser.`profile_id`,cuser.`watermark_hash`,cuser.`storage`,cuser.`search_email`,cuser.`friends`,cuser.`groups`"
+			        ." FROM ".$db->nameQuote('#__users')."as juser"
+                    ." LEFT JOIN `#__community_users` AS cuser ON (juser.`id` = cuser.`userid`)"
+					." WHERE juser.".$db->nameQuote('block'). "=". "0"
+					." LIMIT ".$start.",".$limit;
+					
 			$db->setQuery($sql); 
-			$joomlaUsers = $db->loadObjectList('id');
-			$arrayJUser=array();
-		    foreach($joomlaUsers as $joomlaUser)
-		    {
-		    	$arrayJUser[] = $joomlaUser->id;
-		    }
+			$joomlaUsers = $db->loadAssocList('id');
+			$userIds = array_keys($joomlaUsers);
 		    
-		    $matches = implode(',', $arrayJUser);
-		    if(!empty($arrayJUser))
-		    {   
+			//start creating csv for jomsocial and joomla users' fields
+		    foreach ($joomlaUsers as $user)
+		    {
+		    	foreach ($user as $name => $value)
+		    	{ 
+		    		$str = $value;
+		    		if($name == 'params')
+		    		{
+		    		  if(strrpos($value,',') == true)
+		    		    $csvUser[$user['id']][$name] = str_ireplace(',','\\n',$str);
+		    	      else 
+		    	        $csvUser[$user['id']][$name]= preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n',$str ));
+		    	     }
+		    	    else 
+		    	    $csvUser[$user['id']][$name] = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $str));
+		        }
+		    }
+			
+			//process community_field_values table
+			$condition = "";
+		    if(count($userIds)>0){
+		    	$matches = implode(',', $userIds );   
 		    	$condition=" WHERE ".$db->nameQuote('user_id')." IN ($matches) ";
 		    }
-		    else 
-		    {
-		        $condition = "";	
-		    } 
+
 		    $sql = " SELECT * FROM ".$db->nameQuote('#__community_fields_values')
-				     .$condition." ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC";
+				   .$condition
+				   ." ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC";
 			$db->setQuery($sql); 
 			$jsUserData = $db->loadObjectList();
-
-			$userIds = array_keys($joomlaUsers);
-			
-			$csvUser=array();
-			foreach($joomlaUsers as $user){			
-				$csvUser[$user->id]['username'] = $user->username;	// first : username
-				$csvUser[$user->id]['name'] 	= $user->name;		// second : name
-				$csvUser[$user->id]['email'] 	= $user->email;		// third : email
-				$csvUser[$user->id]['password'] = $user->password;	// first : password
-				$csvUser[$user->id]['usertype'] = $user->usertype;
-			}
-			
 			foreach($jsUserData as $fields){
 				if(!array_key_exists($fields->user_id, $csvUser))
 					continue;
 					
 				$csvUser[$fields->user_id][$fields->field_id] =  preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $fields->value));
 			}
-			//jomsocial data
-			$db = JFactory::getDBO();
-			
-			if(!empty($arrayJUser))
-		    { 
-		    	$condition = " WHERE ".$db->nameQuote('userid')." IN ($matches)";
-			}
-		    else 
-		    {
-		        $condition = "";
-		    }  
-		    $sql = " SELECT * FROM ".$db->nameQuote('#__community_users')
-			       .$condition."ORDER BY ".$db->nameQuote('userid')." ASC";
-			$db->setQuery($sql); 
-		    $JomSocialuser =  $db->loadObjectList('userid');
 
-		   foreach($JomSocialuser as $user)
-		   {
-		   	    if(!array_key_exists($user->userid, $csvUser)){
-					continue;
-				}
-
-				$JSfield_name = array('status','points','posted_on','avatar','thumb','invite','params','alias','profile_id','watermark_hash','storage','search_email','friends','groups');
-			    
-				foreach ($JSfield_name as $name)
-				{
-		           if($name == 'params')
-					{
-						if(strrpos($user->$name,',') == true)
-						{
-					    $csvUser[$user->userid][$name]     = str_ireplace(',','\\n',$str);
-						}
-						else 
-					    $csvUser[$user->userid][$name]     = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $user->$name));
-					}
-					else 
-					{
-					$csvUser[$user->userid][$name]     = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $user->$name));
-					}
-		     } 
+          //set final export limit if not set
+		   if(!$mysess->has('isSet')){
+		     $limit = self::setFinalLimit($startTime);
+		
+		     $mysess->set('limit',$limit);
+		     $mysess->set('isSet',true);
 		   }
 		 
 			return $csvUser;
 		}
+		
+	 //decide final export limit to be used 
+	 function setFinalLimit($startTime)
+	 {  
+	 	$value = new ImpexpPluginImport();
+	 	$space = (JProfiler::getMemory()); //consumed space 
+	    $limit= (int)(($value->memory_limit/$space)*EXP_LIMIT*0.80); //80% of next possible limit
+	 	return $limit;
+	 }
 	
-	function setDataInCSV($storagePath)
-		{
+	 function setDataInCSV($storagePath)
+	 {
 			$fields = $this->getCustomFieldIds();
 			header('Content-type: application/csv');
 			header("Content-type: application/octet-stream");

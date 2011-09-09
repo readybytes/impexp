@@ -4,6 +4,41 @@ require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS
 
 class ImpexpPluginImport
 {
+
+	public $max_exec_time 	= null;
+	public $memory_limit    = null;
+	const  MAX_EXEC_TIME	= 30;
+	const  BIAS_TIME		= 0.50;
+	const  MEM_LIMIT        = 32;
+	const  BIAS_MEMORY      = 0.60;
+	const  PERCENTAGE       = 0.10;
+	
+	function __construct()
+	{
+		//get max_exec_time
+		$this->max_exec_time = self::MAX_EXEC_TIME;
+		if(function_exists('ini_get')){
+			$this->max_exec_time = ini_get('max_execution_time');
+		}
+		
+		if ( (!is_numeric($this->max_exec_time)) || ($this->max_exec_time== 0)) {
+			$this->max_exec_time = self::MAX_EXEC_TIME;
+		}
+         // Apply bias
+		$this->max_exec_time = ($this->max_exec_time) * self::BIAS_TIME * 1000000;
+		
+		//get memory_limit
+		$this->memory_limit = self::MEM_LIMIT;
+		if(function_exists('ini_get')){
+		   $this->memory_limit =(int)substr(ini_get('memory_limit'),0,-1);
+		}
+		if ( (!is_numeric($this->memory_limit)) || ($this->memory_limit== 0)) {
+			$this->memory_limit = self::MEM_LIMIT;
+		}
+        // Apply bias
+		$this->memory_limit = ($this->memory_limit) * self::BIAS_MEMORY * 1048567;
+	}
+	
 	function getUploaderHtml()
 		{
 			$currentUrl = JURI::getInstance()->toString();		
@@ -75,9 +110,12 @@ class ImpexpPluginImport
 			$indexing['end'] = ftell($file);
 			array_push($fileIndex, $indexing);
 			
-			if($mysess->has('fileIndex', 'importCSV'))
+			if($mysess->has('fileIndex', 'importCSV')){
 				 $mysess->clear('fileIndex', 'importCSV');
-				 
+			}
+            //clear varibles offset and impexp_count if exist
+			$mysess->clear('offset');
+			$mysess->clear('impexp_count');	 
 			$mysess->set('fileIndex', $fileIndex, 'importCSV');
 			return true;	
 		}
@@ -171,6 +209,7 @@ class ImpexpPluginImport
 				
 		function createUser($mysess, $storagePath,$importuser_count)
 			{
+				$startTime = JProfiler::getmicrotime();
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'libraries'.DS.'core.php');
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');
 				
@@ -179,17 +218,31 @@ class ImpexpPluginImport
 				 $overwrite    = $mysess->get('overwrite');
 				 
 				// if session expired then what
-				if(empty($fieldMapping) || empty($fileIndex)){
+				if(empty($fieldMapping) || (empty($fileIndex) && !$mysess->has('offset'))){
 					$currentUrl = JURI::getInstance();
 					$currentUrl->setVar('importCSVStage', 'complete');
 					JFactory::getapplication()->redirect(JRoute::_($currentUrl->toString(), false));
 				}
 				//error_reporting(E_ALL ^ E_NOTICE); 
-				$index 		  = array_shift($fileIndex);
-				$mysess->set('fileIndex', $fileIndex, 'importCSV');
 				$html='';
 				$file = fopen($storagePath.'import.csv', "r");
-				fseek($file, $index['start']);
+				
+				//check whether offset is set or not:
+                //if in the block of 1000, all users have not yet processed then we set offset and its corresponding index 
+				if($mysess->has('offset'))
+				 {
+				   $offset = $mysess->get('offset');
+				   $index = $mysess->get('index');
+				   $mysess->set('fileIndex', $fileIndex, 'importCSV');
+				 }
+				else 
+				{   
+					$index = array_shift($fileIndex);
+					$mysess->set('fileIndex', $fileIndex, 'importCSV');
+					$offset = $index['start'];
+				}
+				
+				fseek($file,$offset);
 				$count=0;
 				$icount=0;
 				$existuser=array();
@@ -243,9 +296,21 @@ class ImpexpPluginImport
 					if(!$newUserId) continue;
 					$cUser  = ImpexpPluginHelper::storeCommunityUser($newUserId, $userValues,$fieldMapping['jsfield']);
 					$customFields = ImpexpPluginHelper::storeCustomFields($newUserId, $userValues, $fieldMapping['custom']);
-				}
-				
-				$isEOF = feof($file);
+
+					//check whether sufficent time and memory is availabe or not
+					if(!$this->getCurrentStatus($startTime))continue;
+				    
+                    //set offset if sufficient time or space is not available
+				    $offset=ftell($file);
+				    $mysess->set('offset',$offset);
+				    $mysess->set('index',$index);
+				    break;
+				 }
+				//if block is finished then clear offset
+			    if(ftell($file) >= $index['end'])
+			    {
+			      $mysess->clear('offset'); 
+			    }
 				fclose($file);	
 				//Add existed user in file.
 				ImpexpPluginHelper::getExistUserInCSV($existuser,'existuser.csv');
@@ -291,5 +356,17 @@ class ImpexpPluginImport
 			$content=ob_get_contents();
 			ob_clean();
 			return $content;
+		}
+		
+		//get status of consumed time and space
+		function getCurrentStatus($startTime)
+		{   
+			static $time = 0;
+			$time = $time + (JProfiler::getmicrotime()-$startTime);
+			$space = JProfiler::getMemory();
+			//check the percentage of memory and time remaining
+		    if( (1 - $time / $this->max_exec_time) > self::PERCENTAGE  &&  (1 - $space / $this->memory_limit) > self::PERCENTAGE)
+			   return false;
+		    return true;
 		}
 }

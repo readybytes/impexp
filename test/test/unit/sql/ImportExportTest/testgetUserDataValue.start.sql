@@ -1,3 +1,5 @@
+TRUNCATE TABLE `#__community_fields_values`;;
+TRUNCATE TABLE `#__community_users`;;
 TRUNCATE TABLE `#__users`;;
 
 INSERT INTO `#__users` (`id`, `name`, `username`, `email`, `password`, `usertype`, `block`, `sendEmail`, `registerDate`, `lastvisitDate`, `activation`, `params`) VALUES
