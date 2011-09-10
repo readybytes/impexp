@@ -103,15 +103,12 @@ class ImpexpPluginExport
 		    	foreach ($user as $name => $value)
 		    	{ 
 		    		$str = $value;
-		    		if($name == 'params')
+		    		$csvUser[$user['id']][$name] = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $str));
+		    		if($name == 'params' && strrpos($value,',') == true)
 		    		{
-		    		  if(strrpos($value,',') == true)
-		    		    $csvUser[$user['id']][$name] = str_ireplace(',','\\n',$str);
-		    	      else 
-		    	        $csvUser[$user['id']][$name]= preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n',$str ));
-		    	     }
-		    	    else 
-		    	    $csvUser[$user['id']][$name] = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $str));
+		    		  $csvUser[$user['id']][$name] = str_ireplace(',','\\n',$str);
+		    		} 
+		    	    
 		        }
 		    }
 			
