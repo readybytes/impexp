@@ -76,19 +76,24 @@ class ImpexpPluginHelper
 				return false;
 				
 			$user->id = $table->get( 'id' );
+			$db = JFactory::getDBO();
+			
+			//map user group
+			$query = "SELECT `group_id` FROM".$db->nameQuote('#__user_usergroup_map')
+				         ."WHERE ".$db->nameQuote('user_id')."=".$db->Quote($user->id);
+            $db->setQuery($query);
+            $sql1 = " UPDATE ".$db->nameQuote('#__user_usergroup_map')
+					." SET ".$db->nameQuote('group_id') ." = ".$db->Quote($newUsertype)
+					." WHERE ".$db->nameQuote('user_id') ." = ".$db->Quote($user->id);
+			$db->setQuery($sql1);
+			$db->query();
 			//UserController::_sendMail($user, $password);	
+			
 			if($mysess->get('passwordFormat', 'joomla', 'importCSV') == 'joomla'){
-				$db = JFactory::getDBO();
 				$sql = " UPDATE ".$db->nameQuote('#__users')
 					   ." SET ".$db->nameQuote('password') ." = ".$db->Quote($userValues[$joomlaFieldMapping['password']])
 					   ." WHERE ".$db->nameQuote('id') ." = ".$db->Quote($user->id);
 				$db->setQuery($sql);
-				$db->query();
-
-				$sql1 = " UPDATE ".$db->nameQuote('#__user_usergroup_map')
-					   ." SET ".$db->nameQuote('group_id') ." = ".$db->Quote($newUsertype)
-					   ." WHERE ".$db->nameQuote('user_id') ." = ".$db->Quote($user->id);
-				$db->setQuery($sql1);
 				$db->query();
 			}
 			return $user->id;
@@ -133,9 +138,33 @@ class ImpexpPluginHelper
 				$data =array();
 				foreach($customFieldMapping as $key => $value)
 					$data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
-				
+				if(!empty($data))
+					self::insertJsFields($userid,$customFieldMapping);
 				return $cModel->saveProfile($userid, $data);		
 			}
+			
+    function insertJsFields($userid,$customFieldMapping)
+      {
+  	       $db = JFactory::getDBO();
+  	      $query = " select `field_id` FROM ".$db->nameQuote('#__community_fields_values')
+		            ." WHERE ".$db->nameQuote('user_id')." = ". $userid;
+		  $db->setQuery($query);  
+		  $fields = $db->loadAssocList('field_id');
+		  $values = null;
+		   foreach($customFieldMapping as $fieldId => $value)
+		    {
+		  	if(array_key_exists($fieldId, $fields))
+		  	 continue;
+		  	 $values.= "(".$userid.","."$fieldId"."),";    
+		  	
+		    }
+		    $values = substr($values,0,-1);
+		   $query = " INSERT INTO ".$db->nameQuote('#__community_fields_values')
+		  	         ."(`user_id`,`field_id`) VALUES ".$values;
+		  	$db->setQuery($query); 
+		  	$db->query();
+		        
+      }			
 		
 	function getExistUserInCSV($users,$filename)
 		{

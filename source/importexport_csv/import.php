@@ -11,7 +11,7 @@ class ImpexpPluginImport
 	const  BIAS_TIME		= 0.50;
 	const  MEM_LIMIT        = 32;
 	const  BIAS_MEMORY      = 0.60;
-	const  PERCENTAGE       = 0.10;
+	const  PERCENTAGE       = 0.20;
 	
 	function __construct()
 	{
