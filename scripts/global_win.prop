@@ -18,7 +18,7 @@ project.codename	= Kautilya
 
 
 # Output settings
-file.version		= 1.6
+file.version		= 2.7
 file.package		= ${project.shortform}_ver${file.version}
 file.compression	= gzip
 file.extension		= .zip
