@@ -32,7 +32,7 @@ function importCSVFormCheck(){
 		<div style="padding:20px 5px;">
 		<div style="padding:20px 0; margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_PLEASE_UPLOAD_THE_CSV_FILE'); ?></div>
 		<input type="file" id="fileUploaded" name="fileUploaded" title="Please Upload your CSV file" />
-		<br/><p style="font-size:12px"><a  href= <?php echo JURI::root().'plugins/system/importexport_csv/dummy.csv'?>><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE')?></a><?php echo JText::_('PLG_IMPORTEXPORT_CSV_TO_SEE_FORMAT_OF_CSV_FILE')?></p>
+		<br/><br/><p style="font-size:12px"><a  href= <?php echo JURI::root().'plugins/system/importexport_csv/importexport_csv/dummy.csv'?>><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE')?></a><?php echo JText::_('PLG_IMPORTEXPORT_CSV_TO_SEE_FORMAT_OF_CSV_FILE')?></p>
 		<div style="padding:20px 0;margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_YOU_HAVE_PASSWORD_IN_FORM_OF');?> : </div>
 		<select name="passwordFormat" >
 			<option value="joomla">Joomla Encrypted</option>
