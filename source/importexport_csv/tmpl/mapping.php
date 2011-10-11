@@ -53,6 +53,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_THREE_FIELDS_MUST_EXIST'); ?></li>
 						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_THERE_MUST_BE_ONE_TO_ONE_MAPPING');?></li>						
 						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_DATE_FIELD_MUST_BE_IN_SQL_FORMAT');?></li>
+<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CSV_FILE_SHOULD_BE_IN_PROPER_FORMAT')?><a href="http://www.joomlaxi.com/support/documentation/item/importing-user.html" target="_blank"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE_FOR_HELP');?></a></li>
 					</ol>			
 					<br />
 		<?php  
