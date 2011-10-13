@@ -1,5 +1,19 @@
 <?php
+/*
+* importexport_csv - JomSocial User Import Export
+------------------------------------------------------------------------
+* copyright	Copyright (C) 2010 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
+* Author : Team JoomlaXi @ Ready Bytes Software Labs Pvt. Ltd.
+* Email  : shyam@joomlaxi.com
+* License : GNU-GPL V2
+* Websites: www.joomlaxi.com
+* Technical Support:  Forum - http://joomlaxi.com/support/forum/47-impexp-1x.html
+*/
 
+// no direct access
+if(!defined('_JEXEC')) die('Restricted access');
+if(!class_exists('JProfiler'))
+require_once(JPATH_ROOT.DS.'libraries'.DS.'joomla'.DS.'error'.DS.'profiler.php');
 require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS. 'helper.php');
 
 class ImpexpPluginImport
