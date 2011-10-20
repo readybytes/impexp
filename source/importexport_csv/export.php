@@ -21,7 +21,16 @@ class ImpexpPluginExport
 		$total_user = $db->loadResult();
 
 		$fields = $this->getCustomFieldIds();
-        $fp=fopen($storagePath.'exportdata.csv',"a");
+		
+		//if file is not writable 
+		if (!is_writable($storagePath.'exportdata.csv'))
+		{ 
+		  echo JText::_("PERMISSION_DENIED");
+		  exit();
+		}
+		
+		//open a file which contain the data fetched from the database
+		$fp=fopen($storagePath.'exportdata.csv',"a");
 		//get the starting position from where to start processing 	
 		$start  = JRequest::getVar('end',0);	
 		//clear variables from session if exist
