@@ -79,7 +79,7 @@ class ExportTest extends XiSelTestCase
    	$this->waitPageLoad();
    	sleep(30);
    	
-   	$this->isTextPresent('Instead of existing users, All Users are successfully imported.');
+   	$this->isTextPresent('Users have been imported successfully');
    	
    	$element = " //a[@id='existuser']";
     $this->assertTrue($this->isElementPresent($element));

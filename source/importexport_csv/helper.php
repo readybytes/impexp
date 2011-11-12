@@ -134,12 +134,20 @@ class ImpexpPluginHelper
 		
 	function storeCustomFields($userid, $userValues, $customFieldMapping)
 			{
-				$cModel = CFactory::getModel('Profile');
-				$data =array();
-				foreach($customFieldMapping as $key => $value)
+			   $cModel  = CFactory::getModel('Profile');
+			   $data    = array();
+			   $db = JFactory::getDBO();		  
+		       $strquery = "SELECT `id`,`type` FROM ".$db->nameQuote('#__community_fields');
+		  	   $db->setQuery($strquery);  
+		 	   $fieldsType = $db->loadAssocList('id');
+		 	   
+				foreach($customFieldMapping as $key => $value){
+					if($fieldsType[$key]['type'] == 'birthdate' || $fieldsType[$key]['type'] == 'date')
+					  $userValues[$value] = date("Y-m-d",strtotime($userValues[$value]));
 					$data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
 				if(!empty($data))
 					self::insertJsFields($userid,$customFieldMapping);
+                }
 				return $cModel->saveProfile($userid, $data);		
 			}
 			
@@ -152,19 +160,18 @@ class ImpexpPluginHelper
 		  $fields = $db->loadAssocList('field_id');
 		  $values = null;
 		   foreach($customFieldMapping as $fieldId => $value)
-		    {
-		  	if(array_key_exists($fieldId, $fields))
-		  	 continue;
-		  	 $values.= "(".$userid.","."$fieldId"."),";    
-		  	
-		    }
-		    $values = substr($values,0,-1);
-		   $query = " INSERT INTO ".$db->nameQuote('#__community_fields_values')
+		   {
+		  	 if(array_key_exists($fieldId, $fields))
+		  	 	continue;
+		  	 $values.= "(".$userid.","."$fieldId"."),";  
+		   
+		     $values = substr($values,0,-1);
+		     $query  = " INSERT INTO ".$db->nameQuote('#__community_fields_values')
 		  	         ."(`user_id`,`field_id`) VALUES ".$values;
-		  	$db->setQuery($query); 
-		  	$db->query();
-		        
-      }			
+		  	 $db->setQuery($query); 
+		  	 $db->query();
+		   }
+	  }			
 		
 	function getExistUserInCSV($users,$filename)
 		{
