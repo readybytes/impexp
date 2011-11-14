@@ -52,9 +52,14 @@ if(!defined('_JEXEC')) die('Restricted access');
 					<ol>
 						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_THREE_FIELDS_MUST_EXIST'); ?></li>
 						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_THERE_MUST_BE_ONE_TO_ONE_MAPPING');?></li>						
-						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_DATE_FIELD_MUST_BE_IN_SQL_FORMAT');?></li>
-<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CSV_FILE_SHOULD_BE_IN_PROPER_FORMAT')?><a href="http://www.joomlaxi.com/support/documentation/item/importing-user.html" target="_blank"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE_FOR_HELP');?></a></li>
-					</ol>			
+						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_DATE_FIELD_MUST_BE_IN_SQL_FORMAT');?>
+						    <a href="http://dev.mysql.com/doc/refman/5.1/en/date-and-time-functions.html#function_date-format" target="_blank">
+						    <?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE');?></a><?php echo JText::_('PLG_IMPORTEXPORT_CSV_TO_SEE_FORMAT');?>
+						</li>
+                        <li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CSV_FILE_SHOULD_BE_IN_PROPER_FORMAT')?>
+                            <a href="http://www.joomlaxi.com/support/documentation/item/importing-user.html" target="_blank">
+                            <?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE_FOR_HELP');?></a></li>
+					</ol>
 					<br />
 		<?php  
 		foreach($columns as $c){
