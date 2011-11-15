@@ -142,9 +142,12 @@ class ImpexpPluginHelper
 		 	   $fieldsType = $db->loadAssocList('id');
 		 	   
 				foreach($customFieldMapping as $key => $value){
-					if($fieldsType[$key]['type'] == 'birthdate' || $fieldsType[$key]['type'] == 'date')
-					  $userValues[$value] = date("Y-m-d",strtotime($userValues[$value]));
-					$data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
+					if($fieldsType[$key]['type'] == 'birthdate' || 
+                       $fieldsType[$key]['type'] == 'date'){
+                        //change date in considerable format
+						$userValues[$value] = date("Y-m-d H:i:s",strtotime($userValues[$value]));
+			 	     }	
+                $data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
 				if(!empty($data))
 					self::insertJsFields($userid,$customFieldMapping);
                 }
@@ -153,21 +156,18 @@ class ImpexpPluginHelper
 			
     function insertJsFields($userid,$customFieldMapping)
       {
-  	       $db = JFactory::getDBO();
-  	      $query = " select `field_id` FROM ".$db->nameQuote('#__community_fields_values')
+  	      $db 	  = JFactory::getDBO();
+  	      $query  = " select `field_id` FROM ".$db->nameQuote('#__community_fields_values')
 		            ." WHERE ".$db->nameQuote('user_id')." = ". $userid;
 		  $db->setQuery($query);  
 		  $fields = $db->loadAssocList('field_id');
 		  $values = null;
-		   foreach($customFieldMapping as $fieldId => $value)
-		   {
+		   foreach($customFieldMapping as $fieldId => $value){
 		  	 if(array_key_exists($fieldId, $fields))
 		  	 	continue;
-		  	 $values.= "(".$userid.","."$fieldId"."),";  
-		   
-		     $values = substr($values,0,-1);
-		     $query  = " INSERT INTO ".$db->nameQuote('#__community_fields_values')
-		  	         ."(`user_id`,`field_id`) VALUES ".$values;
+		  	 $values   = "(".$userid.","."$fieldId".")";  
+			 $query    = " INSERT INTO ".$db->nameQuote('#__community_fields_values')
+		  	            ."(`user_id`,`field_id`) VALUES ".$values;
 		  	 $db->setQuery($query); 
 		  	 $db->query();
 		   }

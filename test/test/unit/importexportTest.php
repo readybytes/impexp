@@ -133,4 +133,12 @@ class ImportExportTest extends XiUnitTestCase
 		$mysess = JFactory::getSession();
 		$this->assertTrue($createCSV->createCSV($storagePath,$mysess));
 	}
+	
+ function testdateformats()
+  {
+  	 $this->assertEquals(date("Y-m-d H:i:s",strtotime("29-07-1989 ")),"1989-07-29 00:00:00");
+  	 $this->assertEquals(date("Y-m-d H:i:s",strtotime("12/30/1989 23:59:59 ")),"1989-12-30 23:59:59");
+  	 $this->assertEquals(date("Y-m-d H:i:s",strtotime("1988/09/22 ")),"1988-09-22 00:00:00");
+  	 $this->assertEquals(date("Y-m-d H:i:s",strtotime("20.07.1997 ")),"1997-07-20 00:00:00");
+  }
 }
