@@ -22,7 +22,7 @@ class plgSystemImportExport_csv extends JPlugin
 		parent::__construct($subject, $config);
 		$this->loadLanguage();
 		$this->mysess = JFactory::getSession();
-		$this->storagePath  = JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'importexport_csv' .DS;
+		$this->storagePath  = Jfactory::getConfig()->get('tmp_path').DS;
 		$this->export = new ImpexpPluginExport();
 		$this->import = new ImpexpPluginImport();
 	}

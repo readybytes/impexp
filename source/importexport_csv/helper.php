@@ -175,8 +175,9 @@ class ImpexpPluginHelper
 		
 	function getExistUserInCSV($users,$filename)
 		{
-			$file = JPATH_ROOT.DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.$filename;
-	
+			$file = Jfactory::getConfig()->get('tmp_path').DS.$filename;
+			
+			
 	    	$content="";
 			foreach($users as $user=>$data){
 						
@@ -191,9 +192,10 @@ class ImpexpPluginHelper
 		}
 		
 	function deleteCSV($filename,$content)
-		{
-			$file = JPATH_ROOT.DS.'plugins'.DS.'system'.DS.'importexport_csv'.DS.$filename;
-	    	if(file_exists($file)){
+    	{		
+	    	$file = Jfactory::getConfig()->get('tmp_path').DS.$filename;
+	    	
+			if(file_exists($file)){
 	    		unlink($file);
 	    	}
 	    	// Add data in file
