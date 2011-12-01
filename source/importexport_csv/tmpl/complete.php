@@ -21,13 +21,13 @@ if(!defined('_JEXEC')) die('Restricted access');
 					<div style="width:100%;margin:20px 0;text-align:center;">
 						
 						
-							<a id='importeduser' href="<?php echo JURI::root().'plugins/system/importexport_csv/importuser.csv';?>" 
+							<a id='importeduser' href="<?php echo JURI::root().'cache'.DS.'importuser.csv';?>" 
 							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_DOWNLOAD_IMPORTED_USERS'); ?></a>
 				</div>
 					<div style="width:100%;margin:10px 0;text-align:center;">
 						
 						
-							<a id='existuser' href="<?php echo JURI::root().'plugins/system/importexport_csv/existuser.csv'; ?>" 
+							<a id='existuser' href="<?php echo JURI::root().'cache'.DS.'existuser.csv'; ?>" 
 							style="color:#6699cc;font-weight:bold;cursor:pointer;font-weight:bold;font-size:14px;font-style:italic;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_DOWNLOAD_EXISTING_USERS'); ?></a>
 						
 					</div>
