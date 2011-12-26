@@ -41,14 +41,18 @@ class ImportExportTest extends XiUnitTestCase
 		//test joomla field mapping
 		$post = array ( 'csvField0' => 'joomla_username', 'csvField1' => 'joomla_name', 'csvField2' => 'joomla_email', 'csvField3' => 'joomla_password', 'csvField4' => 'joomla_usertype',
 						'csvField5' => 'custom_2', 'csvField6' => 'custom_3', 'csvField7' => 'custom_4', 'csvField8' => 'custom_5', 'csvField9' => 'custom_7', 'csvField10' => 'custom_8',
-						 'csvField11' => 'custom_9', 'csvField12' => 'custom_10', 'csvField13' => 'custom_11', 'csvField14' => 'custom_12', 'csvField15' => 'custom_13', 'csvField16' => 'custom_15', 'csvField17' => 'custom_16', 'importCSVStage' => 'importData' );
+						 'csvField11' => 'custom_9', 'csvField12' => 'custom_10', 'csvField13' => 'custom_11', 'csvField14' => 'custom_12', 'csvField15' => 'custom_13', 'csvField16' => 'custom_15', 'csvField17' => 'custom_16',
+		                 'csvField18' => 'jsfield_userid', 'csvField19' => 'jsfield_status','csvField20' => 'jsfield_status_access','csvField21' => 'jsfield_points','csvField22' => 'jsfield_posted_on','csvField23' => 'jsfield_avatar','csvField24' => 'jsfield_thumb',
+						 'csvField25' => 'jsfield_invite','csvField26' => 'jsfield_params','csvField27' => 'jsfield_alias','csvField28' => 'jsfield_latitude','csvField29' => 'jsfield_longitude','csvField30' => 'jsfield_profile_id','csvField31' => 'jsfield_watermark_hash',
+						 'csvField32' => 'jsfield_storage','csvField33' => 'jsfield_search_email','csvField34' => 'jsfield_friends','csvField35' => 'jsfield_groups', 'importCSVStage' => 'importData' );
 		$mapping = ImpexpPluginImport::getFieldMapping($post,'joomla');
 		$joomlafield = array ( 'username' => '0', 'name' => '1', 'email' => '2', 'password' => '3', 'usertype' => '4' );
 		$this->assertEquals($joomlafield,$mapping);	
 
 		//test jsfields mapping
 		$mapping = ImpexpPluginImport::getFieldMapping($post,'jsfield');
-		$custom = array ( );
+		$custom = array ('userid' => '18','status'=>'19','status_access' => '20','points'=>'21','posted_on' =>'22','avatar' => '23','thumb' => '24','invite' => '25','params' => '26','alias' => '27','latitude' => '28','longitude' => '29','profile_id' =>'30','watermark_hash' => '31','storage' => '32',
+		                 'search_email' => '33','friends'=>'34','groups'=>'35' );
 		$this->assertEquals($custom,$mapping);
 		
 		//test jscustom fields mapping 
@@ -71,11 +75,10 @@ class ImportExportTest extends XiUnitTestCase
 		//when there is limited data in database
 		$this->_DBO->loadSql($this->getSqlPath().DS.'testgetUserDataValue.start.sql');
 		$userData = ImpexpPluginExport::getUserData(0,50,$mysess);		
-		$csvData = array (64 => array ('id'=>'64', 'username' => 'shansmith01', 'name' => 'Shannon', 'email' => 'shannon@nomadsworld.com', 'password' => 'd164259c3e82d79bca1ffc6d6db5986c:EizmMsVD0SrcA1cNNENjUyRRxbGrwfhs', 'usertype' => '2','status' =>'','points' =>'','posted_on' =>'','avatar'=>'','thumb'=>'','invite'=>'','params'=>'','alias'=>'','profile_id'=>'','watermark_hash'=>'','storage'=>'','search_email' =>'','friends' =>'','groups'=>''),
-							65 => array ('id'=>'65', 'username' => 'pembaris', 'name' => 'pembaris', 'email' => 'pembaris@gmail.com', 'password' => '9c57460b92ecf9741c40e55deb061f6f:h1JXinxGbBEe9jb4wcOaQIzOsw0PVQWO', 'usertype' => '2','status' =>'','points' =>'','posted_on' =>'','avatar'=>'','thumb'=>'','invite'=>'','params'=>'','alias'=>'','profile_id'=>'','watermark_hash'=>'','storage'=>'','search_email' =>'','friends' =>'','groups'=>''),
-							66 => array ( 'id'=>'66','username' => 'collaborator', 'name' => 'collaborator', 'email' => 'collaborator@bonbon.net', 'password' => 'cf3e4436268bb1cfde6e5f516cad7640:brhPLEExGWTQbMw9CMlIiI7zAdi17i56', 'usertype' => '2','status' =>'','points' =>'','posted_on' =>'','avatar'=>'','thumb'=>'','invite'=>'','params'=>'','alias'=>'','profile_id'=>'','watermark_hash'=>'','storage'=>'','search_email' =>'','friends' =>'','groups'=>''));
-		
-		$this->assertEquals($csvData, $userData);
+		$csvData = array (43 => array ('id'=>'43', 'username' => 'John', 'name' => 'john', 'email' => 'john@gmail.com', 'password' => 'password', 'usertype' => '5', 'status' => 'hieee...:) ', 'points' => '5', 'posted_on' => '0000-00-00 00:00:00', 'avatar' => 'pic1.png', 'thumb' => 'pic1.png', 'invite' => '5', 'params' => '{"notifyEmailSystem":1\n"privacyProfileView":0\n"privacyPhotoView":0\n"privacyFriendsView":0\n"privacyGroupsView":""\n"privacyVideoView":0\n"notifyEmailMessage":1\n"notifyEmailApps":1\n"notifyWallComment":0}', 'alias' => 'abcz', 'profile_id' => '2', 'watermark_hash' => 'pic.png', 'storage' => 'file', 'search_email' => '1', 'friends' => '5', 'groups' => '5', '2' => 'male', '3' => '1988-11-21 23:59:59', '4' => 'hello', '6' => '8080808080', '7' => '014422240208', '8' => 'c-507,Ashok nagar ', '9' => 'Maharastra', '10' => 'Mumbai', '11' => 'India', '12' => 'www.joomlaxi.com', '14' => 'My College', '15' => '2011'),                                                    
+					  	  44 => array ('id'=>'44', 'username' => 'kelvin', 'name' => 'kelvin', 'email' => 'kelvin@gmail.com', 'password' => 'password', 'usertype' => '6', 'status' => 'hieee...:) ', 'points' => '5', 'posted_on' => '0000-00-00 00:00:00', 'avatar' => 'pic1.png', 'thumb' => 'pic1.png', 'invite' => '5', 'params' => '{"notifyEmailSystem":1\n"privacyProfileView":0\n"privacyPhotoView":0\n"privacyFriendsView":0\n"privacyGroupsView":""\n"privacyVideoView":0\n"notifyEmailMessage":1\n"notifyEmailApps":1\n"notifyWallComment":0}', 'alias' => 'abcz', 'profile_id' => '2', 'watermark_hash' => 'pic.png', 'storage' => 'file', 'search_email' => '1', 'friends' => '5', 'groups' => '5', '2' => 'male', '3' => '1991-11-20 23:59:59', '4' => 'hello', '6' => '8088808080', '7' => '014422240208', '8' => 'D-20,azad nagar ', '9' => 'Rajasthan', '10' => 'bhilwara', '11' => 'India', '12' => 'www.xyz.com', '14' => 'My clg', '15' => '2011'),
+					      45 => array ('id'=>'45', 'username' => 'kenny', 'name' => 'kenny', 'email' => 'kenny@gmail.com', 'password' => 'password','usertype' => '6', 'status' => 'hieee...:) ', 'points' => '5', 'posted_on' => '0000-00-00 00:00:00', 'avatar' => 'pic1.png', 'thumb' => 'pic1.png', 'invite' => '5', 'params' => '{"notifyEmailSystem":1\n"privacyProfileView":0\n"privacyPhotoView":0\n"privacyFriendsView":0\n"privacyGroupsView":""\n"privacyVideoView":0\n"notifyEmailMessage":1\n"notifyEmailApps":1\n"notifyWallComment":0}', 'alias' => 'abcz', 'profile_id' => '2', 'watermark_hash' => 'pic.png', 'storage' => 'file', 'search_email' => '1', 'friends' => '5', 'groups' => '5', '2' => 'Female', '3' => '1989-11-19 23:59:59', '4' => 'hello', '6' => '9088808080', '7' => '014422240208', '8' => 'G-421,Gandhi nagar ', '9' => 'Rajasthan', '10' => 'udaipur', '11' => 'India', '12' => 'www.abcd.com', '14' => 'College name', '15' => '2011'));
+	    $this->assertEquals($csvData, $userData);
 		$this->_DBO->loadSql($this->getSqlPath().DS.'testgetUserDataValue.end.sql');
 		
 	}

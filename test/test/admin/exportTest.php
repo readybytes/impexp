@@ -72,23 +72,9 @@ class ExportTest extends XiSelTestCase
    	$this->click('//input[@value="Import Data"]');
    	$this->assertAlert('Username, Password or Email field is not map');
    	
-   	$this->select('csvField0','Username');
-   	$this->select('csvField3','Password');
-   	$this->select('csvField2','Email');
-   	$this->click('//input[@value="Import Data"]');
-   	$this->waitPageLoad();
-   	sleep(30);
-   	
-   	$this->isTextPresent('Users have been imported successfully');
-   	
-   	$element = " //a[@id='existuser']";
-    $this->assertTrue($this->isElementPresent($element));
-    
-    $element = " //a[@id='importeduser']";
-    $this->assertTrue($this->isElementPresent($element));
   }
   
-   function testimportUser()
+   function xtestimportUser()
    {
    	$this->adminLogin();
    	
@@ -114,5 +100,58 @@ class ExportTest extends XiSelTestCase
     $this->assertTrue($this->isElementPresent($element));
     
     $this->_DBO->addTable('#__user_usergroup_map');
+  }
+  
+function testAllFieldWorking()
+  {
+  	
+    $this->open(JOOMLA_LOCATION."administrator/index.php?plugin=importexportCSV&task=uploadFile&tmpl=component");
+   	$this->waitPageLoad("60000");
+   	$this->type('fileUploaded', JOOMLA_FTP_LOCATION.DS.'test'.DS.'test'.DS.'admin'.DS.'user.csv'); 
+   	$this->click('btnUpload');
+   	$this->waitPageLoad();	
+  	
+   $this->select('csvField0','Username');
+   	$this->select('csvField3','Password');
+   	$this->select('csvField2','Email');
+   	$this->select('csvField1','Name');
+   	$this->select('csvField4','Usertype');
+   	$this->select('csvField5','Gender');
+   	$this->select('csvField6','Birthdate');
+   	$this->select('csvField7','About me');
+   	$this->select('csvField8','Mobile phone');
+   	$this->select('csvField9','Land phone');
+   	$this->select('csvField10','Address');
+   	$this->select('csvField11','State');
+   	$this->select('csvField12','City / Town');
+   	$this->select('csvField13','Country');
+   	$this->select('csvField14','Website');
+   	$this->select('csvField15','College / University');
+   	$this->select('csvField16','Graduation Year');
+   	$this->select('csvField17','Status');
+   	$this->select('csvField18','Points');
+   	$this->select('csvField19','Posted_on');
+   	$this->select('csvField20','Avatar');
+   	$this->select('csvField21','Thumb');
+   	$this->select('csvField22','Invite');
+   	$this->select('csvField23','Params');
+   	$this->select('csvField24','Alias');
+   	$this->select('csvField25','Profile_id');
+   	$this->select('csvField26','Watermark_hash');
+   	$this->select('csvField27','Storage');
+   	$this->select('csvField28','Search_email');
+   	$this->select('csvField29','Friends');
+   	$this->select('csvField30','Groups');
+   $this->click('//input[@value="Import Data"]');
+   $this->waitPageLoad();
+   sleep(60);
+   	
+   	$this->isTextPresent('Instead of existing users, All Users are successfully imported.');
+   	
+   	$element = " //a[@id='existuser']";
+    $this->assertTrue($this->isElementPresent($element));
+    
+    $element = " //a[@id='importeduser']";
+    $this->assertTrue($this->isElementPresent($element));
   }
 }
