@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Copying Import Export Plugin data to SVN" basedir="." default="copy_to_svn">
+
+	<property name="target" value="@local.repository.location@"
+		override="true" />
+	<property name="source" value="${project.basedir}" override="true" />
+
+	<!-- Copy Target -->
+	<target name="copy_to_svn" description="copy target">
+		<phingcall target="copy_impexppkg" />
+	</target>
+
+
+	<target name="copy_impexppkg">
+
+		<copy 	file="${source}/administrator/language/en-GB/en-GB.plg_importexport_csv.ini" 
+			tofile="${target}/source/languages/en-GB.plg_importexport_csv.ini" />
+
+		<copy todir="${target}/source/">
+			<fileset dir="${source}/plugins/system/">
+				<include name="importexport_csv**" />
+			</fileset>
+		</copy>
+				
+		<copy todir="${target}/test">
+			<fileset dir="${source}/test/">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+
+		<copy file="${source}/build.xml" tofile="${target}/scripts/rev_build.xml" />
+		<copy file="${source}/delete.xml" tofile="${target}/scripts/rev_delete.xml" />
+	</target>
+</project>

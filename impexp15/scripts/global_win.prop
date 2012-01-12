@@ -1,0 +1,24 @@
+### Version 1.5
+### We store globally definition here
+
+# The root folder location
+dir.root	=${project.basedir}\..
+dir.packages	=${dir.root}\packages
+dir.tmp		=${dir.packages}\tmp
+dir.src		=${dir.root}\source
+dir.report	=${dir.root}\data\report
+
+# where to pick source code
+code.source	=wc
+
+#change project code names
+project.shortform	= IMPEXP
+project.shortform.small = impexp
+project.codename	= Kautilya
+
+
+# Output settings
+file.version		= 2.5
+file.package		= ${project.shortform}_ver${file.version}
+file.compression	= gzip
+file.extension		= .zip

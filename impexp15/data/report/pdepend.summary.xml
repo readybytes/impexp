@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metrics generated="2010-04-26T20:29:56" pdepend="0.9.11" ahh="1.65217391304" andc="0.127659574468" calls="502" ccn="361" ccn2="371" cloc="1102" clsa="5" clsc="48" eloc="1772" fanout="154" leafs="31" loc="3497" maxDIT="2" ncloc="2395" noc="57" nof="6" noi="0" nom="170" nop="4" roots="17">
+  <files>
+    <file name="/vobs/xiec/trunk/source/admin/installer/helper.php" cloc="15" eloc="30" loc="59" ncloc="44"/>
+    <file name="/vobs/xiec/trunk/source/admin/installer/installer.php" cloc="39" eloc="52" loc="119" ncloc="80"/>
+    <file name="/vobs/xiec/trunk/source/admin/installer/patches/patches.php" cloc="17" eloc="38" loc="71" ncloc="54"/>
+    <file name="/vobs/xiec/trunk/source/site/helpers/loader.php" cloc="10" eloc="37" loc="55" ncloc="45"/>
+    <file name="/vobs/xiec/trunk/source/site/helpers/toolbar.php" cloc="238" eloc="174" loc="454" ncloc="216"/>
+    <file name="/vobs/xiec/trunk/source/site/helpers/version.php" cloc="5" eloc="15" loc="24" ncloc="19"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/controller.php" cloc="153" eloc="317" loc="578" ncloc="425"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/database.php" cloc="9" eloc="21" loc="38" ncloc="29"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/document.php" cloc="9" eloc="6" loc="21" ncloc="12"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/element.php" cloc="5" eloc="5" loc="15" ncloc="10"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/error.php" cloc="12" eloc="12" loc="34" ncloc="22"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/factory.php" cloc="27" eloc="61" loc="112" ncloc="85"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/html.php" cloc="5" eloc="5" loc="15" ncloc="10"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/model.php" cloc="132" eloc="273" loc="499" ncloc="367"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/object.php" cloc="5" eloc="8" loc="18" ncloc="13"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/pagination.php" cloc="10" eloc="22" loc="43" ncloc="33"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/plugin.php" cloc="5" eloc="6" loc="16" ncloc="11"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/query.php" cloc="13" eloc="8" loc="28" ncloc="15"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/route.php" cloc="10" eloc="9" loc="24" ncloc="14"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/state.php" cloc="51" eloc="75" loc="146" ncloc="95"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/table.php" cloc="58" eloc="166" loc="279" ncloc="221"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/text.php" cloc="6" eloc="9" loc="20" ncloc="14"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/toolbar.php" cloc="26" eloc="21" loc="58" ncloc="32"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/base/view.php" cloc="57" eloc="81" loc="164" ncloc="107"/>
+    <file name="/vobs/xiec/trunk/source/site/views/product/view.html.php" cloc="5" eloc="4" loc="11" ncloc="6"/>
+    <file name="/vobs/xiec/trunk/source/admin/install.xiec.php" cloc="6" eloc="8" loc="20" ncloc="14"/>
+    <file name="/vobs/xiec/trunk/source/install.xiec.php" cloc="6" eloc="8" loc="20" ncloc="14"/>
+    <file name="/vobs/xiec/trunk/source/site/helpers/context.php" cloc="5" eloc="8" loc="18" ncloc="13"/>
+    <file name="/vobs/xiec/trunk/source/site/helpers/events.php" cloc="7" eloc="6" loc="17" ncloc="10"/>
+    <file name="/vobs/xiec/trunk/source/site/helpers/table.php" cloc="13" eloc="11" loc="33" ncloc="20"/>
+    <file name="/vobs/xiec/trunk/source/site/controllers/product.php" cloc="13" eloc="5" loc="23" ncloc="10"/>
+    <file name="/vobs/xiec/trunk/source/site/libraries/J16/databasequery.php" cloc="104" eloc="261" loc="421" ncloc="317"/>
+    <file name="/vobs/xiec/trunk/source/site/models/product.php" cloc="13" eloc="5" loc="21" ncloc="8"/>
+    <file name="/vobs/xiec/trunk/source/site/tables/product.php" cloc="13" eloc="5" loc="23" ncloc="10"/>
+  </files>
+  <package name="+global" cr="0.405" noc="52" nof="6" noi="0" nom="150" rcr="0.2775">
+    <class name="XiecInstallHelper" cis="8" cloc="10" cr="0.15" csz="8" dit="0" eloc="27" impl="0" loc="47" ncloc="37" noam="0" nocc="0" nom="2" noom="0" rcr="0.15" vars="0" varsi="0" varsnp="0" wmc="8" wmci="8" wmcnp="8">
+      <file name="/vobs/xiec/trunk/source/admin/installer/helper.php"/>
+      <method name="addError" ccn="4" ccn2="4" cloc="2" eloc="10" loc="17" ncloc="15" npath="8"/>
+      <method name="applySqlFile" ccn="4" ccn2="4" cloc="4" eloc="13" loc="22" ncloc="18" npath="6"/>
+    </class>
+    <class name="XiecInstaller" cis="11" cloc="32" cr="0.15" csz="11" dit="2" eloc="44" impl="0" loc="97" ncloc="65" noam="3" nocc="0" nom="3" noom="0" rcr="0.1925" vars="0" varsi="0" varsnp="0" wmc="11" wmci="11" wmcnp="11">
+      <file name="/vobs/xiec/trunk/source/admin/installer/installer.php"/>
+      <method name="execute" ccn="4" ccn2="4" cloc="9" eloc="17" loc="36" ncloc="27" npath="8"/>
+      <method name="installExtensions" ccn="5" ccn2="5" cloc="6" eloc="16" loc="30" ncloc="24" npath="12"/>
+      <method name="applyPatches" ccn="2" ccn2="2" cloc="4" eloc="6" loc="13" ncloc="9" npath="2"/>
+    </class>
+    <class name="XiecPatch" cis="8" cloc="12" cr="0.15" csz="8" dit="0" eloc="34" impl="0" loc="60" ncloc="48" noam="0" nocc="0" nom="5" noom="0" rcr="0.15" vars="0" varsi="0" varsnp="0" wmc="8" wmci="8" wmcnp="8">
+      <file name="/vobs/xiec/trunk/source/admin/installer/patches/patches.php"/>
+      <method name="applyPatches" ccn="4" ccn2="4" cloc="2" eloc="11" loc="17" ncloc="15" npath="6"/>
+      <method name="firstPatch" ccn="1" ccn2="1" cloc="3" eloc="4" loc="10" ncloc="7" npath="1"/>
+      <method name="secondPatch" ccn="1" ccn2="1" cloc="2" eloc="4" loc="8" ncloc="6" npath="1"/>
+      <method name="testPatch1" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="testPatch2" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+    </class>
+    <class name="XiHelperLoader" cis="6" cloc="4" cr="0.15" csz="6" dit="0" eloc="28" impl="0" loc="36" ncloc="32" noam="0" nocc="0" nom="3" noom="0" rcr="0.15" vars="0" varsi="0" varsnp="0" wmc="6" wmci="6" wmcnp="6">
+      <file name="/vobs/xiec/trunk/source/site/helpers/loader.php"/>
+      <method name="addAutoLoadFolder" ccn="2" ccn2="2" cloc="1" eloc="9" loc="11" ncloc="10" npath="2"/>
+      <method name="addAutoLoadViews" ccn="2" ccn2="2" cloc="1" eloc="10" loc="13" ncloc="12" npath="2"/>
+      <method name="includeFolder" ccn="2" ccn2="2" cloc="0" eloc="4" loc="5" ncloc="5" npath="2"/>
+    </class>
+    <class name="XiHelperToolbar" cis="33" cloc="233" cr="0.15" csz="33" dit="2" eloc="171" impl="0" loc="443" ncloc="210" noam="31" nocc="0" nom="31" noom="0" rcr="0.1925" vars="0" varsi="0" varsnp="0" wmc="33" wmci="33" wmcnp="33">
+      <file name="/vobs/xiec/trunk/source/site/helpers/toolbar.php"/>
+      <method name="title" ccn="1" ccn2="1" cloc="1" eloc="8" loc="13" ncloc="12" npath="1"/>
+      <method name="spacer" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="divider" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="custom" ccn="1" ccn2="1" cloc="2" eloc="5" loc="10" ncloc="8" npath="1"/>
+      <method name="customX" ccn="1" ccn2="1" cloc="2" eloc="5" loc="10" ncloc="8" npath="1"/>
+      <method name="preview" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="help" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="back" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="media_manager" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="addNew" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="addNewX" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="publish" ccn="1" ccn2="1" cloc="2" eloc="4" loc="7" ncloc="5" npath="1"/>
+      <method name="publishList" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="makeDefault" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="assign" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="unpublish" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="unpublishList" ccn="1" ccn2="1" cloc="1" eloc="4" loc="7" ncloc="6" npath="1"/>
+      <method name="archiveList" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="unarchiveList" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="editList" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="editListX" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="editHtml" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="editHtmlX" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="editCss" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="editCssX" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="deleteList" ccn="2" ccn2="2" cloc="1" eloc="8" loc="10" ncloc="9" npath="2"/>
+      <method name="deleteListX" ccn="2" ccn2="2" cloc="1" eloc="8" loc="10" ncloc="9" npath="2"/>
+      <method name="trash" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="apply" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="save" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="cancel" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+    </class>
+    <class name="XiHelperVersion" cis="2" cloc="0" cr="0.15" csz="2" dit="0" eloc="11" impl="0" loc="13" ncloc="13" noam="0" nocc="0" nom="1" noom="0" rcr="0.15" vars="0" varsi="0" varsnp="0" wmc="2" wmci="2" wmcnp="2">
+      <file name="/vobs/xiec/trunk/source/site/helpers/version.php"/>
+      <method name="getJoomlaVersion" ccn="2" ccn2="2" cloc="0" eloc="8" loc="10" ncloc="10" npath="2"/>
+    </class>
+    <class name="XiController" cis="70" cloc="143" cr="0.2775" csz="73" dit="2" eloc="313" impl="0" loc="561" ncloc="418" noam="32" nocc="1" nom="32" noom="0" rcr="0.2775" vars="2" varsi="2" varsnp="0" wmc="71" wmci="71" wmcnp="70">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/controller.php"/>
+      <method name="__construct" ccn="1" ccn2="1" cloc="1" eloc="4" loc="7" ncloc="6" npath="1"/>
+      <method name="_addTaskMapping" ccn="1" ccn2="1" cloc="4" eloc="11" loc="20" ncloc="16" npath="1"/>
+      <method name="getError" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="setError" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="getName" ccn="3" ccn2="3" cloc="0" eloc="12" loc="15" ncloc="15" npath="3"/>
+      <method name="getPrefix" ccn="3" ccn2="4" cloc="0" eloc="10" loc="13" ncloc="13" npath="6"/>
+      <method name="getContext" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="getModel" ccn="3" ccn2="3" cloc="0" eloc="8" loc="12" ncloc="12" npath="4"/>
+      <method name="getView" ccn="3" ccn2="3" cloc="1" eloc="8" loc="13" ncloc="12" npath="4"/>
+      <method name="setRedirect" ccn="2" ccn2="2" cloc="0" eloc="5" loc="7" ncloc="7" npath="2"/>
+      <method name="execute" ccn="1" ccn2="1" cloc="6" eloc="8" loc="19" ncloc="13" npath="1"/>
+      <method name="authorize" ccn="1" ccn2="1" cloc="1" eloc="3" loc="5" ncloc="4" npath="1"/>
+      <method name="display" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="_display" ccn="1" ccn2="1" cloc="1" eloc="3" loc="5" ncloc="4" npath="1"/>
+      <method name="view" ccn="2" ccn2="2" cloc="1" eloc="9" loc="11" ncloc="10" npath="2"/>
+      <method name="_view" ccn="1" ccn2="1" cloc="0" eloc="1" loc="2" ncloc="2" npath="1"/>
+      <method name="edit" ccn="2" ccn2="2" cloc="1" eloc="10" loc="13" ncloc="12" npath="2"/>
+      <method name="_edit" ccn="3" ccn2="3" cloc="4" eloc="9" loc="17" ncloc="13" npath="4"/>
+      <method name="checkin" ccn="2" ccn2="2" cloc="2" eloc="10" loc="14" ncloc="12" npath="2"/>
+      <method name="_checkin" ccn="3" ccn2="3" cloc="4" eloc="9" loc="17" ncloc="13" npath="4"/>
+      <method name="close" ccn="2" ccn2="2" cloc="2" eloc="5" loc="9" ncloc="7" npath="2"/>
+      <method name="_close" ccn="2" ccn2="2" cloc="3" eloc="7" loc="13" ncloc="10" npath="2"/>
+      <method name="save" ccn="3" ccn2="3" cloc="3" eloc="11" loc="18" ncloc="15" npath="4"/>
+      <method name="_save" ccn="2" ccn2="2" cloc="3" eloc="7" loc="13" ncloc="10" npath="2"/>
+      <method name="remove" ccn="4" ccn2="4" cloc="1" eloc="17" loc="22" ncloc="21" npath="6"/>
+      <method name="_remove" ccn="3" ccn2="3" cloc="4" eloc="9" loc="17" ncloc="13" npath="4"/>
+      <method name="order" ccn="2" ccn2="2" cloc="3" eloc="9" loc="15" ncloc="12" npath="2"/>
+      <method name="multiorder" ccn="4" ccn2="4" cloc="4" eloc="19" loc="29" ncloc="25" npath="6"/>
+      <method name="_order" ccn="2" ccn2="2" cloc="3" eloc="7" loc="13" ncloc="10" npath="2"/>
+      <method name="dobool" ccn="3" ccn2="3" cloc="4" eloc="16" loc="27" ncloc="23" npath="4"/>
+      <method name="multidobool" ccn="5" ccn2="5" cloc="5" eloc="28" loc="42" ncloc="37" npath="12"/>
+      <method name="_doBool" ccn="2" ccn2="2" cloc="3" eloc="7" loc="13" ncloc="10" npath="2"/>
+    </class>
+    <class name="XiDatabase" cis="4" cloc="0" cr="0.15" csz="4" dit="2" eloc="18" impl="0" loc="23" ncloc="23" noam="3" nocc="0" nom="3" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="4" wmci="4" wmcnp="4">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/database.php"/>
+      <method name="__construct" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="getInstance" ccn="2" ccn2="2" cloc="0" eloc="7" loc="10" ncloc="10" npath="2"/>
+      <method name="__destruct" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+    </class>
+    <class name="XiDocument" cis="0" cloc="0" cr="0.15" csz="0" dit="2" eloc="2" impl="0" loc="4" ncloc="4" noam="0" nocc="0" nom="0" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="0" wmci="0" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/document.php"/>
+    </class>
+    <class name="XiElement" cis="0" cloc="0" cr="0.15" csz="0" dit="2" eloc="2" impl="0" loc="4" ncloc="4" noam="0" nocc="0" nom="0" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="0" wmci="0" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/element.php"/>
+    </class>
+    <class name="XiError" cis="2" cloc="7" cr="0.15" csz="2" dit="2" eloc="9" impl="0" loc="23" ncloc="16" noam="2" nocc="0" nom="2" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="2" wmci="2" wmcnp="2">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/error.php"/>
+      <method name="assertValue" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="assertType" ccn="1" ccn2="1" cloc="0" eloc="2" loc="4" ncloc="4" npath="1"/>
+    </class>
+    <class name="XiFactory" cis="9" cloc="22" cr="0.15" csz="9" dit="2" eloc="58" impl="0" loc="102" ncloc="80" noam="4" nocc="0" nom="4" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="9" wmci="9" wmcnp="9">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/factory.php"/>
+      <method name="getInstance" ccn="2" ccn2="2" cloc="6" eloc="11" loc="24" ncloc="18" npath="2"/>
+      <method name="getErrorObject" ccn="2" ccn2="2" cloc="0" eloc="7" loc="11" ncloc="11" npath="2"/>
+      <method name="getDBO" ccn="2" ccn2="2" cloc="2" eloc="6" loc="11" ncloc="9" npath="2"/>
+      <method name="_createDBO" ccn="3" ccn2="3" cloc="0" eloc="28" loc="36" ncloc="36" npath="4"/>
+    </class>
+    <class name="XiHTML" cis="0" cloc="0" cr="0.15" csz="0" dit="2" eloc="2" impl="0" loc="4" ncloc="4" noam="0" nocc="0" nom="0" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="0" wmci="0" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/html.php"/>
+    </class>
+    <class name="XiModel" cis="71" cloc="106" cr="0.2775" csz="75" dit="2" eloc="235" impl="0" loc="422" ncloc="316" noam="18" nocc="1" nom="18" noom="0" rcr="0.2775" vars="4" varsi="4" varsnp="0" wmc="71" wmci="71" wmcnp="71">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/model.php"/>
+      <method name="__construct" ccn="3" ccn2="3" cloc="3" eloc="8" loc="15" ncloc="12" npath="4"/>
+      <method name="getError" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="setError" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="getName" ccn="3" ccn2="3" cloc="0" eloc="12" loc="15" ncloc="15" npath="3"/>
+      <method name="getPrefix" ccn="3" ccn2="4" cloc="0" eloc="10" loc="13" ncloc="13" npath="6"/>
+      <method name="getQuery" ccn="2" ccn2="2" cloc="5" eloc="7" loc="16" ncloc="11" npath="2"/>
+      <method name="getTotal" ccn="2" ccn2="2" cloc="0" eloc="7" loc="10" ncloc="10" npath="2"/>
+      <method name="getPagination" ccn="2" ccn2="2" cloc="0" eloc="6" loc="8" ncloc="8" npath="2"/>
+      <method name="getRecords" ccn="2" ccn2="2" cloc="0" eloc="7" loc="10" ncloc="10" npath="2"/>
+      <method name="getTable" ccn="2" ccn2="2" cloc="0" eloc="6" loc="8" ncloc="8" npath="2"/>
+      <method name="getState" ccn="2" ccn2="2" cloc="2" eloc="5" loc="9" ncloc="7" npath="2"/>
+      <method name="getId" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="checkout" ccn="9" ccn2="10" cloc="9" eloc="31" loc="52" ncloc="43" npath="384"/>
+      <method name="checkin" ccn="9" ccn2="10" cloc="8" eloc="28" loc="46" ncloc="38" npath="384"/>
+      <method name="save" ccn="7" ccn2="9" cloc="7" eloc="24" loc="38" ncloc="31" npath="108"/>
+      <method name="delete" ccn="5" ccn2="5" cloc="6" eloc="16" loc="28" ncloc="22" npath="16"/>
+      <method name="order" ccn="5" ccn2="6" cloc="6" eloc="16" loc="28" ncloc="22" npath="24"/>
+      <method name="boolean" ccn="5" ccn2="6" cloc="5" eloc="16" loc="27" ncloc="22" npath="24"/>
+    </class>
+    <class name="XiModelQueryBuilder" cis="2" cloc="17" cr="0.15" csz="10" dit="0" eloc="33" impl="0" loc="59" ncloc="42" noam="0" nocc="0" nom="5" noom="0" rcr="0.15" vars="0" varsi="0" varsnp="0" wmc="10" wmci="10" wmcnp="2">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/model.php"/>
+      <method name="_" ccn="2" ccn2="2" cloc="0" eloc="5" loc="7" ncloc="7" npath="2"/>
+      <method name="call" ccn="3" ccn2="3" cloc="0" eloc="6" loc="8" ncloc="8" npath="4"/>
+      <method name="_buildQueryFields" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="_buildQueryFrom" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="_buildQueryOrder" ccn="3" ccn2="3" cloc="1" eloc="8" loc="12" ncloc="11" npath="4"/>
+    </class>
+    <class name="XiObject" cis="0" cloc="0" cr="0.2775" csz="3" dit="2" eloc="5" impl="0" loc="6" ncloc="6" noam="0" nocc="1" nom="0" noom="0" rcr="0.1925" vars="3" varsi="3" varsnp="0" wmc="0" wmci="0" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/object.php"/>
+    </class>
+    <class name="XiPagination" cis="3" cloc="5" cr="0.15" csz="3" dit="2" eloc="18" impl="0" loc="32" ncloc="27" noam="2" nocc="0" nom="2" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="3" wmci="3" wmcnp="3">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/pagination.php"/>
+      <method name="__construct" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="initDefaultStates" ccn="2" ccn2="2" cloc="5" eloc="10" loc="21" ncloc="16" npath="5"/>
+    </class>
+    <class name="XiPlugin" cis="0" cloc="0" cr="0.15" csz="0" dit="2" eloc="2" impl="0" loc="4" ncloc="4" noam="0" nocc="0" nom="0" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="0" wmci="0" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/plugin.php"/>
+    </class>
+    <class name="XiQuery" cis="0" cloc="0" cr="0.15" csz="0" dit="1" eloc="2" impl="0" loc="4" ncloc="4" noam="0" nocc="0" nom="0" noom="0" rcr="0.2775" vars="0" varsi="12" varsnp="0" wmc="0" wmci="49" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/query.php"/>
+    </class>
+    <class name="XiRoute" cis="1" cloc="3" cr="0.15" csz="1" dit="2" eloc="6" impl="0" loc="11" ncloc="8" noam="1" nocc="0" nom="1" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="1" wmci="1" wmcnp="1">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/route.php"/>
+      <method name="_" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+    </class>
+    <class name="XiStates" cis="9" cloc="46" cr="0.15" csz="14" dit="3" eloc="72" impl="0" loc="135" ncloc="89" noam="8" nocc="0" nom="8" noom="0" rcr="0.313625" vars="5" varsi="8" varsnp="0" wmc="9" wmci="9" wmcnp="9">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/state.php"/>
+      <method name="__construct" ccn="1" ccn2="1" cloc="0" eloc="9" loc="12" ncloc="12" npath="1"/>
+      <method name="populateStates" ccn="2" ccn2="2" cloc="0" eloc="11" loc="16" ncloc="16" npath="2"/>
+      <method name="setState" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="getFilterName" ccn="1" ccn2="1" cloc="4" eloc="8" loc="12" ncloc="8" npath="1"/>
+      <method name="getStateVarName" ccn="1" ccn2="1" cloc="3" eloc="7" loc="11" ncloc="8" npath="1"/>
+      <method name="getStateType" ccn="1" ccn2="1" cloc="1" eloc="6" loc="10" ncloc="9" npath="1"/>
+      <method name="addToQuery" ccn="1" ccn2="1" cloc="1" eloc="2" loc="4" ncloc="3" npath="1"/>
+      <method name="getDefaultStates" ccn="1" ccn2="1" cloc="3" eloc="11" loc="19" ncloc="16" npath="1"/>
+    </class>
+    <class name="XiTable" cis="31" cloc="53" cr="0.2775" csz="42" dit="2" eloc="163" impl="0" loc="269" ncloc="216" noam="16" nocc="1" nom="16" noom="0" rcr="0.2775" vars="3" varsi="3" varsnp="0" wmc="39" wmci="39" wmcnp="31">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/table.php"/>
+      <method name="getName" ccn="3" ccn2="3" cloc="0" eloc="12" loc="15" ncloc="15" npath="3"/>
+      <method name="getError" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="setError" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="getPrefix" ccn="3" ccn2="3" cloc="0" eloc="10" loc="13" ncloc="13" npath="4"/>
+      <method name="getContext" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="__construct" ccn="1" ccn2="1" cloc="6" eloc="9" loc="20" ncloc="14" npath="1"/>
+      <method name="_loadTableProps" ccn="5" ccn2="5" cloc="3" eloc="17" loc="26" ncloc="23" npath="10"/>
+      <method name="getColumns" ccn="2" ccn2="2" cloc="0" eloc="11" loc="14" ncloc="14" npath="2"/>
+      <method name="get" ccn="2" ccn2="2" cloc="0" eloc="5" loc="7" ncloc="7" npath="2"/>
+      <method name="set" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="load" ccn="1" ccn2="1" cloc="2" eloc="3" loc="6" ncloc="4" npath="1"/>
+      <method name="store" ccn="3" ccn2="3" cloc="3" eloc="9" loc="16" ncloc="13" npath="4"/>
+      <method name="save" ccn="4" ccn2="4" cloc="0" eloc="14" loc="18" ncloc="18" npath="8"/>
+      <method name="delete" ccn="3" ccn2="3" cloc="3" eloc="9" loc="16" ncloc="13" npath="4"/>
+      <method name="_triggerEvent" ccn="3" ccn2="3" cloc="3" eloc="10" loc="17" ncloc="14" npath="4"/>
+      <method name="boolean" ccn="5" ccn2="5" cloc="4" eloc="19" loc="28" ncloc="24" npath="40"/>
+    </class>
+    <class name="XiText" cis="1" cloc="1" cr="0.15" csz="1" dit="2" eloc="6" impl="0" loc="9" ncloc="8" noam="1" nocc="0" nom="1" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="1" wmci="1" wmcnp="1">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/text.php"/>
+      <method name="_" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+    </class>
+    <class name="XiToolbar" cis="4" cloc="21" cr="0.15" csz="4" dit="2" eloc="17" impl="0" loc="46" ncloc="25" noam="2" nocc="0" nom="2" noom="0" rcr="0.2775" vars="0" varsi="0" varsnp="0" wmc="4" wmci="4" wmcnp="4">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/toolbar.php"/>
+      <method name="__construct" ccn="1" ccn2="1" cloc="3" eloc="3" loc="8" ncloc="5" npath="1"/>
+      <method name="getInstance" ccn="3" ccn2="3" cloc="0" eloc="10" loc="14" ncloc="14" npath="4"/>
+    </class>
+    <class name="XiView" cis="18" cloc="50" cr="0.2775" csz="20" dit="2" eloc="77" impl="0" loc="150" ncloc="100" noam="11" nocc="1" nom="11" noom="0" rcr="0.2775" vars="1" varsi="1" varsnp="1" wmc="19" wmci="19" wmcnp="17">
+      <file name="/vobs/xiec/trunk/source/site/libraries/base/view.php"/>
+      <method name="__construct" ccn="1" ccn2="1" cloc="4" eloc="7" loc="12" ncloc="8" npath="1"/>
+      <method name="getError" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="setError" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1"/>
+      <method name="getName" ccn="3" ccn2="3" cloc="0" eloc="12" loc="15" ncloc="15" npath="3"/>
+      <method name="getPrefix" ccn="3" ccn2="4" cloc="0" eloc="10" loc="13" ncloc="13" npath="6"/>
+      <method name="showTask" ccn="3" ccn2="4" cloc="4" eloc="12" loc="20" ncloc="16" npath="6"/>
+      <method name="_showHeader" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="_showFooter" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="display" ccn="1" ccn2="1" cloc="1" eloc="4" loc="6" ncloc="5" npath="1"/>
+      <method name="view" ccn="1" ccn2="1" cloc="1" eloc="2" loc="4" ncloc="3" npath="1"/>
+      <method name="edit" ccn="1" ccn2="1" cloc="1" eloc="2" loc="4" ncloc="3" npath="1"/>
+    </class>
+    <class name="XiecViewProduct" cis="0" cloc="0" cr="0.15" csz="0" dit="3" eloc="1" impl="0" loc="2" ncloc="2" noam="0" nocc="0" nom="0" noom="0" rcr="0.385875" vars="0" varsi="1" varsnp="0" wmc="0" wmci="19" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/views/product/view.html.php"/>
+    </class>
+    <function name="com_install" ccn="1" ccn2="1" cloc="1" eloc="5" loc="9" ncloc="8" npath="1">
+      <file name="/vobs/xiec/trunk/source/admin/install.xiec.php"/>
+    </function>
+    <function name="com_install" ccn="1" ccn2="1" cloc="1" eloc="5" loc="9" ncloc="8" npath="1">
+      <file name="/vobs/xiec/trunk/source/install.xiec.php"/>
+    </function>
+    <function name="getObjectContext" ccn="1" ccn2="1" cloc="0" eloc="4" loc="5" ncloc="5" npath="1">
+      <file name="/vobs/xiec/trunk/source/site/helpers/context.php"/>
+    </function>
+    <function name="XiecTriggerEvent" ccn="1" ccn2="1" cloc="2" eloc="3" loc="7" ncloc="5" npath="1">
+      <file name="/vobs/xiec/trunk/source/site/helpers/events.php"/>
+    </function>
+    <function name="XiImport" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1">
+      <file name="/vobs/xiec/trunk/source/site/helpers/loader.php"/>
+    </function>
+    <function name="isTableExist" ccn="2" ccn2="2" cloc="3" eloc="7" loc="14" ncloc="11" npath="5">
+      <file name="/vobs/xiec/trunk/source/site/helpers/table.php"/>
+    </function>
+  </package>
+  <package name="XiEC\Controller" cr="0.15" noc="1" nof="0" noi="0" nom="0" rcr="0.228625">
+    <class name="XiecControllerProduct" cis="0" cloc="0" cr="0.15" csz="0" dit="3" eloc="2" impl="0" loc="5" ncloc="5" noam="0" nocc="0" nom="0" noom="0" rcr="0.385875" vars="0" varsi="2" varsnp="0" wmc="0" wmci="71" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/controllers/product.php"/>
+    </class>
+  </package>
+  <package name="Joomla.Framework\Database" cr="0.49425" noc="2" nof="0" noi="0" nom="20" rcr="0.15">
+    <class name="JDatabaseQueryElement" cis="4" cloc="15" cr="0.15" csz="7" dit="0" eloc="24" impl="0" loc="46" ncloc="31" noam="0" nocc="0" nom="3" noom="0" rcr="0.15" vars="3" varsi="3" varsnp="0" wmc="4" wmci="4" wmcnp="4">
+      <file name="/vobs/xiec/trunk/source/site/libraries/J16/databasequery.php"/>
+      <method name="__construct" ccn="1" ccn2="1" cloc="0" eloc="6" loc="8" ncloc="8" npath="1"/>
+      <method name="__toString" ccn="1" ccn2="1" cloc="0" eloc="3" loc="4" ncloc="4" npath="1"/>
+      <method name="append" ccn="2" ccn2="2" cloc="0" eloc="7" loc="8" ncloc="8" npath="2"/>
+    </class>
+    <class name="JDatabaseQuery" cis="49" cloc="70" cr="0.2775" csz="61" dit="0" eloc="233" impl="0" loc="351" ncloc="281" noam="0" nocc="1" nom="17" noom="0" rcr="0.15" vars="12" varsi="12" varsnp="0" wmc="49" wmci="49" wmcnp="49">
+      <file name="/vobs/xiec/trunk/source/site/libraries/J16/databasequery.php"/>
+      <method name="clear" ccn="12" ccn2="12" cloc="0" eloc="56" loc="58" ncloc="58" npath="12"/>
+      <method name="select" ccn="2" ccn2="2" cloc="0" eloc="9" loc="11" ncloc="11" npath="2"/>
+      <method name="delete" ccn="1" ccn2="1" cloc="0" eloc="5" loc="6" ncloc="6" npath="1"/>
+      <method name="insert" ccn="1" ccn2="1" cloc="0" eloc="5" loc="6" ncloc="6" npath="1"/>
+      <method name="update" ccn="1" ccn2="1" cloc="0" eloc="5" loc="6" ncloc="6" npath="1"/>
+      <method name="from" ccn="2" ccn2="2" cloc="0" eloc="8" loc="10" ncloc="10" npath="2"/>
+      <method name="join" ccn="2" ccn2="2" cloc="0" eloc="7" loc="9" ncloc="9" npath="2"/>
+      <method name="innerJoin" ccn="1" ccn2="1" cloc="0" eloc="4" loc="6" ncloc="6" npath="1"/>
+      <method name="outerJoin" ccn="1" ccn2="1" cloc="0" eloc="4" loc="6" ncloc="6" npath="1"/>
+      <method name="leftJoin" ccn="1" ccn2="1" cloc="0" eloc="4" loc="6" ncloc="6" npath="1"/>
+      <method name="rightJoin" ccn="1" ccn2="1" cloc="0" eloc="4" loc="6" ncloc="6" npath="1"/>
+      <method name="set" ccn="2" ccn2="2" cloc="0" eloc="9" loc="11" ncloc="11" npath="2"/>
+      <method name="where" ccn="2" ccn2="2" cloc="0" eloc="9" loc="11" ncloc="11" npath="2"/>
+      <method name="group" ccn="2" ccn2="2" cloc="0" eloc="8" loc="10" ncloc="10" npath="2"/>
+      <method name="having" ccn="2" ccn2="2" cloc="0" eloc="9" loc="11" ncloc="11" npath="2"/>
+      <method name="order" ccn="2" ccn2="2" cloc="0" eloc="8" loc="10" ncloc="10" npath="2"/>
+      <method name="__toString" ccn="14" ccn2="14" cloc="1" eloc="48" loc="55" ncloc="54" npath="54"/>
+    </class>
+  </package>
+  <package name="XiEC\Tables" cr="0.15" noc="2" nof="0" noi="0" nom="0" rcr="0.30725">
+    <class name="XiecModelProduct" cis="0" cloc="0" cr="0.15" csz="0" dit="3" eloc="2" impl="0" loc="3" ncloc="3" noam="0" nocc="0" nom="0" noom="0" rcr="0.385875" vars="0" varsi="4" varsnp="0" wmc="0" wmci="71" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/models/product.php"/>
+    </class>
+    <class name="XiecTableProduct" cis="0" cloc="0" cr="0.15" csz="0" dit="3" eloc="2" impl="0" loc="4" ncloc="4" noam="0" nocc="0" nom="0" noom="0" rcr="0.385875" vars="0" varsi="3" varsnp="0" wmc="0" wmci="31" wmcnp="0">
+      <file name="/vobs/xiec/trunk/source/site/tables/product.php"/>
+    </class>
+  </package>
+</metrics>
