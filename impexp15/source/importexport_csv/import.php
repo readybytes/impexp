@@ -68,9 +68,10 @@ class ImpexpPluginImport
 		if(!isset($fileCSV['tmp_name']) || empty($fileCSV['tmp_name'])){
 			return $this->getUploaderHtml();
 		}
+		$seperator  = JRequest::getVar('seperator','","');
         $overwrite  = JRequest::getVar('overwrite','0');
         $mysess->set('overwrite',$overwrite);
-		
+		$mysess->set('seperator',$seperator);
 		// set password format value in session
 		$mysess->set('passwordFormat', JRequest::getVar('passwordFormat','joomla'), 'importCSV');
 		
@@ -79,7 +80,35 @@ class ImpexpPluginImport
 			
 		JFile::copy($fileCSV['tmp_name'], $storagePath.'import.csv');
 		$file 	 = fopen($storagePath.'import.csv', "r");
-		$columns = explode(',', array_shift(fgetcsv($file, 1, "\n")));
+
+        /**XITODO:
+		* Why we can't use explode(',', array_shift(fgetcsv($file, 1, "\n")));
+		* instead of fgetcsv($file, 0, "\n")
+		*/
+
+        //fgetsv removes the doubleQuotes from the first field of string.
+		$columns = fgetcsv($file, 0, "\n");
+
+		//**XITODO:
+           *Why check this condition manually,Try to clean this code
+          /*
+		if(strlen($seperator) == 3){
+			$seperator = substr($seperator,1); //remove first letter for eg-"," as ,"
+			$mysess->set('seperator',$seperator);
+		}
+	    $pos = explode($seperator,(string)$columns[0]);
+		//If only one array found after exploding string then show error msg
+		if(sizeof($pos)==1){
+			?>
+			<div style="width:100%;margin:200px 0;text-align:center;color:#6699cc;">
+			<a style ="color:#6699cc;" href="http://joomlaxi.com/support/documentation/item/importing-user.html" target="_blank">
+			<?php 
+			echo JText::_("SEPERATOR_DOES_NOT_MATCH");
+			?></a></div>
+			<?php 
+			exit();
+		}
+		$columns = $this->removeQuotes($columns, $seperator);
 		$this->setIndexingInSession($file, $mysess);
 		fclose($file);
 		
@@ -230,6 +259,7 @@ class ImpexpPluginImport
 				$fieldMapping = $mysess->get('fieldMapping', array(), 'importCSV');
 				$fileIndex    = $mysess->get('fileIndex', array(), 'importCSV');
                 $overwrite    = $mysess->get('overwrite');
+                $seperator    = $mysess->get('seperator');
 				
 				// if session expired then what
 				if(empty($fieldMapping) || (empty($fileIndex) && !$mysess->has('offset'))){
@@ -262,16 +292,9 @@ class ImpexpPluginImport
 				$icount=0;
 				$existuser=array();
 				$importuser=array();
-				while(($data = fgetcsv($file, 1, "\n")) !== FALSE && ftell($file) <= $index['end'])
-				 {  
-				 	//handling ',' existance in between the exported values
-				 	$value= explode(',"',array_shift($data));
-				 	foreach ($value as $k=>$v){
-                      if(substr($v,-1,1)=='"')
-					    $userValues[$k] =substr($v,0,-1);
-					  else 
-					    $userValues[$k] =$v;
-				 	}
+				while(($data = fgetcsv($file, 0, "\n")) !== FALSE && ftell($file) <= $index['end'])
+				{
+				 	$userValues=$this->removeQuotes($data,$seperator);
 					if(empty($userValues)) continue;
 					$fieldJ= $fieldMapping['joomla'];
 					$useroffset=$fieldJ['username'];
@@ -356,6 +379,29 @@ class ImpexpPluginImport
 			</script>
 			<?php 
 			}
+			
+         //remove seperator and store values in form of array
+        function removeQuotes($data,$seperator)
+		  {
+			$tempValues = array();
+			$value           = explode($seperator,array_shift($data));
+			$delimeterLength = strlen($seperator);
+			$delimeter = "";
+			if($delimeterLength == 2)
+			{
+			$delimeter = $seperator[1];
+			}
+			foreach ($value as $k=>$v){
+					$tempValues[$k] = $v;
+					if(substr($v,0,1) == $delimeter) {
+				      $tempValues[$k] = substr($v,1);
+					}
+	                if(substr($v,-1,1) == $delimeter){
+					  $tempValues[$k]  = substr($tempValues[$k],0,-1);
+	                }    
+			 }
+			return $tempValues;
+	    }
 						
 		function complete()
 		{
