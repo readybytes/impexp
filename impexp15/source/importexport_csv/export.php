@@ -29,7 +29,9 @@ class ImpexpPluginExport
 		$usertype=array('Administrator','Super Administrator');
 
 		$db = JFactory::getDBO();
-		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users');
+		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users')
+			   ."WHERE ".$db->nameQuote('block'). "=". "0"." AND ".$db->nameQuote('usertype')
+			   ."NOT IN ('Administrator','Super Administrator')";
 		$db->setQuery($sql);
 		$total_user = $db->loadResult();
         $filePath   = $storagePath.'exportdata.csv';
@@ -97,7 +99,7 @@ class ImpexpPluginExport
 	        exit();
 		}
 		//for joomla users' fields
-		$csvJoomlaUser = self::storeJsJoomlaUser('joomla',$joomlaUsers,$csvUser);
+		$csvJoomlaUser = self::storeJsJoomlaUser('joomla',$joomlaUsers,$csvUser,$mysess);
 		$userIds = array_keys($joomlaUsers);
 	    
 		//for jomsocial custom fields 
@@ -105,7 +107,8 @@ class ImpexpPluginExport
 		
 		//for jomsocial users' fields
 		$jsUsers 	 = self::getJsUser($userIds);
-	    $completeCsv = self::storeJsJoomlaUser('jomsocial',$jsUsers,$csvComFieldJoomlaUser);
+		$mysess->set('userIds',$userIds);
+	    $completeCsv = self::storeJsJoomlaUser('jomsocial',$jsUsers,$csvComFieldJoomlaUser,$mysess);
 	 
 	   //set final export limit if not set
 	   if(!$mysess->has('isSet')){
@@ -155,12 +158,20 @@ class ImpexpPluginExport
 	 * store JS and joomla users' table data
 	 * $joomlaUsers - contains Js ans joomla users' table data
 	 */
-	 function storeJsJoomlaUser($userTable,$jsJoomlaUsers,$csvUser)
+	 function storeJsJoomlaUser($userTable,$jsJoomlaUsers,$csvUser,$mysess)
 	 {
-		$id='userid';
-		if($userTable == "joomla")
-			$id='id';
-		    
+		$id='id';
+		if($userTable == "jomsocial")
+		{
+			$id = 'userid';
+			//if data in community_users doesn't exist for users
+		    //then add a blank array for further processing
+			$userIds = $mysess->get('userIds');
+		    foreach($userIds as $userId){
+			if(!isset($jsJoomlaUsers[$userId]))
+			 	$csvUser[$userTable][$userId][] = array();
+		    }
+		}   
 		 foreach ($jsJoomlaUsers as $user){
 	    	foreach ($user as $name => $value){ 
 	    		$str = $value;
@@ -194,7 +205,7 @@ class ImpexpPluginExport
 		$jsUserData = $db->loadObjectList();
 
 	    //if data in field_values table doesn't exist for users
-		//then add "" as blank field
+		//then add a blank array for further processing
 		foreach($userIds as $userid){
 			if(!isset($jsUserData[$userid]))
 			 	$csvUser[$userTable][$userid][] = array();
