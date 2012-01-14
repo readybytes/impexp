@@ -61,7 +61,6 @@ if(!defined('_JEXEC')) die('Restricted access');
 					<br />
 		<?php  
 		foreach($columns as $c){
-			$c = JString::str_ireplace('"', '', $c);		
 			?>
 			<div>				
 				<div style="width:20%; float:left"><span><?php echo $c;?></span></div>
