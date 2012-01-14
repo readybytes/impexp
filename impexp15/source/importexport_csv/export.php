@@ -191,7 +191,7 @@ class ImpexpPluginExport
 			   .$condition
 			   ." ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC";
 		$db->setQuery($sql); 
-		$jsUserData = $db->loadObjectList('user_id');
+		$jsUserData = $db->loadObjectList();
 
 	    //if data in field_values table doesn't exist for users
 		//then add "" as blank field

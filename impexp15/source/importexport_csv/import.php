@@ -89,9 +89,9 @@ class ImpexpPluginImport
         //fgetsv removes the doubleQuotes from the first field of string.
 		$columns = fgetcsv($file, 0, "\n");
 
-		//**XITODO:
-           *Why check this condition manually,Try to clean this code
-          /*
+	 /**XITODO:
+      * Why check this condition manually,Try to clean this code
+      */
 		if(strlen($seperator) == 3){
 			$seperator = substr($seperator,1); //remove first letter for eg-"," as ,"
 			$mysess->set('seperator',$seperator);
