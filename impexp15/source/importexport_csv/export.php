@@ -26,7 +26,6 @@ class ImpexpPluginExport
     
 	function createCSV($storagePath,$mysess)
 	{
-		$usertype=array('Administrator','Super Administrator');
 
 		$db = JFactory::getDBO();
 		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users')
@@ -58,7 +57,7 @@ class ImpexpPluginExport
 		{	
 			//get limit from session that is to be used for processing
 			$limit    = $mysess->get('limit',EXP_LIMIT);
-			$users	  =	$this->getUserData($start,$limit,$mysess,$storagePath);
+			$users	  =	$this->getUserData($start,$limit,$mysess);
 			$finalCsv = self::setDataForCsv($users);
 		    foreach ($finalCsv as $userid=>$result)
 			 {
@@ -89,7 +88,7 @@ class ImpexpPluginExport
 		return $finalCsv;
 	}
 	
-	function getUserData($start,$limit,$mysess,$storagePath)
+	function getUserData($start,$limit,$mysess)
 	{
 		$startTime   = JProfiler::getmicrotime();
 		$csvUser     = array();
@@ -206,17 +205,17 @@ class ImpexpPluginExport
 
 	    //if data in field_values table doesn't exist for users
 		//then add a blank array for further processing
-		foreach($userIds as $userid){
-			if(!isset($jsUserData[$userid]))
-			 	$csvUser[$userTable][$userid][] = array();
-		}
-		foreach($jsUserData as $fields){
-			foreach ($csvUser as $name => $value)
-			if(!array_key_exists($fields->user_id, $value))
-				continue;
-			//userTable contains name of table for identifying fields	
-			$csvUser[$userTable][$fields->user_id][$fields->field_id] =  preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $fields->value));
-	    }
+		foreach($userIds as $userid)
+	 	{  
+		 	$csvUser[$userTable][$userid] = array();
+			foreach($jsUserData as $fields){
+				if(!array_key_exists($fields->user_id, $csvUser['joomla']))
+					continue;
+				if($fields->user_id == $userid){
+					$csvUser[$userTable][$userid][$fields->field_id] =  preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $fields->value));
+				}
+		    }
+	   }
 		return $csvUser;	    
 	 }
 		
