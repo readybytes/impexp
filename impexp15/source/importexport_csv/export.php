@@ -76,17 +76,6 @@ class ImpexpPluginExport
 		fclose($fp);
 		$this->setDataInCSV($storagePath);
 	}
-
-	function setDataForCsv($users)
-	{
-        $finalCsv = array();
-		foreach($users as $id => $data){
-			foreach ($data as $user_id=>$value){
-				$finalCsv = self::startCreateCsv($id,$value,$finalCsv,$user_id);
-			}
-		}
-		return $finalCsv;
-	}
 	
 	function getUserData($start,$limit,$mysess)
 	{
@@ -98,16 +87,19 @@ class ImpexpPluginExport
 	        exit();
 		}
 		//for joomla users' fields
-		$csvJoomlaUser = self::storeJsJoomlaUser('joomla',$joomlaUsers,$csvUser,$mysess);
+		$csvJoomlaUser = self::storeJsJoomlaUser('joomla',$joomlaUsers,$csvUser);
 		$userIds = array_keys($joomlaUsers);
 	    
 		//for jomsocial custom fields 
 		$csvComFieldJoomlaUser = self::storeComFieldValues('cFieldValues',$csvJoomlaUser,$userIds);
-		
+		// storing userids in temperory file
+		$fp = fopen(TEMP_FILE_PATH, 'w');
+        fwrite($fp, serialize($userIds));
+        fclose($fp);
+        
 		//for jomsocial users' fields
 		$jsUsers 	 = self::getJsUser($userIds);
-		$mysess->set('userIds',$userIds);
-	    $completeCsv = self::storeJsJoomlaUser('jomsocial',$jsUsers,$csvComFieldJoomlaUser,$mysess);
+	    $completeCsv = self::storeJsJoomlaUser('jomsocial',$jsUsers,$csvComFieldJoomlaUser);
 	 
 	   //set final export limit if not set
 	   if(!$mysess->has('isSet')){
@@ -157,7 +149,7 @@ class ImpexpPluginExport
 	 * store JS and joomla users' table data
 	 * $joomlaUsers - contains Js ans joomla users' table data
 	 */
-	 function storeJsJoomlaUser($userTable,$jsJoomlaUsers,$csvUser,$mysess)
+	 function storeJsJoomlaUser($userTable,$jsJoomlaUsers,$csvUser)
 	 {
 		$id='id';
 		if($userTable == "jomsocial")
@@ -165,9 +157,11 @@ class ImpexpPluginExport
 			$id = 'userid';
 			//if data in community_users doesn't exist for users
 		    //then add a blank array for further processing
-			$userIds = $mysess->get('userIds');
-		    foreach($userIds as $userId){
-			if(!isset($jsJoomlaUsers[$userId]))
+	       $fp      = fopen(TEMP_FILE_PATH, 'r');
+	       $result  = file_get_contents(TEMP_FILE_PATH);
+	       $userIds = unserialize($result);
+		   foreach($userIds as $userId){
+			  if(!isset($jsJoomlaUsers[$userId]))
 			 	$csvUser[$userTable][$userId][] = array();
 		    }
 		}   
@@ -203,20 +197,19 @@ class ImpexpPluginExport
 		$db->setQuery($sql); 
 		$jsUserData = $db->loadObjectList();
 
-	    //if data in field_values table doesn't exist for users
-		//then add a blank array for further processing
-		foreach($userIds as $userid)
-	 	{  
-		 	$csvUser[$userTable][$userid] = array();
-			foreach($jsUserData as $fields){
-				if(!array_key_exists($fields->user_id, $csvUser['joomla']))
-					continue;
-				if($fields->user_id == $userid){
-					$csvUser[$userTable][$userid][$fields->field_id] =  preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $fields->value));
-				}
-		    }
-	   }
-		return $csvUser;	    
+		foreach($jsUserData as $fields){
+			if(!array_key_exists($fields->user_id, $csvUser['joomla']))
+				continue;
+			$csvUser[$userTable][$fields->user_id][$fields->field_id] =  preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $fields->value));
+   		}
+   		
+   		//if data in field_values table doesn't exist for some users
+		//then add a blank array for those users further processing
+   		foreach ($userIds as $userid){
+   			if(!array_key_exists($userid,$csvUser[$userTable]))
+   				$csvUser[$userTable][$userid] = array();
+   		}
+		return $csvUser;    
 	 }
 		
 		
@@ -234,42 +227,43 @@ class ImpexpPluginExport
   /**
    *store the data in CSV format 
    */
-    function startCreateCsv($tableName,$data,&$finalCsv,$key)
-    {    
-    	if($tableName =='joomla'){
-        	$finalCsv[$key]="\n";
+    function setDataForCsv($users,$userIds=null)
+    {   
+       if(!isset($userIds)){
+	       $fp    = fopen(TEMP_FILE_PATH, 'r');
+	       $result = file_get_contents(TEMP_FILE_PATH);
+	       $userIds = unserialize($result);
+       }
+
+    	foreach($userIds as $userId){
+        	$finalCsv[$userId]="\n";
        		$joomlaField_name =self::getJsJoomlaField('#__users');
         	foreach ($joomlaField_name as $name){
-		    if(!empty($data[$name])){
-		    	$finalCsv[$key].='"'.$data[$name].'",';
-			 }	
-		     else{ 
-		    	$finalCsv[$key].='"",';
-		     }
-           }
-	    }
-      elseif ($tableName =='cFieldValues') {
-  	   $fields = self::getCustomFieldIds();
-        foreach($fields as $f){
-	        if(array_key_exists($f->id, $data))
-				$finalCsv[$key].='"'.$data[$f->id].'",';
-			 else 
-				$finalCsv[$key].= '"",';
-	 	 }
-      }
-      else{
-		 $JSfield_name =self::getJsJoomlaField('#__community_users');
-         foreach ($JSfield_name as $name){
-          	if($name=='userid')
-        	 continue;
-		    if(!empty($data[$name])){
-		     $finalCsv[$key].='"'.$data[$name].'",';
-		    }	
-		    else{ 
-		     $finalCsv[$key].='"",';
-		     }
-		 }   
-      } 
+		    	if(!empty($users['joomla'][$userId][$name])){
+		    		$finalCsv[$userId].='"'.$users['joomla'][$userId][$name].'",';
+			 	}	
+		     	else{ 
+		    	$finalCsv[$userId].='"",';
+		    	}
+        	}
+	  	   $fields = self::getCustomFieldIds();
+	       foreach($fields as $f){
+		        if(array_key_exists($f->id, $users['cFieldValues'][$userId]))
+					$finalCsv[$userId].='"'.$users['cFieldValues'][$userId][$f->id].'",';
+				else 
+					$finalCsv[$userId].= '"",';
+		   }
+	  
+		   $JSfield_name =self::getJsJoomlaField('#__community_users');
+	       foreach ($JSfield_name as $name){
+	          	if($name=='userid')
+	        		continue;
+			    if(!empty($users['jomsocial'][$userId][$name]))
+			    	$finalCsv[$userId].='"'.$users['jomsocial'][$userId][$name].'",';	
+			    else 
+			     	$finalCsv[$userId].='"",';
+		   }
+        } 
         return $finalCsv;
       }
  
