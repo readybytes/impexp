@@ -392,13 +392,16 @@ class ImpexpPluginImport
 			$delimeter = $seperator[1];
 			}
 			foreach ($value as $k=>$v){
-					$tempValues[$k] = $v;
-					if(substr($v,0,1) == $delimeter) {
-				      $tempValues[$k] = substr($v,1);
+				$tempValues[$k] = $v;
+				if(!empty($tempValues[$k]))
+				{
+					if(substr($v,-1,1) == $delimeter){
+					  $tempValues[$k]  = substr($v,0,-1);
+	                } 
+					if(substr($tempValues[$k],0,1) == $delimeter){
+				      $tempValues[$k] = substr($tempValues[$k],1);
 					}
-	                if(substr($v,-1,1) == $delimeter){
-					  $tempValues[$k]  = substr($tempValues[$k],0,-1);
-	                }    
+			    }  
 			 }
 			return $tempValues;
 	    }
