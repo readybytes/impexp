@@ -15,27 +15,31 @@ if(!defined('_JEXEC')) die('Restricted access');
 jimport( 'joomla.plugin.plugin' );
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
-
-define('IMPEXP_LIMIT',1000);
-define('EXP_LIMIT',200);
+if(defined('INCLUDE_IMPEXP')===false)
+require_once(dirname(__FILE__) .DS. 'importexport_csv' .DS. 'includes.php');
 
 //includes file containing functions and html code
-require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'export.php');
-require_once(JPATH_ROOT .DS. 'plugins' .DS. 'system' .DS. 'importexport_csv' .DS. 'import.php');
+require_once(dirname(__FILE__) .DS. 'importexport_csv' .DS. 'export.php');
+require_once(dirname(__FILE__) .DS. 'importexport_csv' .DS. 'import.php');
 
 class plgSystemImportExport_csv extends JPlugin
 {
 	var $_debugMode = 0;
 	var $mysess     = null;
 	var $storagePath= null;
-	function __construct( &$subject, $params )
+	function __construct( &$subject, $config )
 	{
-		parent::__construct( $subject, $params );
+		parent::__construct($subject, $config);
+		$this->loadLanguage();
 		$this->mysess = JFactory::getSession();
-		$this->storagePath  = JFactory::getConfig()->getValue('tmp_path').DS;
+		if(IMPEXP_JOOMLA_15){
+			$this->storagePath  = JFactory::getConfig()->getValue('tmp_path').DS;
+		}
+		else {
+			$this->storagePath  = Jfactory::getConfig()->get('tmp_path').DS;
+		}
 		$this->export = new ImpexpPluginExport();
 		$this->import = new ImpexpPluginImport();
-		JFactory::getLanguage()->load('plg_importexport_csv', JPATH_ADMINISTRATOR);
 	}
 	
 	function onAfterRoute()
@@ -50,11 +54,13 @@ class plgSystemImportExport_csv extends JPlugin
 		if($plugin != 'importexportCSV')
 			return true;
 
-		if($task=='export'){
+		if($task == 'export'){
 			$this->export->createCSV($this->storagePath,$this->mysess);
 		}
 
-		if($task=='uploadFile'){
+		if($task == 'uploadFile'){
+			//xitodo: y to use??
+			JRequest::setVar('option','');
 			
 			if($stage == 'upload')
 				$html = $this->import->getUploaderHtml();
@@ -71,7 +77,15 @@ class plgSystemImportExport_csv extends JPlugin
 			}
 			
 			else if($stage == 'complete')
-				$html	=	$this->import->complete();
+			{
+			    $mysess       = & JFactory::getSession();
+				$count        = $mysess->get('count',0);
+                $discardCount = $mysess->get('discardCount',0);
+                $icount       = $mysess->get('icount',0);
+                $sizeCount    = $mysess->get('sizeCount',0);
+                $replaceCount = $mysess->get('replaceCount',0);
+				$html	=	$this->import->complete($count,$icount,$replaceCount,$sizeCount,$discardCount);
+			}
 						
 			$document = JFactory::getDocument();
 			$document->setBuffer($html, 'component');
