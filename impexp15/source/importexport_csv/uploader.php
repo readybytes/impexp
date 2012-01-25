@@ -1,19 +1,14 @@
 <?php
-/*
-* importexport_csv - JomSocial User Import Export
-------------------------------------------------------------------------
-* copyright	Copyright (C) 2010 Ready Bytes Software Labs Pvt. Ltd. All rights reserved.
-* Author : Team JoomlaXi @ Ready Bytes Software Labs Pvt. Ltd.
-* Email  : shyam@joomlaxi.com
-* License : GNU-GPL V2
-* Websites: www.joomlaxi.com
-* Technical Support:  Forum - http://joomlaxi.com/support/forum/47-impexp-1x.html
-*/
-
-// no direct access
-if(!defined('_JEXEC')) die('Restricted access');
-
-class JElementUploader extends JElement
+/**
+* @Copyright Ready Bytes Software Labs Pvt. Ltd. (C) 2010- author-Team Joomlaxi
+* @license GNU/GPL http://www.gnu.org/copyleft/gpl.html
+**/
+// Check to ensure this file is included in Joomla!
+defined('_JEXEC') or die();
+require_once(dirname(__FILE__) .DS. 'field.php');
+require_once(dirname(__FILE__) .DS. 'impexpElement.php');
+jimport('joomla.html.parameter.element');
+class JElementUploader extends impexpElement
 {
 	/**
 	 * Element name
@@ -21,11 +16,11 @@ class JElementUploader extends JElement
 	 * @access	protected
 	 * @var		string
 	 */
-	var	$_name = 'Profiletypes';
+	public $type = "Uploader";
 
 	function fetchElement($name, $value, &$node, $control_name)
 	{			
-		$html  = $this->getUploaderLink();
+		$html  = self::getUploaderLink();
 
 		return $html;
 	}
@@ -36,13 +31,14 @@ class JElementUploader extends JElement
 		JHTML::_('behavior.modal', "a.uploaderPopup");
         $buttonMap = new JObject();
         $buttonMap->set('modal', true);
-        $buttonMap->set('text', JText::_('UPLOAD_FILE'));
+        $buttonMap->set('text', JText::_('PLG_IMPORTEXPORT_CSV_UPLOAD_FILE'));
         $buttonMap->set('name', 'image');
         $buttonMap->set('modalname', 'uploaderPopup');
-        $buttonMap->set('options', "{handler: 'iframe', size: {x: 600, y: 470}}");
+        $buttonMap->set('options', "{handler: 'iframe', size: {x: 600, y: 450}}");
         $buttonMap->set('link', $link);
         
-        $html = '<a id="'.$buttonMap->modalname.'" '
+        $html = '<a style="font-size:12px;font-weight:bold;position:relative; line-height:25px;"
+        			id="'.$buttonMap->modalname.'" '
         	 	.' class="'.$buttonMap->modalname.'" '
         	 	.' title="'.$buttonMap->text.'" '
         	 	.' href ="'.$buttonMap->link.'" '
@@ -50,39 +46,9 @@ class JElementUploader extends JElement
         	 	.$buttonMap->text.' </a>';
         return $html;
 	}
-	
-//	function getFileUploadHTML($name,$value,$control_name='params')
-//	{	
-//		$currentUrl = JURI::getInstance()->toString();
-//		$this->_addScript();
-//		$html   = '<form action="'.$currentUrl.'" method="post" name="adminForm" id="adminForm" >';
-//		$html  .= '<input type="file" id="'.$name.'" name="'.$name.'" title="' . "Upload CSV File" . '::' . "Please Upload ypur CSV file" . '" />';
-//		$html  .= '<input type="hidden" name="importCSVStage" value="fileUpload" />';
-//		$html  .= '<input type="submit" name="btnUpload" value="Upload and Parse file" onclick="return importCSVFormCheck();" />';
-//		$html  .= '</form>';		
-//		return $html;
-//	}
-//	
-/*	function _addScript()
-	{
-		ob_start();
-		?>
-		function importCSVFormCheck(){
-			var file = document.getElementById('fileUploaded');
-			var str = file.value.toLowerCase();
-			var length = str.length;			
-			if(str.slice(length-3, length) != 'csv'){
-				alert('Please check the file Uploaded. It must be a CSV file.');
-				return false;
-			}			
-			return true;
-		}
-		<?php 
-		$content = ob_get_contents();
-		ob_clean();
-		
-		$document = JFactory::getDocument()->addScriptDeclaration($content);
-		return true;
-	}
-*/
+}
+
+class JFormFieldUploader extends XiField
+{
+	public $type='uploader';
 }

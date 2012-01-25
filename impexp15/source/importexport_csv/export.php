@@ -30,14 +30,14 @@ class ImpexpPluginExport
 		$db = JFactory::getDBO();
 		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users')
 			   ."WHERE ".$db->nameQuote('block'). "=". "0"." AND ".$db->nameQuote('usertype')
-			   ."NOT IN ('Administrator','Super Administrator')";
+			   ."NOT IN ('Administrator','Super Administrator','deprecated','Super Users')";
 		$db->setQuery($sql);
 		$total_user = $db->loadResult();
         $filePath   = $storagePath.'exportdata.csv';
 	    //if existing file is not writable 
 		if ( file_exists($filePath) &&
 		     !is_writable($filePath)){
-		  echo JText::_("PERMISSION_DENIED");
+		  echo JText::_("PLG_IMPORTEXPORT_CSV_PERMISSION_DENIED");
 		  exit();
 		}
 		
@@ -56,7 +56,7 @@ class ImpexpPluginExport
 	    if($start<=$total_user)
 		{	
 			//get limit from session that is to be used for processing
-			$limit    = $mysess->get('limit',EXP_LIMIT);
+			$limit    = $mysess->get('limit',IMPEXP_EXP_LIMIT);
 			$users	  =	$this->getUserData($start,$limit,$mysess);
 			$finalCsv = self::setDataForCsv($users);
 		    foreach ($finalCsv as $userid=>$result)
@@ -83,7 +83,13 @@ class ImpexpPluginExport
 		$csvUser     = array();
 		$joomlaUsers = self::getJoomlaUser($start,$limit);
 		if(empty($joomlaUsers)){
-			echo JText::_("YOUR_JOOMLA_TABLE_IS_EMPTY");
+			?>
+			<div style="width:100%;margin:70px 0;text-align:center;color:#6699cc;valign:top;">
+			<a style ="color:#6699cc;" href="http://joomlaxi.com/support/documentation/item/importing-user.html" target="_blank">
+			<?php
+			echo JText::_("PLG_IMPORTEXPORT_CSV_YOUR_JOOMLA_TABLE_IS_EMPTY");
+			?></a></div>
+			<?php 
 	        exit();
 		}
 		//for joomla users' fields
@@ -93,7 +99,7 @@ class ImpexpPluginExport
 		//for jomsocial custom fields 
 		$csvComFieldJoomlaUser = self::storeComFieldValues('cFieldValues',$csvJoomlaUser,$userIds);
 		// storing userids in temperory file
-		$fp = fopen(TEMP_FILE_PATH, 'w');
+		$fp = fopen(IMPEXP_TEMP_FILE_PATH, 'w');
         fwrite($fp, serialize($userIds));
         fclose($fp);
         
@@ -120,7 +126,7 @@ class ImpexpPluginExport
 		 $db  = JFactory::getDBO();
 		 $sql = "SELECT * FROM ".$db->nameQuote('#__users')
 		  	   ."WHERE ".$db->nameQuote('block'). "="."0"." AND ".$db->nameQuote('usertype')
-			   ."NOT IN ('Administrator','Super Administrator') LIMIT ".$start.",".$limit;
+			   ."NOT IN ('Administrator','Super Administrator','deprecated','Super Users') LIMIT ".$start.",".$limit;
 		 $db->setQuery($sql);
 		 $joomlaUserData = $db->loadAssocList('id');
 		 return $joomlaUserData;
@@ -157,8 +163,8 @@ class ImpexpPluginExport
 			$id = 'userid';
 			//if data in community_users doesn't exist for users
 		    //then add a blank array for further processing
-	       $fp      = fopen(TEMP_FILE_PATH, 'r');
-	       $result  = file_get_contents(TEMP_FILE_PATH);
+	       $fp      = fopen(IMPEXP_TEMP_FILE_PATH, 'r');
+	       $result  = file_get_contents(IMPEXP_TEMP_FILE_PATH);
 	       $userIds = unserialize($result);
 		   foreach($userIds as $userId){
 			  if(!isset($jsJoomlaUsers[$userId]))
@@ -220,24 +226,26 @@ class ImpexpPluginExport
 	 {  
 	 	$value = new ImpexpPluginImport();
 	 	$space = (JProfiler::getMemory()); //consumed space 
-	    $limit= (int)(($value->memory_limit/$space)*EXP_LIMIT*0.80); //80% of next possible limit
+	    $limit= (int)(($value->memory_limit/$space)*IMPEXP_EXP_LIMIT*0.80); //80% of next possible limit
 	 	return $limit;
 	 }
 
-  /**
-   *store the data in CSV format 
-   */
+    /**
+     *store the data in CSV format 
+     */
     function setDataForCsv($users,$userIds=null)
     {   
-       if(!isset($userIds)){
-	       $fp    = fopen(TEMP_FILE_PATH, 'r');
-	       $result = file_get_contents(TEMP_FILE_PATH);
+       if(!isset($userIds))
+       {
+	       $fp    = fopen(IMPEXP_TEMP_FILE_PATH, 'r');
+	       $result = file_get_contents(IMPEXP_TEMP_FILE_PATH);
 	       $userIds = unserialize($result);
        }
 
     	foreach($userIds as $userId){
         	$finalCsv[$userId]="\n";
        		$joomlaField_name =self::getJsJoomlaField('#__users');
+       		//getting user table values.
         	foreach ($joomlaField_name as $name){
 		    	if(!empty($users['joomla'][$userId][$name])){
 		    		$finalCsv[$userId].='"'.$users['joomla'][$userId][$name].'",';
@@ -247,13 +255,14 @@ class ImpexpPluginExport
 		    	}
         	}
 	  	   $fields = self::getCustomFieldIds();
+	  	   //getting community field values's table values
 	       foreach($fields as $f){
 		        if(array_key_exists($f->id, $users['cFieldValues'][$userId]))
 					$finalCsv[$userId].='"'.$users['cFieldValues'][$userId][$f->id].'",';
 				else 
 					$finalCsv[$userId].= '"",';
 		   }
-	  
+	       //getting community user's table values
 		   $JSfield_name =self::getJsJoomlaField('#__community_users');
 	       foreach ($JSfield_name as $name){
 	          	if($name=='userid')
@@ -276,10 +285,10 @@ class ImpexpPluginExport
         $db = JFactory::getDBO();
     	$conf = JFactory::getConfig();
 		$database = $conf->getValue('config.db');
-        $tableName = $db->replacePrefix($table);
+        $tableName =ImpexpPluginHelper::replacePrefix($table);
         $sql="SELECT column_name FROM information_schema.columns
-                 WHERE table_name = '$tableName'
-                 AND table_schema = '$database'";
+              WHERE table_name = '$tableName'
+              AND table_schema = '$database'";
         $db->setQuery($sql); 
         $joomlaField_name =$db->loadResultArray();
         return $joomlaField_name;
@@ -361,8 +370,7 @@ class ImpexpPluginExport
 		  <?php 
 		  $document = JFactory::getDocument();
 		  $document->setBuffer($html, 'component');
-		  JFactory::getApplication()->render();
-		  echo JResponse::toString(JFactory::getApplication()->getCfg('gzip'));
+		  echo $html;
 		  exit;		     
     } 
 }
