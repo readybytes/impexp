@@ -14,7 +14,7 @@
 	<folder>importexport_csv</folder>
   </files>
   <languages>
-	<language tag="en-GB">languages/en-GB.plg_importexport_csv.ini</language>
+	<language tag="en-GB">languages/en-GB.plg_system_importexport_csv.ini</language>
   </languages>
 
   <params addpath="/plugins/system/importexport_csv">
