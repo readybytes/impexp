@@ -11,7 +11,6 @@
   <description>Import Data from CSV to Joomla and JS, Export User Data from JS to CSV</description>
   <files>  	
 	<filename plugin="importexport_csv">importexport_csv.php</filename>
-	<filename plugin="importexport_csv">index.html</filename>
 	<folder>importexport_csv</folder>
   </files>
   <languages>
