@@ -18,7 +18,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 					<div style="text-align: center;font-style: italic;font-size: 18px;color: #666;border-bottom: 1px solid #eee;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_EXCEPT_EXISTING_USERS_ALL_USER_IMPORTED_SUCCESSFULLY'); ?>
 					</div>
 				<?php //count for import
-					if($icount! = 0):?>
+					if($icount != 0):?>
 					<div style="width:100%;margin:20px 0;text-align:center;">
 						
 						
