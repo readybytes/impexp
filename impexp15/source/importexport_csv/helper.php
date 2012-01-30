@@ -42,7 +42,15 @@ class ImpexpPluginHelper
             $user 		= clone(JFactory::getUser());
 			
 			//Update user values
-			if(IMPEXP_JOOMLA_17)
+		   if(IMPEXP_JVERSION === '1.5')
+			{
+				$authorize	= JFactory::getACL();
+				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered';
+				if($newUsertype=="")
+				$newUsertype='Registered';
+				$user->set('gid', $authorize->get_group_id( '', $newUsertype, 'ARO' ));	
+			}
+		   else
 			{			
 				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : '2'; 
 				$length=JString::strlen($newUsertype);
@@ -51,15 +59,6 @@ class ImpexpPluginHelper
 				}
 				if($newUsertype=="" || $newUsertype==null)
 					$newUsertype='2';
-			}
-			
-			if(IMPEXP_JOOMLA_15)
-			{
-				$authorize	= JFactory::getACL();
-				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered';
-				if($newUsertype=="")
-				$newUsertype='Registered';
-				$user->set('gid', $authorize->get_group_id( '', $newUsertype, 'ARO' ));	
 			}
 			
 		    //Set the userid according to the condition that whether the overwrite option is set or not
@@ -104,7 +103,7 @@ class ImpexpPluginHelper
 			}	
 				
 			jimport('joomla.user.helper');
-			if(IMPEXP_JOOMLA_15){
+			if(IMPEXP_JVERSION === '1.5'){
 				$user->set('activation', JUtility::getHash( JUserHelper::genRandomPassword()) );
 				$user->params = $user->_params->toString();
 			}
@@ -115,26 +114,17 @@ class ImpexpPluginHelper
 			$table->bind($user->getProperties());
 	
 			$usrid = $user->get('id');
-	         if(isset($usrid)){ 
-			    if($userIds==1){
-			        $db = & JFactory::getDBO();
-					$sql="SELECT * FROM ".$db->nameQuote('#__users')."where "."id =".$usrid;
-					$db->setQuery($sql);
-					$allData=$db->loadAssocList('id');
-					if(empty($allData)){
-						$sql = 'INSERT INTO '.$db->nameQuote('#__users').'(id) VALUES ('.($usrid).')';
-						$db->setQuery($sql);
-						$db->query();				
-					}
-	            } 
-			 }
+	         if(isset($usrid))
+			     if($userIds==1){
+			     	self::insertRowInDB($usrid,$user);
+	         }
 			//Store the user data in the database
 			if (!$table->store())
 				return false;
 				
 			$user->id = $table->get( 'id' );
 			
-			if(IMPEXP_JOOMLA_17)
+			if(IMPEXP_JVERSION != '1.5')
 			{
 				$db = JFactory::getDBO();
 				//map user group
@@ -156,7 +146,44 @@ class ImpexpPluginHelper
 				$db->query();
 			}
 			return $user->id;
-		}	
+	   }
+	   
+	   function insertRowInDB($usrid,$user)
+	   {
+	    $db =  JFactory::getDBO();
+		$sql="SELECT * FROM ".$db->nameQuote('#__users')."where "."id =".$usrid;
+		$db->setQuery($sql);
+		$allData=$db->loadAssocList('id');
+		if(empty($allData)){
+			$sql = 'INSERT INTO '.$db->nameQuote('#__users').'(id) VALUES ('.($usrid).')';
+			$db->setQuery($sql);
+			$db->query();
+			//maintain core_acl_aro and core_acl_groups_aro_map table
+			if(IMPEXP_JVERSION === '1.5')
+			{
+				$sql="SELECT `id` FROM ".$db->nameQuote('#__core_acl_aro')."where "."value =".$usrid;
+		        $db->setQuery($sql);
+		        $getGID=$db->loadResult();
+		        if(!empty($getGID)){
+			         $sqlQuery= " UPDATE".$db->nameQuote('#__core_acl_aro').
+			         			" SET `name` =".$user->get('name').",`order_value`= "."0". ",`hidden`= ". "0" .
+			         			" WHERE "."value =".$usrid;
+                     $db->setQuery($sqlQuery);
+                     $sqlQuery= " UPDATE".$db->nameQuote('#__core_acl_groups_aro_map').
+                     			" SET `group_id` =".$user->get('gid'). ",`section_value`= ". "" .
+                     			" WHERE "."aro_id  =".$getGID;
+					 $db->setQuery($sqlQuery);
+		        }
+		        else
+		        {
+					$acl = JFactory::getACL();
+					$section_value = 'users';
+					$acl->add_object( $section_value,$user->get('name'), $usrid, null, null, 'ARO' );
+		            $acl->add_group_object( $user->get('gid'), $section_value, $usrid, 'ARO' );	
+			    }
+		    }		
+		}
+	   }
 				
 	  function getUserTypeId($usertype)
 	  {
@@ -257,31 +284,25 @@ class ImpexpPluginHelper
 			
 			foreach($jsFieldMapping as $key => $value)
 			 {
-				if(('_'.$key) == '_params')
-				{
-				  if(IMPEXP_JOOMLA_17)
-				  {
-				  $userValues[$value] = str_replace('\n', ',',$userValues[$value]);
-                  $user->_cparams->bind($userValues[$value]);
-				  }
-				  if(IMPEXP_JOOMLA_15)
-				  {
+				if(('_'.$key) == '_params'){
+				  if(IMPEXP_JVERSION === '1.5'){
 				    $str_value = $userValues[$value];	
 				    $str  = explode('\n',$str_value);
 				    $data = array();
-				    foreach($str as $key1=>$value1)
-                    {
-                       if(!empty($value1))
-                       {
+				    foreach($str as $key1=>$value1){
+                       if(!empty($value1)){
                    	     list($key2,$value2) = explode('=',$value1);
                          $data[$key2]=$value2;
                        }
-                   }
-                 $user->_cparams->bind($data);
+                   	}
+                 	$user->_cparams->bind($data);
+				  }
+				  else{
+					  $userValues[$value] = str_replace('\n', ',',$userValues[$value]);
+		              $user->_cparams->bind($userValues[$value]);
 				  }
 				}
-				else 
-				{
+				else {
 				  $user->set('_'.$key, $userValues[$value]);
 				}
 			}
@@ -309,12 +330,10 @@ class ImpexpPluginHelper
                         //change date in considerable format
 						$userValues[$value] = date("Y-m-d H:i:s",strtotime($userValues[$value]));
 			 	     }	
-                $data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
-               if(IMPEXP_JOOMLA_17)
-               {
-		           if(!empty($data))
-	 			   self::insertJsFields($userid,$customFieldMapping);
-               }
+                	$data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
+               		if(IMPEXP_JVERSION != '1.5' && !empty($data)){
+	 			   		self::insertJsFields($userid,$customFieldMapping);
+               		}
               }
 			return $cModel->saveProfile($userid, $data);		
 			}
@@ -389,11 +408,11 @@ class ImpexpPluginHelper
        static function pathFS2URL($fsPath='')
        {    
        	// get reference path from root
-       	    if(IMPEXP_JOOMLA_15){
+       	    if(IMPEXP_JVERSION === '1.5'){
                $urlPath        = JString::str_ireplace( JPATH_ROOT .DS , '', $fsPath);
        	    }
-       	    if(IMPEXP_JOOMLA_17)
-               $urlPath        = self::str_ireplace( JPATH_ROOT .DS , '', $fsPath);
+       	    else
+              $urlPath        = self::str_ireplace( JPATH_ROOT .DS , '', $fsPath);
                // replace all DS to URL-slash
                $urlPath        = JPath::clean($urlPath, '/');
                

@@ -45,7 +45,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 				alert ('Id, Username, Password or Email field is not map');
 				return false;
 		}
-		elseif(username!='true' || email!='true' || pass!='true'){		
+		if(username!='true' || email!='true' || pass!='true'){		
 			alert ('Username, Password or Email field is not map');
 			return false;
 		}

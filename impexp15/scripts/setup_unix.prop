@@ -1,4 +1,5 @@
 pkg.version=J1.5.22_JS2.2.4
+//pkg.version=J1.7.0
 pkg.location=${user.home}/Dropbox/TEAM/dev/impexp
 
 

@@ -32,7 +32,7 @@ class plgSystemImportExport_csv extends JPlugin
 		parent::__construct($subject, $config);
 		$this->loadLanguage();
 		$this->mysess = JFactory::getSession();
-		if(IMPEXP_JOOMLA_15){
+		if(IMPEXP_JVERSION ==='1.5'){
 			$this->storagePath  = JFactory::getConfig()->getValue('tmp_path').DS;
 		}
 		else {

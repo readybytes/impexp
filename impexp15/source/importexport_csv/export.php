@@ -244,7 +244,7 @@ class ImpexpPluginExport
 
     	foreach($userIds as $userId){
         	$finalCsv[$userId]="\n";
-       		$joomlaField_name =self::getJsJoomlaField('#__users');
+       		$joomlaField_name = ImpexpPluginHelper::getJsJoomlaField('#__users');
        		//getting user table values.
         	foreach ($joomlaField_name as $name){
 		    	if(!empty($users['joomla'][$userId][$name])){
@@ -263,7 +263,7 @@ class ImpexpPluginExport
 					$finalCsv[$userId].= '"",';
 		   }
 	       //getting community user's table values
-		   $JSfield_name =self::getJsJoomlaField('#__community_users');
+		   $JSfield_name = ImpexpPluginHelper::getJsJoomlaField('#__community_users');
 	       foreach ($JSfield_name as $name){
 	          	if($name=='userid')
 	        		continue;
@@ -276,23 +276,7 @@ class ImpexpPluginExport
         return $finalCsv;
       }
  
-    /** 
-     * Get all the fields from joomla_user amd Community_user table
-     * @param $table-Name of table
-     */
-    function getJsJoomlaField($table)
-    {
-        $db = JFactory::getDBO();
-    	$conf = JFactory::getConfig();
-		$database = $conf->getValue('config.db');
-        $tableName =ImpexpPluginHelper::replacePrefix($table);
-        $sql="SELECT column_name FROM information_schema.columns
-              WHERE table_name = '$tableName'
-              AND table_schema = '$database'";
-        $db->setQuery($sql); 
-        $joomlaField_name =$db->loadResultArray();
-        return $joomlaField_name;
-    }
+ 
 
 	 /**
 	  * Store the fields of tables in csv format
@@ -317,7 +301,7 @@ class ImpexpPluginExport
      function getAllFields()
 	 {
 	    $csvFileFields="";
-	    $joomlaField_name =self::getJsJoomlaField('#__users');
+	    $joomlaField_name = ImpexpPluginHelper::getJsJoomlaField('#__users');
 		foreach ($joomlaField_name as $name){
         	$csvFileFields.='"'.$name.'",';
         }
@@ -325,7 +309,7 @@ class ImpexpPluginExport
 		foreach($fields as $f)
 			$csvFileFields.='"'.$f->name.'",';
 			
-	   $JSfield_name =self::getJsJoomlaField('#__community_users');
+	   $JSfield_name = ImpexpPluginHelper::getJsJoomlaField('#__community_users');
        foreach ($JSfield_name as $name){
     		if($name=='userid')
     			continue;

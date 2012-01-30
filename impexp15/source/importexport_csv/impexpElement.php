@@ -25,7 +25,7 @@ class impexpElement extends JElement
     public static function getAttrib($node, $attrib, $default = false)
     {
         //For Joomla 1.7
-        if(IMPEXP_JOOMLA_17 == '17'){
+    	 if(IMPEXP_JVERSION !='1.5'){
             $attributes = (array)$node->attributes();
             if(isset($attributes['@attributes'])
                 && isset($attributes['@attributes'][$attrib])){
