@@ -13,7 +13,7 @@
 // no direct access
 if(!defined('_JEXEC')) die('Restricted access');
 
-class ImpexpPluginHelper
+class ImpexpPluginImportHelper
 {
 	function checkUsernameinJoomla($username,$email)
 		{
@@ -36,56 +36,13 @@ class ImpexpPluginHelper
 		//store the user table entry 
 	function storeJoomlaUser($userValues, $joomlaFieldMapping, $mysess, $overwrite_user_id = null)
 		{
-			$db = & JFactory::getDBO();
-			$overwrite  = $mysess->get('overwrite');
-			$userIds    =  $mysess->get('userid');
-            $user 		= clone(JFactory::getUser());
-			
-			//Update user values
-		   if(IMPEXP_JVERSION === '1.5')
-			{
-				$authorize	= JFactory::getACL();
-				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered';
-				if($newUsertype=="")
-				$newUsertype='Registered';
-				$user->set('gid', $authorize->get_group_id( '', $newUsertype, 'ARO' ));	
-			}
-		   else
-			{			
-				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : '2'; 
-				$length=JString::strlen($newUsertype);
-				if($length>1){
-					$newUsertype= self::getUserTypeId($newUsertype);
-				}
-				if($newUsertype=="" || $newUsertype==null)
-					$newUsertype='2';
-			}
-			
-		    //Set the userid according to the condition that whether the overwrite option is set or not
-		    //or want to import userid or not.
-			if($userIds=='0'){
-			$user->set('id',0);
-			if($overwrite==true && $overwrite_user_id)
-				$user->set('id',$overwrite_user_id);
-		  }
-		  
-		if($userIds=='1'){	 
-			if($overwrite==true && empty($overwrite_user_id)){
-			   //check whether username and email of differnet user  with
-               //same id exist in the database.If exist then
-				$checkUsernameEmail=self::checkIdinJoomla($userValues[$joomlaFieldMapping['id']]);
-				if($checkUsernameEmail){
-					$replaceCount=$mysess->get('replaceCount',0);
-					$user->set('id',$userValues[$joomlaFieldMapping['id']]);
-					$replaceCount=self::storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount);
-					$mysess->set('replaceCount',$replaceCount);
-					}
-			 }
-
-		 $user->set('id',$userValues[$joomlaFieldMapping['id']]);
-		}
-			
+			$db = JFactory::getDBO();
+            $user 		   = clone(JFactory::getUser());
+            $importUserIds =  $mysess->get('userid');
+            $newUsertype = self::getNewUserType($joomlaFieldMapping,$userValues,$user);
 			$user->set('usertype', $newUsertype);
+			$id = self::getUserId($mysess,$overwrite_user_id,$joomlaFieldMapping,$userValues);
+			$user->set('id',$id);
 			$name = array_key_exists('name',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['name']] : $userValues[$joomlaFieldMapping['username']];
 			
 			if(!array_key_exists($joomlaFieldMapping['username'],$userValues)) 
@@ -108,6 +65,11 @@ class ImpexpPluginHelper
 				$user->params = $user->_params->toString();
 			}
 			$user->set('block', '0');
+			if(IMPEXP_JVERSION != '1.5'){
+			 $groups=array();
+			 $groups[$newUsertype]=$newUsertype;
+			 $user->set('groups',$groups);
+			}
 	
 			// Create the user table object
 			$table 	= JTable::getInstance('user', 'JTable');
@@ -115,7 +77,7 @@ class ImpexpPluginHelper
 	
 			$usrid = $user->get('id');
 	         if(isset($usrid))
-			     if($userIds==1){
+			     if($importUserIds==1){
 			     	self::insertRowInDB($usrid,$user);
 	         }
 			//Store the user data in the database
@@ -124,20 +86,9 @@ class ImpexpPluginHelper
 				
 			$user->id = $table->get( 'id' );
 			
-			if(IMPEXP_JVERSION != '1.5')
-			{
-				$db = JFactory::getDBO();
-				//map user group
-				$query = "SELECT `group_id` FROM".$db->nameQuote('#__user_usergroup_map')
-					         ."WHERE ".$db->nameQuote('user_id')."=".$db->Quote($user->id);
-	            $db->setQuery($query);
-	            $sql1 = " UPDATE ".$db->nameQuote('#__user_usergroup_map')
-						." SET ".$db->nameQuote('group_id') ." = ".$db->Quote($newUsertype)
-						." WHERE ".$db->nameQuote('user_id') ." = ".$db->Quote($user->id);
-				$db->setQuery($sql1);
-				$db->query();
-				//UserController::_sendMail($user, $password);	
-			}
+			//if(IMPEXP_JVERSION != '1.5')
+			//		self::updateUserGroupMapTable($user,$newUsertype);
+			
 			if($mysess->get('passwordFormat', 'joomla', 'importCSV') == 'joomla'){
 				$sql = " UPDATE ".$db->nameQuote('#__users')
 					   ." SET ".$db->nameQuote('password') ." = ".$db->Quote($userValues[$joomlaFieldMapping['password']])
@@ -146,6 +97,58 @@ class ImpexpPluginHelper
 				$db->query();
 			}
 			return $user->id;
+	   }
+	   
+	   function getNewUserType($joomlaFieldMapping,$userValues,$user)
+	   {
+	    if(IMPEXP_JVERSION === '1.5')
+			{
+				$authorize	= JFactory::getACL();
+				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered';
+				if($newUsertype=="")
+				$newUsertype='Registered';
+				$user->set('gid', $authorize->get_group_id( '', $newUsertype, 'ARO' ));	
+			}
+		   else
+			{			
+				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : '2'; 
+				$length=JString::strlen($newUsertype);
+				if($length>1){
+					$newUsertype= self::getUserTypeId($newUsertype);
+				}
+				if($newUsertype=="" || $newUsertype==null)
+					$newUsertype='2';
+			}
+			return $newUsertype;
+	   }
+	   
+	   	   	
+	    //Set the userid according to the condition that whether the overwrite option is set or not
+	    //or want to import userid or not.
+	   function getUserId($mysess,$overwrite_user_id,$joomlaFieldMapping,$userValues)
+	   {
+	   		$overwrite     = $mysess->get('overwrite');
+			$importUserIds =  $mysess->get('userid');
+			if($importUserIds=='0'){
+			$getUsersID = 0;
+			if($overwrite==true && $overwrite_user_id)
+			$getUsersID=$overwrite_user_id;
+		  }
+		  
+		if($importUserIds=='1'){	 
+			if($overwrite==true && empty($overwrite_user_id)){
+			   //check whether username and email of differnet user  with
+               //same id exist in the database.If exist then
+				$checkUsernameEmail=self::checkIdinJoomla($userValues[$joomlaFieldMapping['id']]);
+				if($checkUsernameEmail){
+					$replaceCount=$mysess->get('replaceCount',0);
+					$replaceCount=self::storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount);
+					$mysess->set('replaceCount',$replaceCount);
+					}
+			 }
+			 $getUsersID=$userValues[$joomlaFieldMapping['id']];
+		}
+		return $getUsersID;
 	   }
 	   
 	   function insertRowInDB($usrid,$user)
@@ -165,14 +168,10 @@ class ImpexpPluginHelper
 		        $db->setQuery($sql);
 		        $getGID=$db->loadResult();
 		        if(!empty($getGID)){
-			         $sqlQuery= " UPDATE".$db->nameQuote('#__core_acl_aro').
-			         			" SET `name` =".$user->get('name').",`order_value`= "."0". ",`hidden`= ". "0" .
-			         			" WHERE "."value =".$usrid;
+			         $sqlQuery= "UPDATE".$db->nameQuote('#__core_acl_aro')." SET `name` =".$user->get('name').",`order_value`= "."0". ",`hidden`= ". "0" ." where "."value =".$usrid;
                      $db->setQuery($sqlQuery);
-                     $sqlQuery= " UPDATE".$db->nameQuote('#__core_acl_groups_aro_map').
-                     			" SET `group_id` =".$user->get('gid'). ",`section_value`= ". "" .
-                     			" WHERE "."aro_id  =".$getGID;
-					 $db->setQuery($sqlQuery);
+                     $sqlQuery= "UPDATE".$db->nameQuote('#__core_acl_groups_aro_map')." SET `group_id` =".$user->get('gid')." where "."aro_id  =".$getGID;
+                     $db->setQuery($sqlQuery);
 		        }
 		        else
 		        {
@@ -185,6 +184,21 @@ class ImpexpPluginHelper
 		}
 	   }
 				
+//       function updateUserGroupMaptable($user,$newUsertype)
+//		    {
+//		    	$db = JFactory::getDBO();
+//				//map user group
+//				$query = "SELECT `group_id` FROM".$db->nameQuote('#__user_usergroup_map')
+//					         ."WHERE ".$db->nameQuote('user_id')."=".$db->Quote($user->id);
+//	            $db->setQuery($query);
+//	            $sql1 = " UPDATE ".$db->nameQuote('#__user_usergroup_map')
+//						." SET ".$db->nameQuote('group_id') ." = ".$db->Quote($newUsertype)
+//						." WHERE ".$db->nameQuote('user_id') ." = ".$db->Quote($user->id);
+//				$db->setQuery($sql1);
+//				$db->query();
+//				//UserController::_sendMail($user, $password);	
+//		    }
+	   
 	  function getUserTypeId($usertype)
 	  {
 		$db = JFactory::getDBO();
@@ -200,7 +214,7 @@ class ImpexpPluginHelper
 	  {     
 	        $db          = JFactory::getDBO();
 			$sqlQuery    = "SELECT * From ".$db->nameQuote('#__users')." 
-						   WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+						    WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		    $db->setQuery($sqlQuery);
 		    $joomlaUsers   = $db->loadAssocList('id');
 		    $csvUser       = array();
@@ -231,7 +245,7 @@ class ImpexpPluginHelper
 		//get all the values of joomla user table and store in the database.
 		function getValueFields($userValues,$joomlaFieldMapping,$name,$newUsertype)
 		{
-			  $joomlaField_name = self::getJsJoomlaField('#__users');
+			  $joomlaField_name = ImpexpPluginHelper::getJsJoomlaField('#__users');
 			  $data = array();
 			  foreach ($joomlaField_name as $fieldName){
 				if($fieldName == 'id')
@@ -259,21 +273,6 @@ class ImpexpPluginHelper
 			}
 			return $data;
 			}
-	
-			//get the fields of the desired table
-		   function getJsJoomlaField($table)
-		    {
-		        $db = JFactory::getDBO();
-		    	$conf = JFactory::getConfig();
-				$database = $conf->getValue('config.db');
-		             $tableName = self::replacePrefix($table);
-		             $sql="SELECT column_name FROM information_schema.columns
-		                   WHERE table_name = '$tableName'
-		                   AND table_schema = '$database'";
-		            $db->setQuery($sql); 
-		            $joomlaField_name =$db->loadResultArray();
-		            return $joomlaField_name;
-		    }
 		    
 	    //store the values in community user table
 	   function storeCommunityUser($userid, $userValues,$jsFieldMapping)
@@ -330,10 +329,11 @@ class ImpexpPluginHelper
                         //change date in considerable format
 						$userValues[$value] = date("Y-m-d H:i:s",strtotime($userValues[$value]));
 			 	     }	
-                	$data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
-               		if(IMPEXP_JVERSION != '1.5' && !empty($data)){
-	 			   		self::insertJsFields($userid,$customFieldMapping);
-               		}
+                $data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
+               if(IMPEXP_JVERSION != '1.5'){
+		           if(!empty($data))
+	 			   self::insertJsFields($userid,$customFieldMapping);
+               }
               }
 			return $cModel->saveProfile($userid, $data);		
 			}
@@ -355,8 +355,37 @@ class ImpexpPluginHelper
 		  	 $db->setQuery($query); 
 		  	 $db->query();
 		   }
-	  }			
-		
+	  }	
+
+	       //remove seperator and store values in form of array
+           function removeQuotes($data,$seperator)
+		      {
+				$tempValues = array();
+				$value           = explode($seperator,array_shift($data));
+				$delimeterLength = strlen($seperator);
+				$delimeter = "";
+				//get second part of delimeter.For eg-,' then get '
+				if($delimeterLength == 2)
+				{
+				$delimeter = $seperator[1];
+				}
+		        foreach ($value as $k=>$v){
+					$tempValues[$k] = $v;
+					if(!empty($tempValues[$k]))
+					{
+						//removing suffix delimeter.
+						if(substr($v,-1,1) == $delimeter){
+						  $tempValues[$k]  = substr($v,0,-1);
+		                } 
+		                //removing prefix delimeter.
+						if(substr($tempValues[$k],0,1) == $delimeter){
+					      $tempValues[$k] = substr($tempValues[$k],1);
+						}
+				   }  
+			 }
+				return $tempValues;
+	     }
+
 	function getExistUserInCSV($users,$filename)
 		{
 			$file = JPATH_ROOT.DS.'cache'.DS.$filename;	
@@ -391,91 +420,4 @@ class ImpexpPluginHelper
 			fwrite($fh, $content);
 			fclose($fh);
 		}	
-		
-	 /**
-	   *replace the prefix of the table and add prefix(that is used by the current database) to tablename.
-       */
-     function replacePrefix($table)
-       {   
-           if(substr($table,0,3) == '#__')
-             {
-                  $tablePrefix = JFactory::getDBO()->getPrefix();
-                  $table = $tablePrefix.substr($table,3);
-             }
-            return $table;
-       }
-	
-       static function pathFS2URL($fsPath='')
-       {    
-       	// get reference path from root
-       	    if(IMPEXP_JVERSION === '1.5'){
-               $urlPath        = JString::str_ireplace( JPATH_ROOT .DS , '', $fsPath);
-       	    }
-       	    else
-              $urlPath        = self::str_ireplace( JPATH_ROOT .DS , '', $fsPath);
-               // replace all DS to URL-slash
-               $urlPath        = JPath::clean($urlPath, '/');
-               
-               // prepend URL-root
-               return JURI::root().$urlPath;
-       }
-       
-       /**
-        * Clonning function Due to bug in utf8_ireplace function
-        */
-       static public function str_ireplace($search, $replace, $str, $count = NULL)
-       {
-               
-               if ( !is_array($search) ) {
-       
-               $slen = strlen($search);
-               if ( $slen == 0 ) {
-                   return $str;
-               }
-       
-               $lendif = strlen($replace) - strlen($search);
-               $search = utf8_strtolower($search);
-       
-               $search = preg_quote($search,"/");
-               $lstr = utf8_strtolower($str);
-               $i = 0;
-               $matched = 0;
-               while ( preg_match('/(.*)'.$search.'/Us',$lstr, $matches) ) {
-                   if ( $i === $count ) {
-                       break;
-                   }
-                   $mlen = strlen($matches[0]);
-                   $lstr = substr($lstr, $mlen);
-                   $str = substr_replace($str, $replace, $matched+strlen($matches[1]), $slen);
-                   $matched += $mlen + $lendif;
-                   $i++;
-               }
-               return $str;
-       
-           } else {
-       
-               foreach ( array_keys($search) as $k ) {
-       
-                   if ( is_array($replace) ) {
-       
-                       if ( array_key_exists($k,$replace) ) {
-       
-                           $str = utf8_ireplace($search[$k], $replace[$k], $str, $count);
-       
-                       } else {
-       
-                           $str = utf8_ireplace($search[$k], '', $str, $count);
-       
-                       }
-       
-                   } else {
-       
-                       $str = utf8_ireplace($search[$k], $replace, $str, $count);
-       
-                   }
-               }
-               return $str;
-       
-           }
-       }
 }

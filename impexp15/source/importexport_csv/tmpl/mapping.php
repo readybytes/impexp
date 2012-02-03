@@ -87,7 +87,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 		}
 		?>
 		<input type="hidden" name="importCSVStage" value="importData" />
-		<input type="submit" value="Import Data" onclick="return importMappingCheck('<?php echo $userIds ?>');" style="background:#6699cc; padding:5px 0;
+		<input type="submit" value="Import Data" onclick="return importMappingCheck('<?php echo $importUserId ?>');" style="background:#6699cc; padding:5px 0;
 		border:1px solid #6699cc;color:#fff;font-weight:bold;cursor:pointer;-webkit-border-radius: 5px;
 		-moz-border-radius: 5px; border-radius: 5px;" />	
 		</div>

@@ -14,7 +14,7 @@
 if(!defined('_JEXEC')) die('Restricted access');
 if(!class_exists('JProfiler'))
 require_once(JPATH_ROOT.DS.'libraries'.DS.'joomla'.DS.'error'.DS.'profiler.php');
-require_once(dirname(__FILE__) .DS. 'helper.php');
+require_once(dirname(__FILE__) .DS.'helper' .DS. 'importHelper.php');
 
 class ImpexpPluginImport
 {
@@ -65,13 +65,13 @@ class ImpexpPluginImport
 		if(!isset($fileCSV['tmp_name']) || empty($fileCSV['tmp_name'])){
 			return $this->getUploaderHtml();
 		}
-		$seperator  = JRequest::getVar('seperator','","');
-        $overwrite  = JRequest::getVar('overwrite','0');
-        $userIds    = JRequest::getVar('userid','0');
+		$seperator    = JRequest::getVar('seperator','","');
+        $overwrite    = JRequest::getVar('overwrite','0');
+        $importUserId = JRequest::getVar('userid','0');
         
         $mysess->set('overwrite',$overwrite);
 		$mysess->set('seperator',$seperator);
-		$mysess->set('userid',$userIds);
+		$mysess->set('userid',$importUserId);
 		
 		// set password format value in session
 		$mysess->set('passwordFormat', JRequest::getVar('passwordFormat','joomla'), 'importCSV');
@@ -92,19 +92,13 @@ class ImpexpPluginImport
 			$seperator = substr($seperator,1); //remove first letter for eg-"," as ,"
 			$mysess->set('seperator',$seperator);
 		}
-	    $pos = explode($seperator,(string)$columns[0]);
+	    $getSizeOfColumns = explode($seperator,(string)$columns[0]);
 		//If only one array found after exploding string then show error msg
-		if(sizeof($pos)==1){
-			?>
-			<div style="width:100%;margin:200px 0;text-align:center;color:#6699cc;">
-			<a style ="color:#6699cc;" href="http://joomlaxi.com/support/documentation/item/importing-user.html" target="_blank">
-			<?php 
-			echo JText::_("PLG_IMPORTEXPORT_CSV_SEPERATOR_DOES_NOT_MATCH");
-			?></a></div>
-			<?php 
+		if(sizeof($getSizeOfColumns)==1){
+			self::loadHtmlForSeperator();
 			exit();
 		}
-		$columns = $this->removeQuotes($columns, $seperator);
+		$columns = ImpexpPluginImportHelper::removeQuotes($columns, $seperator);
 		$sizeOfFieldArray = count($columns);
 		$mysess->set('sizeOfFieldArray',$sizeOfFieldArray);
 		$this->setIndexingInSession($file, $mysess);
@@ -121,7 +115,6 @@ class ImpexpPluginImport
 		$currentUrl = JURI::getInstance()->toString();
 		
 		// get uploader html
-		
 		ob_start();
 		require_once(dirname(__FILE__) .DS. 'tmpl' .DS. 'mapping.php');
 	
@@ -129,6 +122,17 @@ class ImpexpPluginImport
 		ob_clean();
 		
 		return $content;
+	}
+	
+	function loadHtmlForSeperator()
+	{
+		?>
+		<div style="width:100%;margin:200px 0;text-align:center;color:#6699cc;">
+		<a style ="color:#6699cc;" href="http://joomlaxi.com/support/documentation/item/importing-user.html" target="_blank">
+		<?php 
+		echo JText::_("PLG_IMPORTEXPORT_CSV_SEPERATOR_DOES_NOT_MATCH");
+		?></a></div>
+		<?php 
 	}
 
 		function setIndexingInSession($file , $mysess)
@@ -229,12 +233,12 @@ class ImpexpPluginImport
 				$mysess->set('fieldMapping', $fieldMapping, 'importCSV');
 				
 				//Deleting csv files
-				ImpexpPluginHelper::deleteCSV('existuser.csv','Username and E-mails which are already exist.');
-				ImpexpPluginHelper::deleteCSV('importuser.csv','Username and E-mails which are imported.');
-				ImpexpPluginHelper::deleteCSV('discardusers.csv','Username and E-mails which are not imported,as userid already exist.');
+				ImpexpPluginImportHelper::deleteCSV('existuser.csv','Username and E-mails which are already exist.');
+				ImpexpPluginImportHelper::deleteCSV('importuser.csv','Username and E-mails which are imported.');
+				ImpexpPluginImportHelper::deleteCSV('discardusers.csv','Username and E-mails which are not imported,as userid already exist.');
 				$allFields = ImpexpPluginExport::getAllFields();
-		        ImpexpPluginHelper::deleteCSV('replaceuser.csv',$allFields);
-		        ImpexpPluginHelper::deleteCSV('sizediscarduser.csv','Username and E-mails which are not imported,as size of fields is not equal to data');
+		        ImpexpPluginImportHelper::deleteCSV('replaceuser.csv',$allFields);
+		        ImpexpPluginImportHelper::deleteCSV('sizediscarduser.csv','Username and E-mails which are not imported,as size of fields is not equal to data');
 				//for testing purpose
 				if(defined('TESTMODE')){
 					return true;
@@ -257,10 +261,6 @@ class ImpexpPluginImport
 				
 		function createUser($mysess, $storagePath,$importuser_count)
 			{
-				//getting values
-				$overwrite    = $mysess->get('overwrite');
-                $seperator    = $mysess->get('seperator');
-                $userIds      = $mysess->get('userid');
 				$startTime = JProfiler::getmicrotime();
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'libraries'.DS.'core.php');
 				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');
@@ -278,69 +278,45 @@ class ImpexpPluginImport
 				$html='';
 				$file = fopen($storagePath.'import.csv', "r");
 				
-				//check whether offset is set or not 
-				//because in 1 block(1000) of users,if all users can't be 
-				//processed in one request then offset and index of the uncompleted block 
-				//is set for further processing. 
-				if($mysess->has('offset'))
-				 {
-				   $offset = $mysess->get('offset');
-				   $index  = $mysess->get('index');
-				   $mysess->set('fileIndex', $fileIndex, 'importCSV');
-				 }
-				else 
-				{   
-					$index = array_shift($fileIndex);
-					$mysess->set('fileIndex', $fileIndex, 'importCSV');
-					$offset = $index['start'];  
-				 }
+				//check whether offset is set or not because in 1 block(1000) of
+				// users,if all users can't be processed in one request then offset
+				// and index of the uncompleted block is set for further processing.
+				list($offset, $index) = self::checkOffset($mysess,$fileIndex);
 				fseek($file,$offset);
-				//get counts for all files
-                $replaceCount = $mysess->get('replaceCount',0);
-                $count        = $mysess->get('count',0);
-                $discardCount = $mysess->get('discardCount',0);
-                $icount       = $mysess->get('icount',0);
-                $sizeCount    = $mysess->get('sizeCount',0);
-//xitodo:
-			    $existuser    = array();
-				$importuser   = array();
-				$discardUser  = array();
-				$sizeDiscardUser=array();
+				list($count,$discardCount,$icount,$sizeCount) = self::getCounts($mysess);
+			    $existuser       = array();
+				$importuser      = array();
+				$discardUser     = array();
+				$sizeDiscardUser = array();
 					while(($data = fgetcsv($file, 0, "\n")) !== FALSE && ftell($file) <= $index['end'])
 				    {
-					 	$userValues=$this->removeQuotes($data,$seperator);
+					 	$userValues=ImpexpPluginImportHelper::removeQuotes($data,$mysess->get('seperator'));
 					 	//if their is empty row then
 					 	if(isset($userValues[0]) && empty($userValues[0])) continue;
-					 	$sizeOfValueArray=count($userValues);
-					 	$sizeOfFieldArray=$mysess->get('sizeOfFieldArray');
+					 	$fieldJ           = $fieldMapping['joomla'];
+						$useroffset       = $fieldJ['username'];
+						$emailoffset      = $fieldJ['email'];
+					 	$sizeOfFieldArray = $mysess->get('sizeOfFieldArray');
 					 	//if size of field value is not equal data value then
-					 	if($sizeOfValueArray!=$sizeOfFieldArray){
-						 	$sizeDiscardUser[$sizeCount]['username'] = $userValues[$fieldMapping['joomla']['username']];
-						    $sizeDiscardUser[$sizeCount]['email']    =  $userValues[$fieldMapping['joomla']['email']];
-						    $sizeCount++;
+					 	if(count($userValues)!=$sizeOfFieldArray){
+					 		self::storeDiscardUser($sizeDiscardUser,$sizeCount,$userValues,$fieldMapping,$useroffset,$emailoffset);
 						    continue;
 					 	}
-						$fieldJ     = $fieldMapping['joomla'];
-						$useroffset = $fieldJ['username'];
-						$emailoffset= $fieldJ['email'];
-						$checkUsername	=	ImpexpPluginHelper::checkUsernameinJoomla($userValues[$useroffset],$userValues[$emailoffset]);
+						$checkUsername	   = ImpexpPluginImportHelper::checkUsernameinJoomla($userValues[$useroffset],$userValues[$emailoffset]);
 	                    $overwrite_user_id = $checkUsername;
 						if($checkUsername){
 						   $this->storeUser($mysess,$userValues,$useroffset,$emailoffset,$overwrite_user_id,$fieldMapping,$count,$existuser);
 				           $importuser_count++;
 	                       continue;
-	                     }
-	                     
-	                     if($overwrite ==false && $userIds=='1'){
-	                       $checkId=ImpexpPluginHelper::checkIdinJoomla($userValues[$fieldJ['id']]);
-	                       //check whether username and email of differnet user  with
-	                       //same id exist in the database.If exist then
+	                     } 
+	                     if( $mysess->get('overwrite') == false && $mysess->get('userid') == '1'){
+	                       $checkId=ImpexpPluginImportHelper::checkIdinJoomla($userValues[$fieldJ['id']]);
+	                       //check whether username and email of differnet user 
+	                       // with same id exist in the database.If exist then,
 	                       if($checkId){
-		                        $discardUser[$discardCount]['username'] = $userValues[$useroffset];
-				                $discardUser[$discardCount]['email']    = $userValues[$emailoffset];
-				                $discardCount++;
-		                        continue;
-	                        }
+	                       	self::storeDiscardUser($discardUser,$discardCount,$userValues,$fieldMapping,$useroffset,$emailoffset);
+		                    continue;
+	                       }
 	                     }
 	                     $this->storeUser($mysess,$userValues,$useroffset,$emailoffset,$overwrite_user_id,$fieldMapping,$icount,$importuser);
 				         $importuser_count++; 
@@ -355,60 +331,67 @@ class ImpexpPluginImport
 					    break;
 				 }
 				//if block is finished then clear offset
-			    if(ftell($file) >= $index['end'])
-			    {
+			    if(ftell($file) >= $index['end']){
 			      $mysess->clear('offset'); 
 			    }
 				fclose($file);	
-				//Add existed user in file.
-				ImpexpPluginHelper::getExistUserInCSV($existuser,'existuser.csv');
-//clean this code            	
-				 $mysess->set('count',$count);
-				//Add imported user in file
-				ImpexpPluginHelper::getExistUserInCSV($importuser,'importuser.csv');
-				$mysess->set('icount', $icount);
-				//Add discard user in file
-		    	ImpexpPluginHelper::getExistUserInCSV($discardUser,'discardusers.csv');
-		    	$mysess->set('discardCount', $discardCount);
-		    	//Add User which are discarded due to size 
-		    	ImpexpPluginHelper::getExistUserInCSV($sizeDiscardUser,'sizediscarduser.csv');
-		    	$mysess->set('sizeCount', $sizeCount);
-		    	
-				$this-> loadHtml($importuser_count,$mysess);
-				$mysess->set('impexp_count',$importuser_count);
+				//Add users in csv file.
+				self::writeDataInCSV($existuser,$importuser,$discardUser,$sizeDiscardUser);
+				//set values in session
+				self::setValueInSession($mysess,$count,$icount,$discardCount,$sizeCount,$importuser_count);
+				self::loadHtml($importuser_count,$mysess);
 				self::refreshImport();	
-		      }				
-			
-            //remove seperator and store values in form of array
-           function removeQuotes($data,$seperator)
+		      }	
+		      
+		      function checkOffset($mysess,$fileIndex)
 		      {
-				$tempValues = array();
-				$value           = explode($seperator,array_shift($data));
-				$delimeterLength = strlen($seperator);
-				$delimeter = "";
-				//get second part of delimeter.For eg-,' then get '
-				if($delimeterLength == 2)
-				{
-				$delimeter = $seperator[1];
-				}
-		        foreach ($value as $k=>$v){
-					$tempValues[$k] = $v;
-					if(!empty($tempValues[$k]))
-					{
-						//removing suffix delimeter.
-						if(substr($v,-1,1) == $delimeter){
-						  $tempValues[$k]  = substr($v,0,-1);
-		                } 
-		                //removing prefix delimeter.
-						if(substr($tempValues[$k],0,1) == $delimeter){
-					      $tempValues[$k] = substr($tempValues[$k],1);
-						}
-				   }  
-			 }
-				return $tempValues;
-	     }
-
-	    			
+		      if($mysess->has('offset'))
+				 {
+				   $offset = $mysess->get('offset');
+				   $index  = $mysess->get('index');
+				   $mysess->set('fileIndex', $fileIndex, 'importCSV');
+				 }
+				else 
+				{   
+					$index = array_shift($fileIndex);
+					$mysess->set('fileIndex', $fileIndex, 'importCSV');
+					$offset = $index['start'];  
+				 }
+				 return array($offset,$index);
+		      }
+		      
+		      function getCounts($mysess)
+		      {
+		      	$count           = $mysess->get('count',0);
+                $discardCount    = $mysess->get('discardCount',0);
+                $icount          = $mysess->get('icount',0);
+                $sizeCount       = $mysess->get('sizeCount',0);
+                return array($count,$discardCount,$icount,$sizeCount);
+		      }
+		      
+		      function storeDiscardUser(&$DiscardUser,&$dCount,$userValues,$fieldMapping,$useroffset,$emailoffset)
+		      {
+		      	$DiscardUser[$dCount]['username'] = $userValues[$useroffset];
+			    $DiscardUser[$dCount]['email']    = $userValues[$emailoffset];
+			    $dCount++;
+		      }
+		      
+		     function writeDataInCSV($existuser,$importuser,$discardUser,$sizeDiscardUser)
+		     {
+		     	ImpexpPluginImportHelper::getExistUserInCSV($existuser,'existuser.csv'); 
+		     	ImpexpPluginImportHelper::getExistUserInCSV($importuser,'importuser.csv');
+		     	ImpexpPluginImportHelper::getExistUserInCSV($discardUser,'discardusers.csv');  
+		     	ImpexpPluginImportHelper::getExistUserInCSV($sizeDiscardUser,'sizediscarduser.csv');
+		     }
+		     
+			function setValueInSession($mysess,$count,$icount,$discardCount,$sizeCount,$importuser_count)
+			{	  	
+				$mysess->set('count',$count);
+				$mysess->set('icount', $icount);
+		    	$mysess->set('discardCount', $discardCount);
+		    	$mysess->set('sizeCount', $sizeCount);
+		    	$mysess->set('impexp_count',$importuser_count);
+			}
 		/**
 		 * store the user data in database
 		 */
@@ -421,11 +404,11 @@ class ImpexpPluginImport
 		 $overwrite = $mysess->get('overwrite');
              if($overwrite == true || empty($overwrite_user_id))
 			  {                        
-			   $newUserId    = ImpexpPluginHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess,$overwrite_user_id);
+			   $newUserId    = ImpexpPluginImportHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess,$overwrite_user_id);
 			   //$session->get('resultData');
 			   if(!$newUserId) continue;
-			   $cUser        = ImpexpPluginHelper::storeCommunityUser($newUserId , $userValues,$fieldMapping['jsfield']);
-			   $customFields = ImpexpPluginHelper::storeCustomFields($newUserId , $userValues, $fieldMapping['custom']);	
+			   $cUser        = ImpexpPluginImportHelper::storeCommunityUser($newUserId , $userValues,$fieldMapping['jsfield']);
+			   $customFields = ImpexpPluginImportHelper::storeCustomFields($newUserId , $userValues, $fieldMapping['custom']);	
 			  }
 	    }	
 	   

@@ -5,8 +5,8 @@
 **/
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
-require_once(dirname(__FILE__) .DS. 'field.php');
-require_once(dirname(__FILE__) .DS. 'impexpElement.php');
+require_once(dirname(__FILE__) .DS. 'elements' .DS. 'field.php');
+require_once(dirname(__FILE__) .DS.'elements' .DS. 'impexpElement.php');
 jimport('joomla.html.parameter.element');
 class JElementExportlink extends impexpElement
 {

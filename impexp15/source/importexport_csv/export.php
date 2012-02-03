@@ -12,6 +12,7 @@
 
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
+require_once(dirname(__FILE__) .DS. 'helper' .DS. 'helper.php');
 
 class ImpexpPluginExport 
 { 
