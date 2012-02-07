@@ -10,11 +10,9 @@ define('IMPEXP_BIAS_TIME' , 0.50);
 define('IMPEXP_MEM_LIMIT' , 32);
 define('IMPEXP_BIAS_MEMORY',0.60);
 define('IMPEXP_PERCENTAGE',0.25);
-if($version->RELEASE === '1.5')
-  define('IMPEXP_JVERSION', '1.5');
-elseif($version->RELEASE === '1.6')
-  define('IMPEXP_JVERSION', '1.6');
-elseif($version->RELEASE === '1.7')
-  define('IMPEXP_JVERSION', '1.7');
-else
-  define('IMPEXP_JVERSION', '2.5');
+define('IMPEXP_JVERSION', $version->RELEASE);
+
+if(IMPEXP_JVERSION==='1.5')
+  define('IMPEXP_MEM_PERCENT_LEFT',0.25);
+else 
+  define('IMPEXP_MEM_PERCENT_LEFT',0.45);

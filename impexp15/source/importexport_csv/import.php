@@ -459,7 +459,7 @@ class ImpexpPluginImport
 			$time = $time + (JProfiler::getmicrotime()-$startTime);
 			$space = JProfiler::getMemory();
 			//check the percentage of memory and time remaining
-		    if( (1 - $time / $this->max_exec_time) > IMPEXP_PERCENTAGE  &&  (1 - $space / $this->memory_limit) > IMPEXP_PERCENTAGE)
+		    if( (1 - $time / $this->max_exec_time) > IMPEXP_PERCENTAGE  &&  (1 - $space / $this->memory_limit) > IMPEXP_MEM_PERCENT_LEFT)
 			   return false;
 		    return true;
 		}

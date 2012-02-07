@@ -14,11 +14,32 @@
 if(!defined('_JEXEC')) die('Restricted access');
 //$currentUrl=JURI::getInstance();
 ?>
-<div style="padding:0;border:2px solid #ccc;margin-top:30px;">
-	    <div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:8px 0;font-weight:bold;align:center"><span style="margin-left:10px;">Exporting CSV</span></div>
+<style type="text/css">
+.div1
+{
+text-align: center;
+margin-top:12px;
+font-style: italic;
+font-size: 15px;
+color: #666;
+border-bottom: 1px solid #eee;
+}
+.div2
+{
+text-align: center;
+margin-top:10px;
+font-style: italic;
+font-size: 15px;
+color: #666;
+}
+</style>
+<div style="padding:0;border:1px solid #ccc;margin-top:10px;height:160px; ">
+	    <div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:5px 0;font-weight:bold;align:center"><span style="margin-left:10px;">Exporting CSV</span></div>
 		 <form action="<?php echo JRoute::_($currentUrl); ?>" method="post" name="adminForm" id="adminForm" >
-	    	<div style="overflow:hidden;width: 80%;margin: auto;">
-				<div style="text-align: center;font-style: italic;font-size: 18px;color: #666;border-bottom: 1px solid #eee;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_DO_NOT_CLOSE_THIS_WINDOW_UNTIL_DOWNLOAD_LINK_IS_SHOWN'); echo "<br/><br/>";?>
+	    	<div style="overflow:hidden;width: 90%;margin: auto;">
+				<div class="div1"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_DO_NOT_CLOSE_THIS_WINDOW_UNTIL_DOWNLOAD_LINK_IS_SHOWN');?> <br/><br/>
+				</div>
+				 <div class="div2"><font color="red"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_WARNING');?></font><?php echo JText::_('PLG_IMPORTEXPORT_CSV_ON_EXPORT_FILE_CHOOSE_UTF8_FORMAT');?> <br/><br/>
 				</div>
 			</div>
 		 </form>
