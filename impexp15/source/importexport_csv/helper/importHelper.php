@@ -86,9 +86,6 @@ class ImpexpPluginImportHelper
 				
 			$user->id = $table->get( 'id' );
 			
-			//if(IMPEXP_JVERSION != '1.5')
-			//		self::updateUserGroupMapTable($user,$newUsertype);
-			
 			if($mysess->get('passwordFormat', 'joomla', 'importCSV') == 'joomla'){
 				$sql = " UPDATE ".$db->nameQuote('#__users')
 					   ." SET ".$db->nameQuote('password') ." = ".$db->Quote($userValues[$joomlaFieldMapping['password']])
@@ -127,6 +124,7 @@ class ImpexpPluginImportHelper
 	    //or want to import userid or not.
 	   function getUserId($mysess,$overwrite_user_id,$joomlaFieldMapping,$userValues)
 	   {
+	   	    $Impexp_JoomlaJs  = $mysess->get('importDataTo');
 	   		$overwrite     = $mysess->get('overwrite');
 			$importUserIds =  $mysess->get('userid');
 			if($importUserIds=='0'){
@@ -142,7 +140,7 @@ class ImpexpPluginImportHelper
 				$checkUsernameEmail=self::checkIdinJoomla($userValues[$joomlaFieldMapping['id']]);
 				if($checkUsernameEmail){
 					$replaceCount=$mysess->get('replaceCount',0);
-					$replaceCount=self::storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount);
+					$replaceCount=self::storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount,$Impexp_JoomlaJs);
 					$mysess->set('replaceCount',$replaceCount);
 					}
 			 }
@@ -183,21 +181,6 @@ class ImpexpPluginImportHelper
 		    }		
 		}
 	   }
-				
-//       function updateUserGroupMaptable($user,$newUsertype)
-//		    {
-//		    	$db = JFactory::getDBO();
-//				//map user group
-//				$query = "SELECT `group_id` FROM".$db->nameQuote('#__user_usergroup_map')
-//					         ."WHERE ".$db->nameQuote('user_id')."=".$db->Quote($user->id);
-//	            $db->setQuery($query);
-//	            $sql1 = " UPDATE ".$db->nameQuote('#__user_usergroup_map')
-//						." SET ".$db->nameQuote('group_id') ." = ".$db->Quote($newUsertype)
-//						." WHERE ".$db->nameQuote('user_id') ." = ".$db->Quote($user->id);
-//				$db->setQuery($sql1);
-//				$db->query();
-//				//UserController::_sendMail($user, $password);	
-//		    }
 	   
 	  function getUserTypeId($usertype)
 	  {
@@ -210,7 +193,7 @@ class ImpexpPluginImportHelper
 	
 	  //store all the table(joomla user,jomsocial user,community users value)fields 
 	  //value of the user that are replaced.
-      function storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount)
+      function storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount,$Impexp_JoomlaJs)
 	  {     
 	        $db          = JFactory::getDBO();
 			$sqlQuery    = "SELECT * From ".$db->nameQuote('#__users')." 
@@ -218,29 +201,36 @@ class ImpexpPluginImportHelper
 		    $db->setQuery($sqlQuery);
 		    $joomlaUsers   = $db->loadAssocList('id');
 		    $csvUser       = array();
-		    $csvJoomlaUser = ImpexpPluginExport::storeJsJoomlaUser('joomla',$joomlaUsers,$csvUser);
+		    $completeCsv = ImpexpPluginExport::storeJsJoomlaUser('joomla',$joomlaUsers,$csvUser);
+
 			// function to start creating csv from jomsocial and joomla users' table
 			$user_id = array_keys($joomlaUsers);
-			//function to process community_field_values table
-			$csvComFieldJoomlaUser = ImpexpPluginExport::storeComFieldValues('cFieldValues',$csvJoomlaUser,$user_id);	
-			//start creating csv for jomsocial and joomla users' fields
-			$jsUsers = ImpexpPluginExport::getJsUser($user_id);
-		
-		    $completeCsv = ImpexpPluginExport::storeJsJoomlaUser('jomsocial',$jsUsers,$csvComFieldJoomlaUser);	    
-			$finalCsv    = ImpexpPluginExport::setDataForCsv($completeCsv,$user_id);
+            $sqlQuery="DELETE * From".$db->nameQuote('#__users')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+		    $db->setQuery($sqlQuery); 
+
+			//if joomla+js selected then only process it
+			if($Impexp_JoomlaJs != 'Joomla'){
+				//function to process community_field_values table
+				$completeCsv = ImpexpJsHelper::storeComFieldValues('cFieldValues',$completeCsv,$user_id);	
+				
+				//start creating csv for jomsocial and joomla users' fields
+				$jsUsers = ImpexpJsHelper::getJsUser($user_id);
+			
+			    $completeCsv = ImpexpPluginExport::storeJsJoomlaUser('jomsocial',$jsUsers,$completeCsv);
+			    
+			    $sqlQuery = "DELETE * From".$db->nameQuote('#__community_users')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+		        $db->setQuery($sqlQuery);
+		        $sqlQuery = "DELETE * From".$db->nameQuote('#__community_fields_values')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+		        $db->setQuery($sqlQuery);
+			}
+			   $finalCsv    = ImpexpPluginExport::setDataForCsv($completeCsv,$user_id);
+			    
 			foreach ($finalCsv as $userid=>$result){
 				  $result = rtrim($result, ',');
 				  self::getExistUserInCSV($result,'replaceuser.csv');
 				  $replaceCount++;
 			 }
-			
-		    $sqlQuery="DELETE * From".$db->nameQuote('#__users')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
-		    $db->setQuery($sqlQuery);
-		    $sqlQuery="DELETE * From".$db->nameQuote('#__community_users')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
-		    $db->setQuery($sqlQuery);
-		    $sqlQuery="DELETE * From".$db->nameQuote('#__community_fields_values')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
-		    $db->setQuery($sqlQuery);
-		    return $replaceCount;
+		     return $replaceCount;
 		}
 		//get all the values of joomla user table and store in the database.
 		function getValueFields($userValues,$joomlaFieldMapping,$name,$newUsertype)
@@ -274,88 +264,6 @@ class ImpexpPluginImportHelper
 			return $data;
 			}
 		    
-	    //store the values in community user table
-	   function storeCommunityUser($userid, $userValues,$jsFieldMapping)
-	   {
-			$user = clone(CFactory::getUser($userid));
-			if(empty($jsFieldMapping))
-				return true;
-			
-			foreach($jsFieldMapping as $key => $value)
-			 {
-				if(('_'.$key) == '_params'){
-				  if(IMPEXP_JVERSION === '1.5'){
-				    $str_value = $userValues[$value];	
-				    $str  = explode('\n',$str_value);
-				    $data = array();
-				    foreach($str as $key1=>$value1){
-                       if(!empty($value1)){
-                   	     list($key2,$value2) = explode('=',$value1);
-                         $data[$key2]=$value2;
-                       }
-                   	}
-                 	$user->_cparams->bind($data);
-				  }
-				  else{
-					  $userValues[$value] = str_replace('\n', ',',$userValues[$value]);
-		              $user->_cparams->bind($userValues[$value]);
-				  }
-				}
-				else {
-				  $user->set('_'.$key, $userValues[$value]);
-				}
-			}
-			
-			if(!$user->save())
-				return false;
-				
-			return true;
-		}
-		
-	  //store the values in community users values table
-	function storeCustomFields($userid, $userValues, $customFieldMapping)
-			{
-			   $cModel  = CFactory::getModel('Profile');
-			   $data    = array();
-			   $db = JFactory::getDBO();		  
-		       $strquery = "SELECT `id`,`type` FROM ".$db->nameQuote('#__community_fields');
-		  	   $db->setQuery($strquery);  
-		 	   $fieldsType = $db->loadAssocList('id');
-		 	   
-				foreach($customFieldMapping as $key => $value){
-					if($fieldsType[$key]['type'] == 'birthdate' || $fieldsType[$key]['type'] == 'date'){
-						//if birthdate field is left empty then default date will be set i.e 1-1-1970.
-                       	if(!empty($userValues[$value]))
-                        //change date in considerable format
-						$userValues[$value] = date("Y-m-d H:i:s",strtotime($userValues[$value]));
-			 	     }	
-                $data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
-               if(IMPEXP_JVERSION != '1.5'){
-		           if(!empty($data))
-	 			   self::insertJsFields($userid,$customFieldMapping);
-               }
-              }
-			return $cModel->saveProfile($userid, $data);		
-			}
-			
-    function insertJsFields($userid,$customFieldMapping)
-      {
-  	      $db 	  = JFactory::getDBO();
-  	      $query  = " select `field_id` FROM ".$db->nameQuote('#__community_fields_values')
-		            ." WHERE ".$db->nameQuote('user_id')." = ". $userid;
-		  $db->setQuery($query);  
-		  $fields = $db->loadAssocList('field_id');
-		  $values = null;
-		   foreach($customFieldMapping as $fieldId => $value){
-		  	 if(array_key_exists($fieldId, $fields))
-		  	 	continue;
-		  	 $values   = "(".$userid.","."$fieldId".")";  
-			 $query    = " INSERT INTO ".$db->nameQuote('#__community_fields_values')
-		  	            ."(`user_id`,`field_id`) VALUES ".$values;
-		  	 $db->setQuery($query); 
-		  	 $db->query();
-		   }
-	  }	
 
 	       //remove seperator and store values in form of array
            function removeQuotes($data,$seperator)
@@ -421,3 +329,4 @@ class ImpexpPluginImportHelper
 			fclose($fh);
 		}	
 }
+

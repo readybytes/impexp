@@ -55,7 +55,16 @@ class plgSystemImportExport_csv extends JPlugin
 			return true;
 
 		if($task == 'export'){
-			$this->export->createCSV($this->storagePath,$this->mysess);
+			if($stage == 'upload'){
+			   $html = $this->export->getExportDataTable();  
+			   $document = JFactory::getDocument();
+			   $document->setBuffer($html, 'component');
+		       echo $html;
+		       exit;		
+			} 
+			else if($stage == 'createCSV'){
+			   $this->export->createCSV($this->storagePath,$this->mysess);
+			}
 		}
 
 		if($task == 'uploadFile'){

@@ -42,6 +42,24 @@ class ImpexpPluginHelper
              }
             return $table;
        }
+       
+       function jomsocialEnabled()
+       {
+       	$db = JFactory::getDBO();
+       	$component="#__components";
+	    $name='COM_COMMUNITY';
+	    $enableOrNot = 'enabled';
+		if(IMPEXP_JVERSION != '1.5'){
+			$component = "#__extensions";
+			$name = 'community';
+		}	
+			 $query  = 'SELECT '.$db->nameQuote($enableOrNot)
+                  .' FROM ' .$db->nameQuote($component)
+                  .' WHERE `name`='.$db->Quote($name);
+		    $db->setQuery($query);             
+            $isInstalled= (boolean) $db->loadResult();
+            return $isInstalled;
+		}
 	
        static function pathFS2URL($fsPath='')
        {    

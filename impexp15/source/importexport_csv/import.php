@@ -68,10 +68,21 @@ class ImpexpPluginImport
 		$seperator    = JRequest::getVar('seperator','","');
         $overwrite    = JRequest::getVar('overwrite','0');
         $importUserId = JRequest::getVar('userid','0');
+        $Impexp_JoomlaJs = JRequest::getVar('importDataTo','JoomlaJS');
         
         $mysess->set('overwrite',$overwrite);
 		$mysess->set('seperator',$seperator);
 		$mysess->set('userid',$importUserId);
+		$mysess->set('Impexp_JoomlaJs',$Impexp_JoomlaJs);
+		$isInstalled = ImpexpPluginHelper::jomsocialEnabled();
+	
+		if($Impexp_JoomlaJs !='Joomla'){
+	    if($isInstalled == false){
+	    	   $msg = "PLG_IMPORTEXPORT_YOU_DO_HAVE_JOMSOCIAL_INSTALLED";
+               self::loadHtmlForSeperator($msg);
+               exit();
+            }
+		}
 		
 		// set password format value in session
 		$mysess->set('passwordFormat', JRequest::getVar('passwordFormat','joomla'), 'importCSV');
@@ -95,7 +106,8 @@ class ImpexpPluginImport
 	    $getSizeOfColumns = explode($seperator,(string)$columns[0]);
 		//If only one array found after exploding string then show error msg
 		if(sizeof($getSizeOfColumns)==1){
-			self::loadHtmlForSeperator();
+			$sepMsg = "PLG_IMPORTEXPORT_CSV_SEPERATOR_DOES_NOT_MATCH";
+			self::loadHtmlForSeperator($sepMsg);
 			exit();
 		}
 		$columns = ImpexpPluginImportHelper::removeQuotes($columns, $seperator);
@@ -107,9 +119,10 @@ class ImpexpPluginImport
 		// get all options of fields
 		$optionHtml  = '';
 		$optionHtml .= $this->getJoomlaFieldOptions();
-		$optionHtml .= $this->getJSFieldOptions();
-		$optionHtml .= $this->getCustomFieldOptions();
-		
+		if($Impexp_JoomlaJs !='Joomla'){
+			$optionHtml .= $this->getJSFieldOptions();
+			$optionHtml .= $this->getCustomFieldOptions();
+		}
 		$index = 0;
 		$html  = '';
 		$currentUrl = JURI::getInstance()->toString();
@@ -124,13 +137,13 @@ class ImpexpPluginImport
 		return $content;
 	}
 	
-	function loadHtmlForSeperator()
+	function loadHtmlForSeperator($msg)
 	{
 		?>
 		<div style="width:100%;margin:200px 0;text-align:center;color:#6699cc;">
 		<a style ="color:#6699cc;" href="http://joomlaxi.com/support/documentation/item/importing-user.html" target="_blank">
 		<?php 
-		echo JText::_("PLG_IMPORTEXPORT_CSV_SEPERATOR_DOES_NOT_MATCH");
+		echo JText::_($msg);
 		?></a></div>
 		<?php 
 	}
@@ -157,14 +170,14 @@ class ImpexpPluginImport
 				 $mysess->clear('fileIndex', 'importCSV');
 
             //clear offset and impexp_count,count,discardCount,icount,sizeCount,replaceCount if exist
-			$mysess->clear('offset');
-			$mysess->clear('impexp_count');	
-			$count        = $mysess->clear('count');
-            $discardCount = $mysess->clear('discardCount');
-            $icount       = $mysess->clear('icount');
-            $sizeCount    = $mysess->clear('sizeCount');
-            $replaceCount = $mysess->clear('replaceCount'); 
-			$mysess->set('fileIndex', $fileIndex, 'importCSV');
+			 $mysess->clear('offset');
+			 $mysess->clear('impexp_count');	
+			 $mysess->clear('count');
+             $mysess->clear('discardCount');
+             $mysess->clear('icount');
+             $mysess->clear('sizeCount');
+             $mysess->clear('replaceCount');
+			 $mysess->set('fileIndex', $fileIndex, 'importCSV');
 			return true;	
 		}
 
@@ -218,12 +231,14 @@ class ImpexpPluginImport
 		function importData($mysess)
 			{
 				$post = JRequest::get('post');
+				$Impexp_JoomlaJs=$mysess->get('Impexp_JoomlaJs');
 				// check for duplicate values 
 				// there must be one to one mapping
 				$fieldMapping['joomla']  = $this->getFieldMapping($post,'joomla');
-				$fieldMapping['jsfield'] = $this->getFieldMapping($post,'jsfield');
-				$fieldMapping['custom']  = $this->getFieldMapping($post,'custom');
-				
+				if($Impexp_JoomlaJs != 'Joomla'){
+				   $fieldMapping['jsfield'] = $this->getFieldMapping($post,'jsfield');
+				   $fieldMapping['custom']  = $this->getFieldMapping($post,'custom');
+				}
 				// save fields mapping in session		
 				if($mysess->has('fieldMapping', 'importCSV'))
 					{
@@ -236,7 +251,7 @@ class ImpexpPluginImport
 				ImpexpPluginImportHelper::deleteCSV('existuser.csv','Username and E-mails which are already exist.');
 				ImpexpPluginImportHelper::deleteCSV('importuser.csv','Username and E-mails which are imported.');
 				ImpexpPluginImportHelper::deleteCSV('discardusers.csv','Username and E-mails which are not imported,as userid already exist.');
-				$allFields = ImpexpPluginExport::getAllFields();
+				$allFields = ImpexpPluginExport::getAllFields($Impexp_JoomlaJs);
 		        ImpexpPluginImportHelper::deleteCSV('replaceuser.csv',$allFields);
 		        ImpexpPluginImportHelper::deleteCSV('sizediscarduser.csv','Username and E-mails which are not imported,as size of fields is not equal to data');
 				//for testing purpose
@@ -262,9 +277,11 @@ class ImpexpPluginImport
 		function createUser($mysess, $storagePath,$importuser_count)
 			{
 				$startTime = JProfiler::getmicrotime();
-				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'libraries'.DS.'core.php');
-				require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');
-				
+				$Impexp_JoomlaJs = $mysess->get('Impexp_JoomlaJs');
+				if($Impexp_JoomlaJs != 'Joomla'){
+					require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'libraries'.DS.'core.php');
+					require_once(JPATH_SITE.DS.'components'.DS.'com_community'.DS.'models'.DS.'profile.php');
+				}
 				$fieldMapping = $mysess->get('fieldMapping', array(), 'importCSV');
 				$fileIndex    = $mysess->get('fileIndex', array(), 'importCSV');
 				
@@ -397,6 +414,7 @@ class ImpexpPluginImport
 		 */
        function storeUser($mysess,$userValues,$useroffset,$emailoffset,$overwrite_user_id,$fieldMapping,&$count,&$userData)
 	    {
+	     $Impexp_JoomlaJs = $mysess->get('Impexp_JoomlaJs');
 		 $userData[$count]['username'] = $userValues[$useroffset];
 		 $userData[$count]['email']    = $userValues[$emailoffset];
 		 $count++;
@@ -406,9 +424,11 @@ class ImpexpPluginImport
 			  {                        
 			   $newUserId    = ImpexpPluginImportHelper::storeJoomlaUser($userValues, $fieldMapping['joomla'], $mysess,$overwrite_user_id);
 			   //$session->get('resultData');
-			   if(!$newUserId) continue;
-			   $cUser        = ImpexpPluginImportHelper::storeCommunityUser($newUserId , $userValues,$fieldMapping['jsfield']);
-			   $customFields = ImpexpPluginImportHelper::storeCustomFields($newUserId , $userValues, $fieldMapping['custom']);	
+			   if(!$newUserId ) continue;
+			   if($Impexp_JoomlaJs != 'Joomla'){
+			   $cUser        = ImpexpJsHelper::storeCommunityUser($newUserId , $userValues,$fieldMapping['jsfield']);
+			   $customFields = ImpexpJsHelper::storeCustomFields($newUserId , $userValues, $fieldMapping['custom'],$mysess);	
+			   }
 			  }
 	    }	
 	   
@@ -464,3 +484,4 @@ class ImpexpPluginImport
 		    return true;
 		}
 }
+

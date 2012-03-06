@@ -147,14 +147,14 @@ class ImportExportTest extends XiUnitTestCase
 		$storagePath  = JPATH_ROOT.DS.'test'.DS.'test'.DS.'unit'.DS.'doubleQuote.csv';	
 		$file         = fopen($storagePath,"r");
 		$columns      = fgetcsv($file, 0, "\n");
-		$columns 	  = ImpexpPluginImport::removeQuotes($columns, ',"');
+		$columns 	  = ImpexpPluginImportHelper::removeQuotes($columns, ',"');
 		$checkColumn  = array(0=>"John",1=>'john',2=>'john@gmail.com',3=>'password',4=>'Publisher',5=>'',6=>'',7=>'male',8=>'1988-11-21 23:59:59',9=>'hello',10=>'8080808080',11=>'014422240208',12=>'c-507,Ashok nagar ',13=>'Maharastra',14=>'Mumbai',15=>'India',16=>'www.joomlaxi.com',17=>'My College',18=>'2011',19=>'hieee...:)',20=>'5',21=>'0000-00-00 00:00:00',22=>'pic1.png',23=>'pic1.png',24=>'5',25=>'',26=>'abcz',27=>'2',28=>'pic.png',29=>'file',30=>'1',31=>'5',32=>'5');	
         $this->assertEquals($columns,$checkColumn);
         
         $storagePaths  = JPATH_ROOT.DS.'test'.DS.'test'.DS.'unit'.DS.'comma.csv';	
 		$fp            = fopen($storagePaths,"r");
 		$columns       = fgetcsv($fp , 0, "\n");
-		$columns     = ImpexpPluginImport::removeQuotes($columns, ',');
+		$columns     = ImpexpPluginImportHelper::removeQuotes($columns, ',');
 		$checkColumn = array(0=>"John",1=>'john',2=>'john@gmail.com',3=>'password',4=>'Publisher',5=>'',6=>'',7=>'male',8=>'1988-11-21 23:59:59',9=>'hello',10=>'8080808080',11=>'014422240208',12=>'c-507 Ashok nagar',13=>'Maharastra',14=>'Mumbai',15=>'India',16=>'www.joomlaxi.com',17=>'My College',18=>'2011',19=>'hieee...:)',20=>'5',21=>'0000-00-00 00:00:00',22=>'pic1.png',23=>'pic1.png',24=>'5',25=>'',26=>'abcz',27=>'2',28=>'pic.png',29=>'file',30=>'1',31=>'5',32=>'5');$this->assertEquals($columns,$checkColumn);
         $this->assertEquals($columns,$checkColumn);
 	}

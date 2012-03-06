@@ -14,7 +14,27 @@
 if(!defined('_JEXEC')) die('Restricted access');
 JHTML::_('behavior.tooltip');
 
-?>
+       	$db = & JFactory::getDBO();
+       	$component="#__components";
+	    $name='COM_COMMUNITY';
+	    $enableOrNot = 'enabled';
+		if(IMPEXP_JVERSION != '1.5'){
+			$component = "#__extensions";
+			$name = 'community';
+		}	
+			 $query  = 'SELECT '.$db->nameQuote($enableOrNot)
+                  .' FROM ' .$db->nameQuote($component)
+                  .' WHERE `name`='.$db->Quote($name);
+		    $db->setQuery($query);             
+            $isInstalled= (boolean) $db->loadResult();
+            ob_start();
+            ?>
+             <script>
+		    var isInstalled= <?php echo $isInstalled?>
+		    </script>
+            <?php 
+           $html = ob_get_contents();
+           ?>
 <script>
 function importCSVFormCheck(){
 	var file = document.getElementById('fileUploaded');
@@ -23,8 +43,18 @@ function importCSVFormCheck(){
 	if(str.slice(length-3, length) != 'csv'){
 		alert('Please check the file Uploaded. It must be a CSV file.');
 		return false;
-	}			
-	return true;
+	}
+	for (var i=0; i < document.adminForm.importDataTo.length; i++)
+	   {
+	   if (document.adminForm.importDataTo[i].checked)
+	      {
+	      var rad_val = document.adminForm.importDataTo[i].value;
+	      if(rad_val=='Joomla' && isInstalled == 1){
+		      var confirmMsg = confirm('<?php echo JText::_("Jomsocial is installed & you have choosen Joomla.This might create some conflicts.Click OK,to continue.")?>');
+		      return confirmMsg;
+	      }
+	      }
+	   }		
 }
 </script>
 <div style="padding:0;border:2px solid #ccc;">
@@ -47,14 +77,21 @@ function importCSVFormCheck(){
 		</select></div>
 		<input type="hidden" name="importCSVStage" value="fieldMapping" />
         <br/><br/></div>
-        <div  style="align:left;width:100%;overflow:hidden;font-size:12px;">
-	    <?php echo JText::_(' Do you want to overwrite users');?>
+        
+        <div  style="align:left;width:100%;overflow:hidden;font-size:12px; text-">
+	    <?php echo JText::_(' Import users data to:-');?>
+		<input type="radio"  name="importDataTo" value="Joomla">Joomla</input>
+		<input type="radio"  name="importDataTo" value="JoomlaJS" checked>Joomla+Jomsocial</input>
+		</div>
+		<br />
+        <div  style="align:center;width:100%;overflow:hidden;font-size:12px;">
+	    <?php echo JText::_(' Do you want to overwrite users?');?>
 		<input type="radio"  name="overwrite" value="0" checked>No</input>
 		<input type="radio"  name="overwrite" value="1">Yes</input>
 		</div>
 		<br />
-		 <div  style="align:left;width:100%;overflow:hidden;font-size:12px;">
-	    <?php echo JText::_('Do you want to import userid');?>
+		<div  style="align:left;width:100%;overflow:hidden;font-size:12px;">
+	    <?php echo JText::_('Do you want to import userid?');?>
 		<input type="radio"  name="userid" value="0" checked="checked">No</input>
 		<input type="radio"  name="userid" value="1">Yes</input>
 		</div>

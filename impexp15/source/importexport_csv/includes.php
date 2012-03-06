@@ -11,8 +11,5 @@ define('IMPEXP_MEM_LIMIT' , 32);
 define('IMPEXP_BIAS_MEMORY',0.60);
 define('IMPEXP_PERCENTAGE',0.25);
 define('IMPEXP_JVERSION', $version->RELEASE);
+define('IMPEXP_MEM_PERCENT_LEFT',0.45);
 
-if(IMPEXP_JVERSION==='1.5')
-  define('IMPEXP_MEM_PERCENT_LEFT',0.25);
-else 
-  define('IMPEXP_MEM_PERCENT_LEFT',0.45);
