@@ -78,7 +78,7 @@ class ImpexpPluginImport
 	
 		if($Impexp_JoomlaJs !='Joomla'){
 	    if($isInstalled == false){
-	    	   $msg = "PLG_IMPORTEXPORT_YOU_DO_HAVE_JOMSOCIAL_INSTALLED";
+	    	   $msg = "PLG_IMPORTEXPORT_YOU_DO_NOT_HAVE_JOMSOCIAL_INSTALLED";
                self::loadHtmlForSeperator($msg);
                exit();
             }
