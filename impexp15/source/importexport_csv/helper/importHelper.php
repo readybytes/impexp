@@ -223,7 +223,7 @@ class ImpexpPluginImportHelper
 		        $sqlQuery = "DELETE * From".$db->nameQuote('#__community_fields_values')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		        $db->setQuery($sqlQuery);
 			}
-			   $finalCsv    = ImpexpPluginExport::setDataForCsv($completeCsv,$user_id);
+			   $finalCsv    = ImpexpPluginExport::setDataForCsv($completeCsv,$Impexp_JoomlaJs,$user_id);
 			    
 			foreach ($finalCsv as $userid=>$result){
 				  $result = rtrim($result, ',');
