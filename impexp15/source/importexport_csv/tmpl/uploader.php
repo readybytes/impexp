@@ -41,7 +41,7 @@ function importCSVFormCheck(){
 	var str    = file.value.toLowerCase();
 	var length = str.length;			
 	if(str.slice(length-3, length) != 'csv' && str.slice(length-3, length) != 'zip' ){
-		alert('Please check the file Uploaded. It must be a CSV or ZIP file.');
+		alert('Please check the file Uploaded. It must be a CSV file.');
 		return false;
 	}
 	for (var i=0; i < document.adminForm.importDataTo.length; i++)
@@ -62,8 +62,8 @@ function importCSVFormCheck(){
 		<form enctype="multipart/form-data"  action="<?php echo JRoute::_($currentUrl); ?>" method="post" name="adminForm" id="adminForm" >
 		<div style="padding:20px 5px;">
 		<div style="padding:20px 0; margin-bottom:10px; width:100%;font-size:18px;font-weight:bold;border-bottom:1px dotted #cfcfcf;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_PLEASE_UPLOAD_THE_CSV_FILE'); ?></div>
-		<input type="file" id="fileUploaded" name="fileUploaded" title="Please Upload your CSV file" />
-		<br/><p style="font-size:12px"><a  href= <?php echo  ImpexpPluginHelper::pathFS2URL(IMPEXP_BASE_URL.DS.'importexport_csv'.DS.'dummy.csv');?> ><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE')?></a><?php echo JText::_('PLG_IMPORTEXPORT_CSV_TO_SEE_FORMAT_OF_CSV_FILE')?></p>
+		<input type="file" id="fileUploaded" name="fileUploaded" title="Please Upload your CSV or ZIP file" />
+		<br/><p style="font-size:12px"><a  href= <?php echo  ImpexpPluginHelper::pathFS2URL(IMPEXP_BASE_URL.DS.'dummy.csv');?> ><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE')?></a><?php echo JText::_('PLG_IMPORTEXPORT_CSV_TO_SEE_FORMAT_OF_CSV_FILE')?></p>
 		<br/>
 		<div style="font-size:12px"><?php echo JText::_('CSV File Seperator: ')?><input type="text" name="seperator" class="hasTip" 
         title="Enter field seperator.For eg:-If Format is-<br/> 1. 'username','password','..' then add ',' as seperator <br/>2. username,password,.. then add , <br/>as seperator" style="width:50px;" value= '","'/>
@@ -103,3 +103,4 @@ function importCSVFormCheck(){
 		</form>
 	</div>
 <?php 
+

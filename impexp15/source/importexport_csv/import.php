@@ -168,7 +168,7 @@ class ImpexpPluginImport
 		    	self::loadHtmlForWarning($msg);
 		   	    exit();
 		   }
-		   $oldName = $destination.DS.$file;
+		   $oldName = $destination.DS.$file[0];
 		   $newName = $destination.DS.'import.csv';
 		   rename($oldName,$newName);
 		   $zip->close();
