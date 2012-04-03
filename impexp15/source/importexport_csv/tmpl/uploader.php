@@ -38,10 +38,10 @@ JHTML::_('behavior.tooltip');
 <script>
 function importCSVFormCheck(){
 	var file = document.getElementById('fileUploaded');
-	var str = file.value.toLowerCase();
+	var str    = file.value.toLowerCase();
 	var length = str.length;			
-	if(str.slice(length-3, length) != 'csv'){
-		alert('Please check the file Uploaded. It must be a CSV file.');
+	if(str.slice(length-3, length) != 'csv' && str.slice(length-3, length) != 'zip' ){
+		alert('Please check the file Uploaded. It must be a CSV or ZIP file.');
 		return false;
 	}
 	for (var i=0; i < document.adminForm.importDataTo.length; i++)

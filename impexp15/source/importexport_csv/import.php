@@ -65,6 +65,13 @@ class ImpexpPluginImport
 		if(!isset($fileCSV['tmp_name']) || empty($fileCSV['tmp_name'])){
 			return $this->getUploaderHtml();
 		}
+		 $destination=$storagePath.'importData';
+		 JFolder::create($destination);
+		 
+         //perform extract function only when it is zip file.
+		if($fileCSV['type']=='application/zip')
+			$this->extractZipFile($fileCSV,$destination);
+		
 		$seperator    = JRequest::getVar('seperator','","');
         $overwrite    = JRequest::getVar('overwrite','0');
         $importUserId = JRequest::getVar('userid','0');
@@ -79,7 +86,7 @@ class ImpexpPluginImport
 		if($Impexp_JoomlaJs !='Joomla'){
 	    if($isInstalled == false){
 	    	   $msg = "PLG_IMPORTEXPORT_YOU_DO_NOT_HAVE_JOMSOCIAL_INSTALLED";
-               self::loadHtmlForSeperator($msg);
+               self::loadHtmlForWarning($msg);
                exit();
             }
 		}
@@ -87,11 +94,12 @@ class ImpexpPluginImport
 		// set password format value in session
 		$mysess->set('passwordFormat', JRequest::getVar('passwordFormat','joomla'), 'importCSV');
 		
-		if(JFile::exists($storagePath.'import.csv'))
-			JFile::delete($storagePath.'import.csv'); 
-			
-		JFile::copy($fileCSV['tmp_name'], $storagePath.'import.csv');
-		$file 	 = fopen($storagePath.'import.csv', "r");
+		if($fileCSV['type'] == 'text/csv'){
+		  if(JFile::exists($destination.DS.'import.csv'))
+			      JFile::delete($destination.DS.'import.csv');
+			 JFile::copy($fileCSV['tmp_name'], $destination.DS.'import.csv');
+		}
+		$file 	 = fopen($destination.DS.'import.csv', "r");
 
         //fgetsv removes the doubleQuotes from the first field of string.
 		$columns = fgetcsv($file, 0, "\n");
@@ -107,7 +115,7 @@ class ImpexpPluginImport
 		//If only one array found after exploding string then show error msg
 		if(sizeof($getSizeOfColumns)==1){
 			$sepMsg = "PLG_IMPORTEXPORT_CSV_SEPERATOR_DOES_NOT_MATCH";
-			self::loadHtmlForSeperator($sepMsg);
+			self::loadHtmlForWarning($sepMsg);
 			exit();
 		}
 		$columns = ImpexpPluginImportHelper::removeQuotes($columns, $seperator);
@@ -137,7 +145,37 @@ class ImpexpPluginImport
 		return $content;
 	}
 	
-	function loadHtmlForSeperator($msg)
+	//function to extract file.
+	function extractZipFile($fileCSV,$destination)
+	{
+		 $zip = new ZipArchive();
+		 $files = JFolder::files($destination);
+
+		 foreach ($files as $file)
+		 	unlink($destination.DS.$file);
+		 JFile::copy($fileCSV['tmp_name'],$destination.DS.'import.zip');
+		 // Open zip for extracting single file
+		 if ($zip->open($destination.DS.'import.zip') === TRUE)
+		 {
+		   // Will extract only zip file from zip file to given path.
+		   $zip->extractTo($destination);
+		   unlink($destination.DS.'import.zip');
+		   
+		   $file = JFolder::files($destination);
+		   if(count($file)!= 1 || substr($file[0],-4)!= '.csv')
+		   {
+		    	$msg = "PLG_IMPORTEXPORT_CSV_EXTRACTED_FILE_NOT_IN_CSV_FORMAT";
+		    	self::loadHtmlForWarning($msg);
+		   	    exit();
+		   }
+		   $oldName = $destination.DS.$file;
+		   $newName = $destination.DS.'import.csv';
+		   rename($oldName,$newName);
+		   $zip->close();
+		 }
+	}
+	
+	function loadHtmlForWarning($msg)
 	{
 		?>
 		<div style="width:100%;margin:200px 0;text-align:center;color:#6699cc;">
@@ -293,7 +331,7 @@ class ImpexpPluginImport
 				}
 				
 				$html='';
-				$file = fopen($storagePath.'import.csv', "r");
+				$file = fopen($storagePath.'importData'.DS.'import.csv', "r");
 				
 				//check whether offset is set or not because in 1 block(1000) of
 				// users,if all users can't be processed in one request then offset
