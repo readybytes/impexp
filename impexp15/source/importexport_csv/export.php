@@ -39,12 +39,16 @@ class ImpexpPluginExport
     
 	function createCSV($storagePath,$mysess)
 	{
-        $Impexp_JoomlaJs = JRequest::getVar('exportDataFrom',"JoomlaJS");
+		$Impexp_JoomlaJs   = JRequest::getVar('exportDataFrom',"JoomlaJS");
+		$writeFields       = JRequest::getVar('writeFields',0);
+		if($writeFields == 1){
+		  self::writeHeaderInCsv($storagePath,$Impexp_JoomlaJs);
+		}
         if($Impexp_JoomlaJs !='Joomla'){
 		    $isInstalled = ImpexpPluginHelper::jomsocialEnabled();
 			if($Impexp_JoomlaJs && $isInstalled == false){
 		           $msg = "PLG_IMPORTEXPORT_YOU_DO_NOT_HAVE_JOMSOCIAL_INSTALLED";
-		           self::loadHtmlForSeperator($msg);
+		           self::loadHtmlForWarning($msg);
 		           exit();
 		        }
         }
@@ -95,10 +99,32 @@ class ImpexpPluginExport
 		    self::refreshExport($end,$Impexp_JoomlaJs);
 	    }
 		fclose($fp);
-		$this->setDataInCSV($storagePath,$Impexp_JoomlaJs);
+		$this->setDataInCSV($storagePath);
 	}
 	
-	function loadHtmlForSeperator($msg)
+	//write the header fields in the csv file
+	function writeHeaderInCsv($storagePath,$Impexp_JoomlaJs)
+     {
+			$csvFileFields = "";
+			self::deleteFile($storagePath);
+	    	$fp = fopen($storagePath.'exportdata.csv',"a");
+	    	$csvFileFields = self::getAllFields($Impexp_JoomlaJs);
+	    	fwrite($fp,$csvFileFields);
+	 }
+	 
+	 //function to delete temporary file,if exist
+	 function deleteFile($storagePath)
+	 {
+	   $filePath1 = $storagePath.'exportdata.csv';
+	   $filePath2 = $storagePath.DS.'exportData.zip';
+	   if (file_exists($filePath1))
+	       unlink($filePath1);
+	   if(file_exists($filePath2))
+	       unlink($filePath2);
+	 }
+	
+	
+	function loadHtmlForWarning($msg)
 		{
 			?>
 			<div style="width:100%;margin:75px 0;text-align:center;color:#6699cc;">
@@ -266,19 +292,9 @@ class ImpexpPluginExport
 	  * Store the fields of tables in csv format
 	  * @param $storagePath-Give the path where user.csv file is saved
 	  */  
-	function setDataInCSV($storagePath,$Impexp_JoomlaJs)
+	function setDataInCSV($storagePath)
 	{
-	    $csvFileFields="";
-		header('Content-type: application/csv');
-		header("Content-type: application/octet-stream");
-    	header("Content-Disposition: attachment; filename=user.csv");
-    	$csvFileFields=self::getAllFields($Impexp_JoomlaJs);
-        echo JText::_($csvFileFields);
-           
-		echo file_get_contents($storagePath.'exportdata.csv');
-		//delete exportdata.csv file
-		JFile::delete($storagePath.'exportdata.csv');
-		exit;
+		self::createZipFile($storagePath);
 	}
 	
 	//Get all the fields of table
@@ -305,11 +321,39 @@ class ImpexpPluginExport
         return $csvFileFields;
 	}
 	
-	
+	function createZipFile($storagePath)
+	{
+		 // Creating object of the ZipArchive
+		 $zip = new ZipArchive();
+		 
+		 $zip_file_name = $storagePath."exportData.zip";
+		 if ($zip->open($zip_file_name, ZIPARCHIVE::CREATE ) !== TRUE)
+            exit("cannot open <$zip_file_name>\n");
+		 
+		   // Add the files to the .zip file
+		   $zip->addFile($storagePath.'exportdata.csv','exportdata.csv');
+		   
+		   // Closing the zip file
+		   $zip->close();
+		   // Above code will generate exportData.zip
+		   //then send the headers to foce download the zip file
+		   if(file_exists($zip_file_name)){
+				header("Content-type: application/zip");
+				header("Content-Disposition: attachment; filename= exportData.zip");
+				header("Pragma: no-cache");
+				header("Expires: 0");
+				readfile("$zip_file_name");
+				self::deleteFile($storagePath);
+				exit;
+            }
+	}
+	 
 	
 	function refreshExport($end,$Impexp_JoomlaJs)
 	{  
 		 $currentUrl = JURI::getInstance();
+		 $name='writeFields';
+		 $currentUrl->delVar($name);
 	     $currentUrl->setVar('end',$end);
 	     $html=self::getExportHtml();
 	     ?>
@@ -331,3 +375,4 @@ class ImpexpPluginExport
 		  exit;		
     } 
 }
+	
