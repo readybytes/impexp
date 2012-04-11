@@ -15,6 +15,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 if(!class_exists('JProfiler'))
 require_once(JPATH_ROOT.DS.'libraries'.DS.'joomla'.DS.'error'.DS.'profiler.php');
 require_once(dirname(__FILE__) .DS.'helper' .DS. 'importHelper.php');
+jimport( 'joomla.filesystem.archive' );
 
 class ImpexpPluginImport
 {
@@ -66,8 +67,7 @@ class ImpexpPluginImport
 			return $this->getUploaderHtml();
 		}
 		 $destination=$storagePath.'importData';
-		 JFolder::create($destination);
-		 
+		 JFolder::create($destination, 0777);
          //perform extract function only when it is zip file.
 		if($fileCSV['type']=='application/zip')
 			$this->extractZipFile($fileCSV,$destination);
@@ -148,21 +148,20 @@ class ImpexpPluginImport
 	//function to extract file.
 	function extractZipFile($fileCSV,$destination)
 	{
-		 $zip = new ZipArchive();
+		 $zip   = new JArchive();
 		 $files = JFolder::files($destination);
-
+		 //delete files in importdata folder if exist
 		 foreach ($files as $file)
-		 	unlink($destination.DS.$file);
+		    unlink($destination.DS.$file);
 		 JFile::copy($fileCSV['tmp_name'],$destination.DS.'import.zip');
-		 // Open zip for extracting single file
-		 if ($zip->open($destination.DS.'import.zip') === TRUE)
-		 {
-		   // Will extract only zip file from zip file to given path.
-		   $zip->extractTo($destination);
-		   unlink($destination.DS.'import.zip');
+		 //extract file to destination
+		 $result = $zip->extract($destination.DS.'import.zip',$destination );
+         if ($result === false) 
+           JError::raiseError(500, 'Error unzipping file.');
+		 unlink($destination.DS.'import.zip');
 		   
-		   $file = JFolder::files($destination);
-		   if(count($file)!= 1 || substr($file[0],-4)!= '.csv')
+		 $file = JFolder::files($destination);
+		 if(count($file)!= 1 || substr($file[0],-4)!= '.csv')
 		   {
 		    	$msg = "PLG_IMPORTEXPORT_CSV_EXTRACTED_FILE_NOT_IN_CSV_FORMAT";
 		    	self::loadHtmlForWarning($msg);
@@ -171,8 +170,6 @@ class ImpexpPluginImport
 		   $oldName = $destination.DS.$file[0];
 		   $newName = $destination.DS.'import.csv';
 		   rename($oldName,$newName);
-		   $zip->close();
-		 }
 	}
 	
 	function loadHtmlForWarning($msg)

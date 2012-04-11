@@ -15,39 +15,6 @@ if(!defined('_JEXEC')) die('Restricted access');
 
 class ImpexpJsHelper 
 {
-//     function tableExistOrNot()
-//	 {
-//	    $db = JFactory::getDBO();
-//		$query = "SELECT * FROM information_schema.tables".
-//	             "WHERE table_name =".$db->nameQuote('#__community_users');
-//	    $db->setQuery($query, 0, 1);
-//		return $db->loadResult();
-//	 }
-//     function checkJsptEnabled()
-//	 {
-//	     $db =  JFactory::getDBO();
-//	     $enableOrNot = 'published';
-//	     $plugin = '#__plugins';
-//	     if(IMPEXP_JVERSION != '1.5'){
-//	     	$enableOrNot = 'enabled';
-//	     	$plugin 	 = '#__extensions';
-//	     }
-//		 $query  = 'SELECT '.$db->nameQuote($enableOrNot)
-//                  .' FROM ' . $db->nameQuote($plugin)
-//                  .' WHERE '.$db->nameQuote('element').'='.$db->Quote('xipt_system');
-//
-//          $db->setQuery($query);             
-//          $actualState= (boolean) $db->loadResult();
-//          if($actualState == false)
-//              return $actualState;
-//          $query  = 'SELECT '.$db->nameQuote($enableOrNot)
-//                    .' FROM ' . $db->nameQuote( $plugin )
-//                    .' WHERE '.$db->nameQuote('element').'='.$db->Quote('xipt_community');
-//          $db->setQuery($query);                
-//          $actualState = (boolean) $db->loadResult();
-//         
-//          return $actualState;
-//	   }
 	   
 	   //store the values in community user table
 	   function storeCommunityUser($userid, $userValues,$jsFieldMapping)
@@ -105,48 +72,17 @@ class ImpexpJsHelper
                         //change date in considerable format
 						$userValues[$value] = date("Y-m-d H:i:s",strtotime($userValues[$value]));
 			 	     }	
-                $data[$key] = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
-//               if(IMPEXP_JVERSION != '1.5'){
-//		           if(!empty($data))
-//	 			   self::insertJsFields($userid,$customFieldMapping);
-//                }
+				//if object is not passed then access won't be set right
+			 	$data[$key] 		= new stdClass();
+                $data[$key]->value  = JString::str_ireplace("\\r", "\r", JString::str_ireplace("\\n", "\n", $userValues[$value]));
+                $data[$key]->access = 0;
+
               }
               
-//		     if($mysess->get('JSPTEnable') == 1){
-//		     	$data = self::jsptEnabledWork($data,$user);
-//			 }
 			return $cModel->saveProfile($userid, $data);		
 			}
 			
-//	  function jsptEnabledWork($data,$user)
-//	  {
-//		   $db = JFactory::getDBO();
-//		   require_once (JPATH_ROOT.DS.'components'.DS.'com_xipt'.DS.'includes.php');
-//		   $this->_pluginHandler = XiptFactory::getPluginHandler();
-//		   
-//		   //get the id of profiletype
-//		   $query = "SELECT `id` FROM".$db->nameQuote('#__community_fields').
-//					"WHERE `name`='Profiletype'";
-//		   $db->setQuery($query);
-//	 	   $profileId = $db->loadResult();
-//		   
-//           //get the default profile type if profiletype field is not map
-//		   // or no data is there about profiletype.
-//		   if(isset($data[$profileId])){
-//	  	   	    if(XiptLibProfiletypes::validateProfiletype($data[$profileId]) == false)
-//		   	       $data[$profileId] = XiptLibProfiletypes::getDefaultProfiletype();
-//		   }
-//		   else{
-//		         $data[$profileId]  = XiptLibProfiletypes::getDefaultProfiletype();
-//		   }
-//		    //set the value  of profiletype in session. 
-//		    $this->_pluginHandler->setDataInSession('SELECTED_PROFILETYPE_ID',$data[$profileId]);
-//			$dispatcher = JDispatcher::getInstance();
-//			$dispatcher->trigger( 'onAfterStoreUser', array( $user->getProperties(), true, true, false ) );
-//			$this->_pluginHandler->resetDataInSession('SELECTED_PROFILETYPE_ID');
-//		    return $data;
-//		}
-//		
+
     function insertJsFields($userid,$customFieldMapping)
       {
   	      $db 	  = JFactory::getDBO();

@@ -14,6 +14,7 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 require_once(dirname(__FILE__) .DS. 'helper' .DS. 'helper.php');
 require_once(dirname(__FILE__) .DS. 'helper' .DS. 'jsHelper.php');
+jimport( 'joomla.filesystem.archive' );
 
 class ImpexpPluginExport 
 { 
@@ -323,18 +324,14 @@ class ImpexpPluginExport
 	
 	function createZipFile($storagePath)
 	{
-		 // Creating object of the ZipArchive
-		 $zip = new ZipArchive();
-		 
-		 $zip_file_name = $storagePath."exportData.zip";
-		 if ($zip->open($zip_file_name, ZIPARCHIVE::CREATE ) !== TRUE)
-            exit("cannot open <$zip_file_name>\n");
-		 
-		   // Add the files to the .zip file
-		   $zip->addFile($storagePath.'exportdata.csv','exportdata.csv');
-		   
-		   // Closing the zip file
-		   $zip->close();
+		$zip = new JArchive();
+		$zip_adapter   = & JArchive::getAdapter('zip'); // compression type
+		$zip_file_name = $storagePath."exportData.zip";
+		$data = JFile::read($storagePath.DS.'exportdata.csv'); 
+		$filesToZip[] = array('name' => 'exportdata.csv', 'data' => $data); 
+	    if (!$zip_adapter->create($zip_file_name,$filesToZip)) {
+           exit('Error creating zip file'); 
+        }
 		   // Above code will generate exportData.zip
 		   //then send the headers to foce download the zip file
 		   if(file_exists($zip_file_name)){
