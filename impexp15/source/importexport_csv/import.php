@@ -344,7 +344,8 @@ class ImpexpPluginImport
 				    {
 					 	$userValues=ImpexpPluginImportHelper::removeQuotes($data,$mysess->get('seperator'));
 					 	//if their is empty row then
-					 	if(isset($userValues[0]) && empty($userValues[0])) continue;
+					 	if(count($userValues)==1) continue;
+					 	//if(isset($userValues[0]) && empty($userValues[0])) continue;
 					 	$fieldJ           = $fieldMapping['joomla'];
 						$useroffset       = $fieldJ['username'];
 						$emailoffset      = $fieldJ['email'];
