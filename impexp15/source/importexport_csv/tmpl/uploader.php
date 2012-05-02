@@ -14,17 +14,20 @@
 if(!defined('_JEXEC')) die('Restricted access');
 JHTML::_('behavior.tooltip');
 
-       	$db = & JFactory::getDBO();
+      	$db = JFactory::getDBO();
        	$component="#__components";
-	    $name='COM_COMMUNITY';
+        //joomla1.5
+       	$condition=" WHERE `link` =". $db->Quote('option=com_community'). 
+       	            "AND `option`=".  $db->Quote('com_community');
 	    $enableOrNot = 'enabled';
 		if(IMPEXP_JVERSION != '1.5'){
 			$component = "#__extensions";
-			$name = 'community';
+            //joomla1.5+
+			$condition= "WHERE `type` =". $db->Quote('component').
+			            "AND `element`=". $db->Quote('com_community');
 		}	
 			 $query  = 'SELECT '.$db->nameQuote($enableOrNot)
-                  .' FROM ' .$db->nameQuote($component)
-                  .' WHERE `name`='.$db->Quote($name);
+                  .' FROM ' .$db->nameQuote($component).$condition;
 		    $db->setQuery($query);             
             $isInstalled= (boolean) $db->loadResult();
             ob_start();
@@ -103,4 +106,5 @@ function importCSVFormCheck(){
 		</form>
 	</div>
 <?php 
+
 

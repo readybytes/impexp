@@ -43,19 +43,23 @@ class ImpexpPluginHelper
             return $table;
        }
        
+       //determine whether jomsocial is enabled or not.
        function jomsocialEnabled()
        {
-       	$db = JFactory::getDBO();
-       	$component="#__components";
-	    $name='COM_COMMUNITY';
-	    $enableOrNot = 'enabled';
-		if(IMPEXP_JVERSION != '1.5'){
-			$component = "#__extensions";
-			$name = 'community';
-		}	
-			 $query  = 'SELECT '.$db->nameQuote($enableOrNot)
-                  .' FROM ' .$db->nameQuote($component)
-                  .' WHERE `name`='.$db->Quote($name);
+		   	$db = JFactory::getDBO();
+		   	$component = "#__components";
+            //for joomla1.5
+		   	$condition = " WHERE `link` = ". $db->Quote('option=com_community'). 
+		   	             " AND `option`= ".  $db->Quote('com_community');
+			$enableOrNot = 'enabled';
+            //for joomla1.5+
+			if(IMPEXP_JVERSION != '1.5'){
+				$component = "#__extensions";
+				$condition = " WHERE `type` =". $db->Quote('component').
+					         " AND `element`= ". $db->Quote('com_community');
+			}	
+			$query  = 'SELECT '.$db->nameQuote($enableOrNot)
+                      .' FROM ' .$db->nameQuote($component).$condition;
 		    $db->setQuery($query);             
             $isInstalled= (boolean) $db->loadResult();
             return $isInstalled;
