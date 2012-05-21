@@ -8,7 +8,7 @@
 */
 if(defined('_JEXEC')===false) die();
 if(defined('INCLUDE_IMPEXP')===false)
-	require_once(dirname(__FILE__) .DS. 'includes.php');
+	require_once(dirname(dirname(__FILE__)) .DS. 'includes.php');
 if(IMPEXP_JVERSION ==='1.5'){
     //a dummy class for 1.5
     class XiField{}
