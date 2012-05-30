@@ -69,7 +69,7 @@ function importCSVFormCheck(){
 		<br/><p style="font-size:12px"><a  href= <?php echo  ImpexpPluginHelper::pathFS2URL(IMPEXP_BASE_URL.DS.'dummy.csv');?> ><?php echo JText::_('PLG_IMPORTEXPORT_CSV_CLICK_HERE')?></a><?php echo JText::_('PLG_IMPORTEXPORT_CSV_TO_SEE_FORMAT_OF_CSV_FILE')?></p>
 		<br/>
 		<div style="font-size:12px"><?php echo JText::_('CSV File Seperator: ')?><input type="text" name="seperator" class="hasTip" 
-        title="Enter field seperator.For eg:-If Format is-<br/> 1. 'username','password','..' then add ',' as seperator <br/>2. username,password,.. then add , <br/>as seperator" style="width:50px;" value= '","'/>
+        title="Enter field seperator.For eg:-If Format is-<br/> 1. 'username','password',..' then add ( ',' ) as seperator <br/>2. username,password,.. then add (,) <br/>as seperator" style="width:50px;" value= '","'/>
 		
 		</div>
 		<div style="border-bottom:1px dotted #cfcfcf;"><br/></div>

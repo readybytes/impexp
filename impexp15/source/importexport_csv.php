@@ -38,8 +38,11 @@ class plgSystemImportExport_csv extends JPlugin
 		else {
 			$this->storagePath  = Jfactory::getConfig()->get('tmp_path').DS;
 		}
-		$this->export = new ImpexpPluginExport();
-		$this->import = new ImpexpPluginImport();
+
+		// To strip additional / or \ in a path name.
+		$this->storagePath  = JPath::clean($this->storagePath);
+		$this->export       = new ImpexpPluginExport();
+		$this->import       = new ImpexpPluginImport();
 	}
 	
 	function onAfterRoute()
