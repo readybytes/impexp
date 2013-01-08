@@ -94,7 +94,7 @@ class ImpexpPluginImport
 		// set password format value in session
 		$mysess->set('passwordFormat', JRequest::getVar('passwordFormat','joomla'), 'importCSV');
 		
-		if($fileCSV['type'] == 'text/csv'){
+		if($fileCSV['type'] == 'text/csv' || $fileCSV['type'] == 'text/comma-separated-values'){
 		  if(JFile::exists($destination.DS.'import.csv'))
 			      JFile::delete($destination.DS.'import.csv');
 			 JFile::copy($fileCSV['tmp_name'], $destination.DS.'import.csv');
@@ -107,7 +107,7 @@ class ImpexpPluginImport
 	  /**XITODO:
         * Why check this condition manually,Try to clean this code
         */
-		if(strlen($seperator) == 3){
+		if(strlen($seperator) >= 3){
 			$seperator = substr($seperator,1); //remove first letter for eg-"," as ,"
 			$mysess->set('seperator',$seperator);
 		}
@@ -286,7 +286,7 @@ class ImpexpPluginImport
 				ImpexpPluginImportHelper::deleteCSV('existuser.csv','Username and E-mails which are already exist.');
 				ImpexpPluginImportHelper::deleteCSV('importuser.csv','Username and E-mails which are imported.');
 				ImpexpPluginImportHelper::deleteCSV('discardusers.csv','Username and E-mails which are not imported,as userid already exist.');
-				$allFields = ImpexpPluginExport::getAllFields($Impexp_JoomlaJs);
+				$allFields = ImpexpPluginExport::getAllFields($Impexp_JoomlaJs,",");
 		        ImpexpPluginImportHelper::deleteCSV('replaceuser.csv',$allFields);
 		        ImpexpPluginImportHelper::deleteCSV('sizediscarduser.csv','Username and E-mails which are not imported,as size of fields is not equal to data');
 				//for testing purpose

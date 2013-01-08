@@ -41,9 +41,10 @@ class ImpexpPluginExport
 	function createCSV($storagePath,$mysess)
 	{
 		$Impexp_JoomlaJs   = JRequest::getVar('exportDataFrom',"JoomlaJS");
+		$exportSeparator   = JRequest::getVar('exportSeparator',',');
 		$writeFields       = JRequest::getVar('writeFields',0);
 		if($writeFields == 1){
-		  self::writeHeaderInCsv($storagePath,$Impexp_JoomlaJs);
+		  self::writeHeaderInCsv($storagePath,$Impexp_JoomlaJs,$exportSeparator);
 		}
         if($Impexp_JoomlaJs !='Joomla'){
 		    $isInstalled = ImpexpPluginHelper::jomsocialEnabled();
@@ -84,10 +85,10 @@ class ImpexpPluginExport
 			//get limit from session that is to be used for processing
 			$limit    = $mysess->get('limit',IMPEXP_EXP_LIMIT);
 			$users	  =	$this->getUserData($start,$limit,$mysess,$Impexp_JoomlaJs);
-			$finalCsv = self::setDataForCsv($users,$Impexp_JoomlaJs);
+			$finalCsv = self::setDataForCsv($users, $Impexp_JoomlaJs, NULL ,$exportSeparator);
 		    foreach ($finalCsv as $userid=>$result)
 			 {
-			  $result = rtrim($result, ',');
+			  $result = rtrim($result, $exportSeparator);
 			  fwrite($fp,$result);
 			 }
 			//for testing purpose
@@ -104,12 +105,12 @@ class ImpexpPluginExport
 	}
 	
 	//write the header fields in the csv file
-	function writeHeaderInCsv($storagePath,$Impexp_JoomlaJs)
+	function writeHeaderInCsv($storagePath,$Impexp_JoomlaJs,$exportSeparator)
      {
 			$csvFileFields = "";
 			self::deleteFile($storagePath);
 	    	$fp = fopen($storagePath.'exportdata.csv',"a");
-	    	$csvFileFields = self::getAllFields($Impexp_JoomlaJs);
+	    	$csvFileFields = self::getAllFields($Impexp_JoomlaJs,$exportSeparator);
 	    	fwrite($fp,$csvFileFields);
 	 }
 	 
@@ -242,7 +243,7 @@ class ImpexpPluginExport
     /**
      *store the data in CSV format 
      */
-    function setDataForCsv($users,$Impexp_JoomlaJs,$userIds=null)
+    function setDataForCsv($users,$Impexp_JoomlaJs,$userIds=null,$exportSeparator)
     {   
        if(!isset($userIds))
        {
@@ -257,10 +258,10 @@ class ImpexpPluginExport
        		//getting user table values.
         	foreach ($joomlaField_name as $name){
 		    	if(!empty($users['joomla'][$userId][$name])){
-		    		$finalCsv[$userId].='"'.$users['joomla'][$userId][$name].'",';
+		    		$finalCsv[$userId].='"'.$users['joomla'][$userId][$name].'"'.$exportSeparator;
 			 	}	
 		     	else{ 
-		    	$finalCsv[$userId].='"",';
+		    	$finalCsv[$userId].='""'.$exportSeparator;
 		    	}
         	}
         	if($Impexp_JoomlaJs !='Joomla'){
@@ -268,9 +269,9 @@ class ImpexpPluginExport
 		  	   //getting community field values's table values
 			   foreach($fields as $f){
 				    if(array_key_exists($f->id, $users['cFieldValues'][$userId]))
-						$finalCsv[$userId].='"'.$users['cFieldValues'][$userId][$f->id].'",';
+						$finalCsv[$userId].='"'.$users['cFieldValues'][$userId][$f->id].'"'.$exportSeparator;
 					else
-						$finalCsv[$userId].= '"",';
+						$finalCsv[$userId].= '""'.$exportSeparator;
 			   }
 			   //getting community user's table values
 			   $JSfield_name = ImpexpPluginHelper::getJsJoomlaField('#__community_users');
@@ -278,9 +279,9 @@ class ImpexpPluginExport
 			      	if($name=='userid')
 			    		continue;
 					if(!empty($users['jomsocial'][$userId][$name]))
-						$finalCsv[$userId].='"'.$users['jomsocial'][$userId][$name].'",';	
+						$finalCsv[$userId].='"'.$users['jomsocial'][$userId][$name].'"'.$exportSeparator;	
 					else 
-					 	$finalCsv[$userId].='"",';
+					 	$finalCsv[$userId].='""'.$exportSeparator;
 			   }
          	}
         } 
@@ -299,26 +300,26 @@ class ImpexpPluginExport
 	}
 	
 	//Get all the fields of table
-     function getAllFields($Impexp_JoomlaJs)
+     function getAllFields($Impexp_JoomlaJs,$exportSeparator)
 	 {
 	    $csvFileFields="";
 	    $joomlaField_name = ImpexpPluginHelper::getJsJoomlaField('#__users');
 		foreach ($joomlaField_name as $name){
-        	$csvFileFields.='"'.$name.'",';
+        	$csvFileFields.='"'.$name.'"'.$exportSeparator;
         }
         if($Impexp_JoomlaJs != 'Joomla'){
 			$fields = ImpexpJsHelper::getCustomFieldIds();
 			foreach($fields as $f)
-				$csvFileFields.='"'.$f->name.'",';
+				$csvFileFields.='"'.$f->name.'"'.$exportSeparator;
 			
 		   $JSfield_name = ImpexpPluginHelper::getJsJoomlaField('#__community_users');
 		   foreach ($JSfield_name as $name){
 				if($name=='userid')
 					continue;
-				$csvFileFields.='"'.$name.'",';
+				$csvFileFields.='"'.$name.'"'.$exportSeparator;
 		     }
        }
-        $csvFileFields = rtrim($csvFileFields, ',');
+        $csvFileFields = rtrim($csvFileFields, $exportSeparator);
         return $csvFileFields;
 	}
 	

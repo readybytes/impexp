@@ -223,7 +223,7 @@ class ImpexpPluginImportHelper
 		        $sqlQuery = "DELETE * From".$db->nameQuote('#__community_fields_values')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		        $db->setQuery($sqlQuery);
 			}
-			   $finalCsv    = ImpexpPluginExport::setDataForCsv($completeCsv,$Impexp_JoomlaJs,$user_id);
+			   $finalCsv    = ImpexpPluginExport::setDataForCsv($completeCsv,$Impexp_JoomlaJs,$user_id,',');
 			    
 			foreach ($finalCsv as $userid=>$result){
 				  $result = rtrim($result, ',');
@@ -270,12 +270,13 @@ class ImpexpPluginImportHelper
 		      {
 				$tempValues = array();
 				$value           = explode($seperator,array_shift($data));
+				$seperator 		 = trim($seperator);
 				$delimeterLength = strlen($seperator);
 				$delimeter = "";
 				//get second part of delimeter.For eg-,' then get '
-				if($delimeterLength == 2)
+				if($delimeterLength >= 2)
 				{
-				$delimeter = $seperator[1];
+					$delimeter = substr($seperator,-1);
 				}
 		        foreach ($value as $k=>$v){
 					$tempValues[$k] = $v;
