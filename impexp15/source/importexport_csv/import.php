@@ -94,7 +94,8 @@ class ImpexpPluginImport
 		// set password format value in session
 		$mysess->set('passwordFormat', JRequest::getVar('passwordFormat','joomla'), 'importCSV');
 		
-		if($fileCSV['type'] == 'text/csv' || $fileCSV['type'] == 'text/comma-separated-values'){
+		// if($fileCSV['type'] == 'text/csv' || $fileCSV['type'] == 'text/comma-separated-values'){
+		if(substr($fileCSV['name'], -4) == '.csv'){
 		  if(JFile::exists($destination.DS.'import.csv'))
 			      JFile::delete($destination.DS.'import.csv');
 			 JFile::copy($fileCSV['tmp_name'], $destination.DS.'import.csv');
