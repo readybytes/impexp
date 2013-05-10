@@ -5,7 +5,7 @@
 		<php expression="(PHP_OS == 'WINNT') ? '_win' : '_unix'" returnproperty="IF_OS" />
 		<property file="global${IF_OS}.prop"  override="true" />	
 		<!--property name="svn.lastrevision" value="dummygit" / -->		
-		<svnlastrevision workingcopy="${dir.root}" propertyname="svn.lastrevision" />
+		<svnlastrevision workingcopy="${dir.root}" propertyname="build.number" />
 		<if>
 		 <isset property="${joomla.now}"/>
 		  <then>
