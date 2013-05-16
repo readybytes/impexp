@@ -85,14 +85,19 @@ class ImpexpPluginImportHelper
 				return false;
 				
 			$user->id = $table->get( 'id' );
+			if($mysess->get('passwordFormat', 'joomla', 'importCSV') == 'plain' && !empty($overwrite_user_id)){
+				
+				$salt = JUserHelper::genRandomPassword(32);
+				$crypt = JUserHelper::getCryptedPassword($userValues[$joomlaFieldMapping['password']], $salt);
+				$userValues[$joomlaFieldMapping['password']] = $crypt . ':' . $salt;
+			}
 			
-			if($mysess->get('passwordFormat', 'joomla', 'importCSV') == 'joomla'){
 				$sql = " UPDATE ".$db->nameQuote('#__users')
 					   ." SET ".$db->nameQuote('password') ." = ".$db->Quote($userValues[$joomlaFieldMapping['password']])
 					   ." WHERE ".$db->nameQuote('id') ." = ".$db->Quote($user->id);
 				$db->setQuery($sql);
 				$db->query();
-			}
+			
 			return $user->id;
 	   }
 	   
