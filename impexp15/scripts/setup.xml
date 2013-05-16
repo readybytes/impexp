@@ -64,7 +64,9 @@
 
 	<target name="copy_testcase">
 		<!-- Copy testcases -->
-		<exec command="svn export ${dir.root}/test ${joomla.rootpath}/${joomla.folder}/test" />
+			<copy todir="${joomla.rootpath}/${joomla.folder}/test" >
+			<fileset dir="${dir.root}/test" />
+			</copy>
 		<exec command="sudo chmod -R test" dir="${joomla.rootpath}/${joomla.folder}" />
 
 		<!-- replace configuration-->
