@@ -43,7 +43,7 @@ function importCSVFormCheck(){
 	var file = document.getElementById('fileUploaded');
 	var str    = file.value.toLowerCase();
 	var length = str.length;			
-	if(str.slice(length-3, length) != 'csv' && str.slice(length-3, length) != 'zip' ){
+	if(str.search(".csv") == -1 && str.search(".zip") == -1 ){
 		alert('Please check the file Uploaded. It must be a CSV file.');
 		return false;
 	}
