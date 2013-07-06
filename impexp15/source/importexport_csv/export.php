@@ -41,7 +41,7 @@ class ImpexpPluginExport
 	function createCSV($storagePath,$mysess)
 	{
 		$Impexp_JoomlaJs   = JRequest::getVar('exportDataFrom',"JoomlaJS");
-		$exportSeparator   = JRequest::getVar('exportSeparator',',');
+		$exportSeparator   = JRequest::getVar('exportSeparator',',','', 'string');
 		$writeFields       = JRequest::getVar('writeFields',0);
 		if($writeFields == 1){
 		  self::writeHeaderInCsv($storagePath,$Impexp_JoomlaJs,$exportSeparator);
@@ -98,7 +98,7 @@ class ImpexpPluginExport
 	    	 }
 	        $end=$start+$limit;
 			fclose($fp);
-		    self::refreshExport($end,$Impexp_JoomlaJs);
+		    self::refreshExport($end,$Impexp_JoomlaJs,$exportSeparator);
 	    }
 		fclose($fp);
 		$this->setDataInCSV($storagePath);
@@ -347,7 +347,7 @@ class ImpexpPluginExport
 	}
 	 
 	
-	function refreshExport($end,$Impexp_JoomlaJs)
+	function refreshExport($end,$Impexp_JoomlaJs,$exportSeparator)
 	{  
 		 $currentUrl = JURI::getInstance();
 		 $name='writeFields';
@@ -363,7 +363,7 @@ class ImpexpPluginExport
 			
 			      function redirect()
 			      {
-				   window.location = "<?php echo JRoute::_($currentUrl->toString().'&importCSVStage=createCSV&exportDataFrom='.$Impexp_JoomlaJs, false); ?>"			
+				   window.location = "<?php echo JRoute::_($currentUrl->toString().'&importCSVStage=createCSV&exportDataFrom='.$Impexp_JoomlaJs.'&exportSeparator='.urlencode($exportSeparator), false); ?>"			
 				  }
 			 </script>
 		  <?php 
