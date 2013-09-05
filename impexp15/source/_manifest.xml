@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <extension version="2.5" type="plugin" group="system" method="upgrade">
   <name>Import/Export User Data For JS</name>
-  <version>3.3.v3.3.134-7-g42fb642</version>
+  <version>@global.version@.@svn.lastrevision@</version>
   <creationDate>Dec 2010</creationDate>
   <author>Team Joomlaxi</author>
   <authorEmail>shyam@joomlaxi.com</authorEmail>
