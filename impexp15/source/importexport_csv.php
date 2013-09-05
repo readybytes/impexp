@@ -15,6 +15,10 @@ if(!defined('_JEXEC')) die('Restricted access');
 jimport( 'joomla.plugin.plugin' );
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
+if (!defined('DS'))
+  {
+     define('DS', DIRECTORY_SEPARATOR);
+  }
 if(defined('INCLUDE_IMPEXP')===false)
 require_once(dirname(__FILE__) .DS. 'importexport_csv' .DS. 'includes.php');
 
