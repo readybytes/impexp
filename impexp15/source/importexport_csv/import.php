@@ -219,10 +219,16 @@ class ImpexpPluginImport
 
 		function getJoomlaFieldOptions()
 			{
-				$db	=& JFactory::getDBO();			
+				$db	=& JFactory::getDBO();	
+				if(IMPEXP_JVERSION <= '2.5')
+				{
 				$allColumns = $db->getTableFields('#__users');
-				
 				$columns = $allColumns['#__users'];
+				}
+				else 
+				{
+					$columns = $db->getTableColumns('#__users');
+				}
 				$html  = '<option disabled="disabled"></option>';
 				$html .= '<option disabled="disabled">Joomla User Table Fields</option>';
 				foreach(array_keys($columns) as $c){
@@ -234,10 +240,17 @@ class ImpexpPluginImport
 			
 		function getJSFieldOptions()
 			{
-				$db	=& JFactory::getDBO();			
-				$allColumns = $db->getTableFields('#__community_users');
+				$db	=& JFactory::getDBO();		
+				if(IMPEXP_JVERSION <= '2.5')
+				{	
+						$allColumns = $db->getTableFields('#__community_users');
+						$columns = $allColumns['#__community_users'];
+				}
+				else
+				{
+						$columns = $db->getTableColumns('#__community_users');
+				} 
 				
-				$columns = $allColumns['#__community_users'];
 				$html  = '<option disabled="disabled"></option>';
 				$html .= '<option disabled="disabled">Jom Social User Table Fields</option>';
 				foreach(array_keys($columns) as $c){
@@ -250,9 +263,11 @@ class ImpexpPluginImport
 		function getCustomFieldOptions()
 			{
 				$db	=& JFactory::getDBO();
+				$table = ImpexpPluginHelper::findTableName('#__community_fields');
+				
 				$query  = "  SELECT * "
-						  ." FROM ".$db->nameQuote('#__community_fields')
-						  ." ORDER BY ".$db->nameQuote('ordering');
+						  ." FROM ".$table
+						  ." ORDER BY `ordering`";
 				$db->setQuery($query);		  
 				$columns = $db->loadObjectList('id');
 				$html  = '<option disabled="disabled"></option>';

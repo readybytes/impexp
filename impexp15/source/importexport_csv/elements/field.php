@@ -11,13 +11,13 @@ if(defined('INCLUDE_IMPEXP')===false)
 	require_once(dirname(dirname(__FILE__)) .DS. 'includes.php');
 if(IMPEXP_JVERSION ==='1.5'){
     //a dummy class for 1.5
-    class XiField{}
+    class impexpField{}
 }
 else
 {
     jimport('joomla.form.formfield');
    
-    class XiField extends JFormField
+    class impexpField extends JFormField
     {
         //copied from J1.6 for J1.5 compatibility
         public function getControlName()

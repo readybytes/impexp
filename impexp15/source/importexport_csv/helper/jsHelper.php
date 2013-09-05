@@ -60,8 +60,9 @@ class ImpexpJsHelper
 			   $user = clone(CFactory::getUser($userid));
 			   $cModel  = CFactory::getModel('Profile');
 			   $data    = array();
-			   $db = JFactory::getDBO();		  
-		       $strquery = "SELECT `id`,`type` FROM ".$db->nameQuote('#__community_fields');
+			   $db = JFactory::getDBO();	
+			   $table = ImpexpPluginHelper::findTableName('#__community_fields');  
+		       $strquery = "SELECT `id`,`type` FROM ".$table;
 		  	   $db->setQuery($strquery);  
 		 	   $fieldsType = $db->loadAssocList('id');
 		 	   
@@ -86,7 +87,8 @@ class ImpexpJsHelper
     function insertJsFields($userid,$customFieldMapping)
       {
   	      $db 	  = JFactory::getDBO();
-  	      $query  = " select `field_id` FROM ".$db->nameQuote('#__community_fields_values')
+  	       $jsvtable = ImpexpPluginHelper::findTableName('#__community_fields_values');  
+  	      $query  = " select `field_id` FROM ".$jsvtable
 		            ." WHERE ".$db->nameQuote('user_id')." = ". $userid;
 		  $db->setQuery($query);  
 		  $fields = $db->loadAssocList('field_id');
@@ -95,7 +97,7 @@ class ImpexpJsHelper
 		  	 if(array_key_exists($fieldId, $fields))
 		  	 	continue;
 		  	 $values   = "(".$userid.","."$fieldId".")";  
-			 $query    = " INSERT INTO ".$db->nameQuote('#__community_fields_values')
+			 $query    = " INSERT INTO ".$jsvtable
 		  	            ."(`user_id`,`field_id`) VALUES ".$values;
 		  	 $db->setQuery($query); 
 		  	 $db->query();
@@ -109,15 +111,16 @@ class ImpexpJsHelper
 	 {
    	    $csvUser[$userTable] = array();
 		$db = JFactory::getDBO();
+		$jsvtable = ImpexpPluginHelper::findTableName('#__community_fields_values');  
 		$condition = "";
 	    if(count($userIds)>0){
 	    	$matches   = implode(',', $userIds );   
-	    	$condition = " WHERE ".$db->nameQuote('user_id')." IN ($matches) ";
+	    	$condition = " WHERE `user_id` IN ($matches) ";
 	     }
            
-	    $sql = " SELECT * FROM ".$db->nameQuote('#__community_fields_values')
+	    $sql = " SELECT * FROM ".$jsvtable
 			   .$condition
-			   ." ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC";
+			   ." ORDER BY 	`user_id` ASC, `field_id` ASC";
 		$db->setQuery($sql); 
 		$jsUserData = $db->loadObjectList();
 
@@ -148,10 +151,12 @@ class ImpexpJsHelper
 	     $condition = "";
 		 if(count($userIds)>0){
 				$matches   = implode(',', $userIds );   
-				$condition = " WHERE ".$db->nameQuote('userid')." IN ($matches) ";
+				$condition = " WHERE `userid` IN ($matches) ";
 		 }
-		 $sql= "SELECT * FROM ".$db->nameQuote('#__community_users')
-		       .$condition." ORDER BY ".$db->nameQuote('userid');
+		  
+		 $jstable = ImpexpPluginHelper::findTableName('#__community_users');  
+		 $sql= "SELECT * FROM ".$jstable
+		       .$condition." ORDER BY `userid`";
 	     $db->setQuery($sql);
 	     $jsUserData = $db->loadAssocList('userid');
 	     return $jsUserData;
@@ -163,10 +168,11 @@ class ImpexpJsHelper
 	 function getCustomFieldIds()
 	 {
 		$db	    =  JFactory::getDBO();
+		$jsftable = ImpexpPluginHelper::findTableName('#__community_fields');  
 		$query  = "  SELECT * "
-				  ." FROM ".$db->nameQuote('#__community_fields')
-				  ." WHERE ".$db->nameQuote('type') ." <> ".$db->Quote('group')
-				  ." ORDER BY ".$db->nameQuote('ordering');
+				  ." FROM ".$jsftable
+				  ." WHERE `type` <> ".$db->Quote('group')
+				  ." ORDER BY `ordering`";
 		$db->setQuery($query);		  
 		return $db->loadObjectList('id');	
 	}

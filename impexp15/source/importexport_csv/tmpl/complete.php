@@ -62,3 +62,4 @@ if(!defined('_JEXEC')) die('Restricted access');
 				</div>
 
 <?php 
+

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+  <name>Import/Export User Data For JS</name>
+  <version>3.3.v3.3.134-7-g42fb642</version>
+  <creationDate>Dec 2010</creationDate>
+  <author>Team Joomlaxi</author>
+  <authorEmail>shyam@joomlaxi.com</authorEmail>
+  <authorUrl>http://www.joomlaxi.com/</authorUrl>
+  <copyright>@Joomlaxi</copyright>
+  <license>GNU GPL v2.0</license>
+  <description>Import Data from CSV to Joomla and JS, Export User Data from JS to CSV</description>
+  <files>  	
+	<filename plugin="importexport_csv">importexport_csv.php</filename>
+	<filename plugin="importexport_csv">index.html</filename>
+	<folder>importexport_csv</folder>
+  </files>
+  <languages>
+	<language tag="en-GB">languages/en-GB.plg_system_importexport_csv.ini</language>
+  </languages>
+
+	  <scriptfile>script.php</scriptfile>
+  
+ <config>
+   <fields name="params">
+      <fieldset name="basic" addfieldpath="/plugins/system/importexport_csv/importexport_csv">
+
+         <field name="fileUploaded" type="uploader" default="0" label="PLG_IMPORTEXPORT_UPLOAD_CSV_FILE" description="Upload CSV File"  />
+      	<field name="exportUserData" type="exportlink" default="0" label="PLG_IMPORTEXPORT_CSV_EXPORT_USER_DATA" description="Export User Data"  />
+      </fieldset>
+   </fields>
+  </config>
+</extension>
+

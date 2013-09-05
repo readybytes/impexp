@@ -20,13 +20,24 @@ class ImpexpPluginHelper
 		    {
 		        $db = JFactory::getDBO();
 		    	$conf = JFactory::getConfig();
+		    	if(IMPEXP_JVERSION === '1.5')
+		    	{
 				$database = $conf->getValue('config.db');
+		    	}
+		    	else{ 
+		    		$database = $conf->get('db');
+		    	}
 		             $tableName = self::replacePrefix($table);
 		             $sql="SELECT column_name FROM information_schema.columns
 		                   WHERE table_name = '$tableName'
 		                   AND table_schema = '$database'";
 		            $db->setQuery($sql); 
-		            $joomlaField_name =$db->loadResultArray();
+				 if(IMPEXP_JVERSION === '1.5'){
+				    	 $joomlaField_name =$db->loadResultArray();
+				  }
+				  else{ 
+				    	 $joomlaField_name =$db->loadColumn();
+				   }
 		            return $joomlaField_name;
 		    }
 
@@ -47,19 +58,19 @@ class ImpexpPluginHelper
        function jomsocialEnabled()
        {
 		   	$db = JFactory::getDBO();
-		   	$component = "#__components";
+		   	$component = ImpexpPluginHelper::findTableName("#__components");
             //for joomla1.5
 		   	$condition = " WHERE `link` = ". $db->Quote('option=com_community'). 
 		   	             " AND `option`= ".  $db->Quote('com_community');
 			$enableOrNot = 'enabled';
             //for joomla1.5+
 			if(IMPEXP_JVERSION != '1.5'){
-				$component = "#__extensions";
-				$condition = " WHERE `type` =". $db->Quote('component').
+				$component = ImpexpPluginHelper::findTableName("#__extensions");
+				$condition = "  WHERE `type` =". $db->Quote('component').
 					         " AND `element`= ". $db->Quote('com_community');
 			}	
-			$query  = 'SELECT '.$db->nameQuote($enableOrNot)
-                      .' FROM ' .$db->nameQuote($component).$condition;
+			$query  = 'SELECT `'.$enableOrNot.'`'
+                      .' FROM ' .$component.$condition;
 		    $db->setQuery($query);             
             $isInstalled= (boolean) $db->loadResult();
             return $isInstalled;
@@ -137,5 +148,18 @@ class ImpexpPluginHelper
                return $str;
        
            }
+       }
+       
+       static public function findTableName($tableName)
+       {
+        	$db          = JFactory::getDBO();
+	        if(IMPEXP_JVERSION === '1.5')
+	        {
+	        	return $db->nameQuote($tableName);
+	        }
+	        else {
+	        	return $db->quoteName($tableName);
+	        	
+	        }
        }
 }

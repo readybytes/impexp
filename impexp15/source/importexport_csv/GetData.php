@@ -19,12 +19,14 @@ class GetData
 	function _getUserData()
 	{
 		$db = JFactory::getDBO();
-		$sql = " SELECT * FROM ".$db->nameQuote('#__users');
+		$userTable = ImpexpPluginHelper::findTableName('#__users');
+		$sql = " SELECT * FROM ".$userTable;
 		$db->setQuery($sql); 
 		$joomlaUsers = $db->loadObjectList('id');
 
-		$sql = " SELECT * FROM ".$db->nameQuote('#__community_fields_values')
-			  ." ORDER BY ".$db->nameQuote('user_id')." ASC,".$db->nameQuote('field_id')." ASC";
+		$valuesTable = ImpexpPluginHelper::findTableName('#__community_fields_values');
+		$sql = " SELECT * FROM ".$valuesTable
+			  ." ORDER BY `user_id` ASC,".$db->nameQuote('field_id')." ASC";
 		$db->setQuery($sql); 
 		$jsUserData = $db->loadObjectList();
 		

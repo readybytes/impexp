@@ -56,11 +56,28 @@ class ImpexpPluginExport
         }
 		
 		$db = JFactory::getDBO();
+		if(IMPEXP_JVERSION == '1.5')
+		{
 		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users')
 			   ."WHERE ".$db->nameQuote('block'). "=". "0"." AND ".$db->nameQuote('usertype')
 			   ."NOT IN ('Administrator','Super Administrator','deprecated','Super Users')";
 		$db->setQuery($sql);
 		$total_user = $db->loadResult();
+		}
+		else 
+		{
+			$sql = "SELECT g.`user_id` FROM ". $db->quoteName('#__user_usergroup_map')." as g "
+					." INNER JOIN". $db->quoteName('#__usergroups')."as u on g. `group_id` = u.`id`	
+					WHERE u. `title` IN ('Administrator','Super Administrator','deprecated','Super Users')";
+			$db->setQuery($sql);
+			$user = $db->loadColumn();
+			
+			$sql = "SELECT COUNT(*) FROM ".$db->quoteName('#__users')
+			   ."WHERE ".$db->quoteName('block'). "=". "0"." AND ".$db->quoteName('id')
+			   ."NOT IN (".implode(',', $user).")";
+			$db->setQuery($sql);
+			$total_user = $db->loadResult();
+		}
         $filePath   = $storagePath.'exportdata.csv';
 	    //if existing file is not writable 
 		if ( file_exists($filePath) &&
@@ -185,13 +202,31 @@ class ImpexpPluginExport
 	 */
 	function getJoomlaUser($start,$limit)
 	{
-		 $db  = JFactory::getDBO();
+		$db  = JFactory::getDBO();
+		if(IMPEXP_JVERSION == '1.5')
+		{
 		 $sql = "SELECT * FROM ".$db->nameQuote('#__users')
 		  	   ."WHERE ".$db->nameQuote('block'). "="."0"." AND ".$db->nameQuote('usertype')
 			   ."NOT IN ('Administrator','Super Administrator','deprecated','Super Users') LIMIT ".$start.",".$limit;
 		 $db->setQuery($sql);
 		 $joomlaUserData = $db->loadAssocList('id');
 		 return $joomlaUserData;
+		}
+		else 
+		{
+			 $sql = "SELECT g.`user_id` FROM ". $db->quoteName('#__user_usergroup_map')." as g "
+						." INNER JOIN". $db->quoteName('#__usergroups')."as u on g. `group_id` = u.`id`	
+						WHERE u. `title` IN ('Administrator','Super Administrator','deprecated','Super Users')";
+				$db->setQuery($sql);
+				$user = $db->loadColumn();
+				
+			 $sql = "SELECT * FROM ".$db->quoteName('#__users')
+			  	   ."WHERE ".$db->quoteName('block'). "="."0"." AND ".$db->quoteName('id')
+				    ."NOT IN (".implode(',', $user).") LIMIT ".$start.",".$limit;
+			 $db->setQuery($sql);
+			 $joomlaUserData = $db->loadAssocList('id');
+			 return $joomlaUserData;
+		}
 	}
 
     /**
@@ -308,6 +343,12 @@ class ImpexpPluginExport
         	$csvFileFields.='"'.$name.'"'.$exportSeparator;
         }
         if($Impexp_JoomlaJs != 'Joomla'){
+        	$isInstalled = ImpexpPluginHelper::jomsocialEnabled();
+         	if($isInstalled == false){
+		    	   $msg = "PLG_IMPORTEXPORT_YOU_DO_NOT_HAVE_JOMSOCIAL_INSTALLED";
+	               self::loadHtmlForWarning($msg);
+	               exit();
+            }
 			$fields = ImpexpJsHelper::getCustomFieldIds();
 			foreach($fields as $f)
 				$csvFileFields.='"'.$f->name.'"'.$exportSeparator;

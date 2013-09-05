@@ -71,7 +71,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 		<?php  
 		foreach($columns as $c){
 			?>
-			<div>				
+			<div style="min-height:40px;">				
 				<div style="width:20%; float:left"><span><?php echo $c;?></span></div>
 				<div style="width:70%; float:right">
 					<select id="csvField<?php echo $index;?>" name="csvField<?php echo $index;?>">

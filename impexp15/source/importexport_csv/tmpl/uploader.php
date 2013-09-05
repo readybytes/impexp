@@ -15,21 +15,27 @@ if(!defined('_JEXEC')) die('Restricted access');
 JHTML::_('behavior.tooltip');
 
       	$db = JFactory::getDBO();
-       	$component="#__components";
-        //joomla1.5
-       	$condition=" WHERE `link` =". $db->Quote('option=com_community'). 
-       	            "AND `option`=".  $db->Quote('com_community');
-	    $enableOrNot = 'enabled';
-		if(IMPEXP_JVERSION != '1.5'){
-			$component = "#__extensions";
-            //joomla1.5+
-			$condition= "WHERE `type` =". $db->Quote('component').
-			            "AND `element`=". $db->Quote('com_community');
+       	$enableOrNot = 'enabled';
+       	$component = "#__extensions";
+       	if(IMPEXP_JVERSION != '1.5'){
+       		
+       	$query  = 'SELECT '.$db->quoteName($enableOrNot)
+                  .' FROM ' .$db->quoteName($component).
+                  " WHERE `type` =". $db->Quote('component').
+			      " AND `element`=". $db->Quote('com_community');
 		}	
-			 $query  = 'SELECT '.$db->nameQuote($enableOrNot)
-                  .' FROM ' .$db->nameQuote($component).$condition;
+      
+       	else{
+            //joomla1.5+
+            $component="#__components";
+			$query  = 'SELECT '.$db->nameQuote($enableOrNot)
+                  	 .' FROM ' .$db->nameQuote($component).
+					 " WHERE `link` =". $db->Quote('option=com_community'). 
+       	             " AND `option`=".  $db->Quote('com_community');
+       	}
 		    $db->setQuery($query);             
             $isInstalled= (boolean) $db->loadResult();
+            $isInstalled = isset($isInstalled)? $isInstalled: '0';
             ob_start();
             ?>
              <script>

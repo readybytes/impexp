@@ -8,6 +8,12 @@
 */
 if(defined('_JEXEC')===false) die();
 jimport('joomla.html.parameter.element');
+if(IMPEXP_JVERSION >='2.5'){
+    //a dummy class for 1.5
+    class impexpElement{}
+}
+else
+{
 class impexpElement extends JElement
 {
     public static function hasAttrib($node, $attrib)
@@ -52,4 +58,5 @@ class impexpElement extends JElement
 
         return $node->_attributes;
     }
+}
 }

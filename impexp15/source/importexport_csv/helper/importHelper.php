@@ -86,13 +86,15 @@ class ImpexpPluginImportHelper
 				
 		$user->id = $table->get( 'id' );
 		if($mysess->get('passwordFormat', 'joomla', 'importCSV') == 'joomla'){
-				
-			$sql = " UPDATE ".$db->nameQuote('#__users')
-				 ." SET ".$db->nameQuote('password') ." = ".$db->Quote($userValues[$joomlaFieldMapping['password']])
-				 ." WHERE ".$db->nameQuote('id') ." = ".$db->Quote($user->id);
-			$db->setQuery($sql);
-			$db->query();
-		}
+               $table = ImpexpPluginHelper::findTableName('#__users');
+               $sql = " UPDATE ".$table
+                                ." SET `password`  = ".$db->Quote($userValues[$joomlaFieldMapping['password']])
+                                ." WHERE `id` = ".$db->Quote($user->id);
+               
+
+               $db->setQuery($sql);
+               $db->query();
+               }
 			
 			return $user->id;
 	   }
@@ -185,8 +187,9 @@ class ImpexpPluginImportHelper
 	   
 	  function getUserTypeId($usertype)
 	  {
+	  	$table = ImpexpPluginHelper::findTableName('#__usergroups');
 		$db = JFactory::getDBO();
-		$query = " SELECT id FROM ".$db->nameQuote('#__usergroups')
+		$query = " SELECT id FROM ".$table
 		        ." WHERE ".$db->nameQuote('title') ." = ".$db->Quote($usertype);
 		$db->setQuery($query, 0, 1);
 		return $db->loadResult();
@@ -197,7 +200,10 @@ class ImpexpPluginImportHelper
       function storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount,$Impexp_JoomlaJs)
 	  {     
 	        $db          = JFactory::getDBO();
-			$sqlQuery    = "SELECT * From ".$db->nameQuote('#__users')." 
+	      	$table  = ImpexpPluginHelper::findTableName('#__users');
+	        
+	        
+			$sqlQuery    = "SELECT * From ".$table." 
 						    WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		    $db->setQuery($sqlQuery);
 		    $joomlaUsers   = $db->loadAssocList('id');
@@ -206,7 +212,7 @@ class ImpexpPluginImportHelper
 
 			// function to start creating csv from jomsocial and joomla users' table
 			$user_id = array_keys($joomlaUsers);
-            $sqlQuery="DELETE * From".$db->nameQuote('#__users')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+            $sqlQuery="DELETE * From".$table." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		    $db->setQuery($sqlQuery); 
 
 			//if joomla+js selected then only process it
@@ -218,10 +224,12 @@ class ImpexpPluginImportHelper
 				$jsUsers = ImpexpJsHelper::getJsUser($user_id);
 			
 			    $completeCsv = ImpexpPluginExport::storeJsJoomlaUser('jomsocial',$jsUsers,$completeCsv);
+			    $jsTable 	 = ImpexpPluginHelper::findTableName('#__community_users');
+			    $jsvTable 	 = ImpexpPluginHelper::findTableName('#__community_fields_values');
 			    
-			    $sqlQuery = "DELETE * From".$db->nameQuote('#__community_users')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+			    $sqlQuery = "DELETE * From".$jsTable." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		        $db->setQuery($sqlQuery);
-		        $sqlQuery = "DELETE * From".$db->nameQuote('#__community_fields_values')." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+		        $sqlQuery = "DELETE * From".$jsvTable." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		        $db->setQuery($sqlQuery);
 			}
 			   $finalCsv    = ImpexpPluginExport::setDataForCsv($completeCsv,$Impexp_JoomlaJs,$user_id,',');
