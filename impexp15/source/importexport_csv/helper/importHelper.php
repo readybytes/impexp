@@ -112,7 +112,7 @@ class ImpexpPluginImportHelper
 	         {
 	         	$sqlParams[] = ' ('.($user->id).','.$usertype.')';
 	         }
-        	    $sql = $sqlParams. implode(',', $sqlParams);
+        	    $sql = $sql. implode(',', $sqlParams);
                	$db->setQuery($sql);
 	         	$db->query();
         }		
@@ -179,11 +179,12 @@ class ImpexpPluginImportHelper
 	   function insertRowInDB($usrid,$user)
 	   {
 	    $db =  JFactory::getDBO();
-		$sql="SELECT * FROM ".$db->nameQuote('#__users')."where "."id =".$usrid;
+	    $table = ImpexpPluginHelper::findTableName('#__users');
+		$sql="SELECT * FROM ".$table."where "."id =".$usrid;
 		$db->setQuery($sql);
 		$allData=$db->loadAssocList('id');
 		if(empty($allData)){
-			$sql = 'INSERT INTO '.$db->nameQuote('#__users').'(id) VALUES ('.($usrid).')';
+			$sql = 'INSERT INTO '.$table.'(id) VALUES ('.($usrid).')';
 			$db->setQuery($sql);
 			$db->query();
 			//maintain core_acl_aro and core_acl_groups_aro_map table
@@ -222,7 +223,7 @@ class ImpexpPluginImportHelper
 	  	$table = ImpexpPluginHelper::findTableName('#__usergroups');
 		$db = JFactory::getDBO();
 		$query = " SELECT `id` FROM ".$table
-		        ." WHERE ".$db->quoteName('title') ." IN ( ".implode(',',$db->Quote($usertype)).")";
+		        ." WHERE ".$db->quoteName('title') ." IN ('".implode("',", $usertype)."')";
 		$db->setQuery($query, 0, 1);
 		return $db->loadColumn();
 	  }
@@ -368,4 +369,3 @@ class ImpexpPluginImportHelper
 			fclose($fh);
 		}	
 }
-
