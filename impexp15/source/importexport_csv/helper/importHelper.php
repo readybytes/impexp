@@ -39,8 +39,8 @@ class ImpexpPluginImportHelper
 			$db = JFactory::getDBO();
             $user 		   = clone(JFactory::getUser());
             $importUserIds =  $mysess->get('userid');
-            $newUsertype = self::getNewUserType($joomlaFieldMapping,$userValues,$user);
-			$user->set('usertype', $newUsertype);
+            $newUsertype = self::getNewUserType($joomlaFieldMapping,$userValues,$user,$overwrite_user_id);
+//			$user->set('usertype', $newUsertype);
 			$id = self::getUserId($mysess,$overwrite_user_id,$joomlaFieldMapping,$userValues);
 			$user->set('id',$id);
 			$name = array_key_exists('name',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['name']] : $userValues[$joomlaFieldMapping['username']];
@@ -52,7 +52,7 @@ class ImpexpPluginImportHelper
 			else if(!array_key_exists($joomlaFieldMapping['password'],$userValues))
 				return false;
 				
-		   $data = self::getValueFields($userValues,$joomlaFieldMapping,$name,$newUsertype);
+		   $data = self::getValueFields($userValues,$joomlaFieldMapping,$name);
 						 
 			// Bind the post array to the user object
 			if (!$user->bind($data)) {
@@ -66,9 +66,10 @@ class ImpexpPluginImportHelper
 			}
 			$user->set('block', '0');
 			if(IMPEXP_JVERSION != '1.5'){
-			 $groups=array();
-			 $groups[$newUsertype]=$newUsertype;
-			 $user->set('groups',$groups);
+//			 $groups=array();
+//			 $groups[$newUsertype]=$newUsertype;
+			 JArrayHelper::toInteger($newUsertype);
+			 $user->set('groups',$newUsertype);
 			}
 	
 			// Create the user table object
@@ -95,11 +96,31 @@ class ImpexpPluginImportHelper
                $db->setQuery($sql);
                $db->query();
                }
+		
+        $table = ImpexpPluginHelper::findTableName('#__user_usergroup_map');
+        if(isset($userValues[$joomlaFieldMapping['usertype']]))
+        {
 			
+			 // it is required to delete all the rows first because we cant 
+			 //update user entries with different group_id in single query.
+
+        	 $sql = "DELETE FROM". $table." WHERE `user_id` = ". $user->id;
+        	 $db->setQuery($sql);
+	         $db->query();
+	         $sql = 'INSERT INTO '.$table.'(user_id, group_id) VALUES '; 
+	         foreach ($newUsertype as $usertype)
+	         {
+	         	$sqlParams[] = ' ('.($user->id).','.$usertype.')';
+	         }
+        	    $sql = $sqlParams. implode(',', $sqlParams);
+               	$db->setQuery($sql);
+	         	$db->query();
+        }		
+          
 			return $user->id;
 	   }
 	   
-	   function getNewUserType($joomlaFieldMapping,$userValues,$user)
+	   function getNewUserType($joomlaFieldMapping,$userValues,$user,$overwrite_user_id)
 	   {
 	    if(IMPEXP_JVERSION === '1.5')
 			{
@@ -110,14 +131,17 @@ class ImpexpPluginImportHelper
 				$user->set('gid', $authorize->get_group_id( '', $newUsertype, 'ARO' ));	
 			}
 		   else
-			{			
-				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : '2'; 
-				$length=JString::strlen($newUsertype);
-				if($length>1){
-					$newUsertype= self::getUserTypeId($newUsertype);
-				}
-				if($newUsertype=="" || $newUsertype==null)
-					$newUsertype='2';
+			{		
+				// explode the usertype from the pattern "<ut>2^%%^12</ut>"	
+				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered'; 
+				$newUsertype = str_ireplace(array('<ut>','</ut>'), '', $newUsertype);
+				$newUsertype = explode('^%%^', $newUsertype);
+				
+					if(empty($newUsertype))
+					{
+						$newUsertype='Registered';
+					}
+					$newUsertype= self::getUserTypeId($newUsertype);	
 			}
 			return $newUsertype;
 	   }
@@ -185,14 +209,22 @@ class ImpexpPluginImportHelper
 		}
 	   }
 	   
-	  function getUserTypeId($usertype)
+	  function getUserTypeId($usertype = array('Registered'))
 	  {
+		// in joomla1.5, usergroup name exist and in j1.5+ version ids are there.
+		// if ids are there, then no need to do further work.
+	  	foreach ($usertype as $type)
+	  	{
+	  		if(is_numeric($type)){
+	  			return $usertype;
+	  		}
+	  	}
 	  	$table = ImpexpPluginHelper::findTableName('#__usergroups');
 		$db = JFactory::getDBO();
-		$query = " SELECT id FROM ".$table
-		        ." WHERE ".$db->nameQuote('title') ." = ".$db->Quote($usertype);
+		$query = " SELECT `id` FROM ".$table
+		        ." WHERE ".$db->quoteName('title') ." IN ( ".implode(',',$db->Quote($usertype)).")";
 		$db->setQuery($query, 0, 1);
-		return $db->loadResult();
+		return $db->loadColumn();
 	  }
 	
 	  //store all the table(joomla user,jomsocial user,community users value)fields 
@@ -242,22 +274,19 @@ class ImpexpPluginImportHelper
 		     return $replaceCount;
 		}
 		//get all the values of joomla user table and store in the database.
-		function getValueFields($userValues,$joomlaFieldMapping,$name,$newUsertype)
+		function getValueFields($userValues,$joomlaFieldMapping,$name)
 		{
 			  $joomlaField_name = ImpexpPluginHelper::getJsJoomlaField('#__users');
 			  $data = array();
 			  foreach ($joomlaField_name as $fieldName){
-				if($fieldName == 'id')
+				if($fieldName == 'id' || $fieldName == 'usertype')
 				continue;
 				//set default settings if not set in csv file
 				if($fieldName=='name'){
 				  $data[$fieldName]=$name;
 				  continue;
 				}
-				if($fieldName == 'usertype'){
-				  $data[$fieldName] = $newUsertype;
-				  continue;
-				}
+
 				if($fieldName == 'block'){
 				  $data[$fieldName]=0;
 				  continue;

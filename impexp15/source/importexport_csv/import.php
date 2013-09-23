@@ -229,6 +229,11 @@ class ImpexpPluginImport
 				{
 					$columns = $db->getTableColumns('#__users');
 				}
+				// append usertype while showing the fields if it does not exist.
+				if(!in_array('usertype', $columns))
+				{
+					$columns['usertype'] = 'text';
+				}
 				$html  = '<option disabled="disabled"></option>';
 				$html .= '<option disabled="disabled">Joomla User Table Fields</option>';
 				foreach(array_keys($columns) as $c){

@@ -220,9 +220,9 @@ class ImpexpPluginExport
 				$db->setQuery($sql);
 				$user = $db->loadColumn();
 				
-			 $sql = "SELECT * FROM ".$db->quoteName('#__users')
-			  	   ."WHERE ".$db->quoteName('block'). "="."0"." AND ".$db->quoteName('id')
-				    ."NOT IN (".implode(',', $user).") LIMIT ".$start.",".$limit;
+			 $sql = "SELECT u .* , group_concat( g.`group_id` ) as usertype FROM ".$db->quoteName('#__users')."as u , ". $db->quoteName('#__user_usergroup_map')." as g "
+			  	   ."WHERE u.`id` = g.`user_id` AND ".$db->quoteName('block'). "="."0"." AND ".$db->quoteName('id')
+				   ."NOT IN (".implode(',', $user).") GROUP BY g.`user_id` LIMIT ".$start.",".$limit;
 			 $db->setQuery($sql);
 			 $joomlaUserData = $db->loadAssocList('id');
 			 return $joomlaUserData;
@@ -292,6 +292,12 @@ class ImpexpPluginExport
        		$joomlaField_name = ImpexpPluginHelper::getJsJoomlaField('#__users');
        		//getting user table values.
         	foreach ($joomlaField_name as $name){
+        		//to support multi usergroup to user.
+        		if($name == 'usertype')
+        		{
+	        		$users['joomla'][$userId][$name] = 	str_ireplace(',', '^%%^', $users['joomla'][$userId][$name]);
+	        		$users['joomla'][$userId][$name] = '<ut>'.$users['joomla'][$userId][$name].'</ut>';
+        		}
 		    	if(!empty($users['joomla'][$userId][$name])){
 		    		$finalCsv[$userId].='"'.$users['joomla'][$userId][$name].'"'.$exportSeparator;
 			 	}	

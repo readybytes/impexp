@@ -16,7 +16,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 class ImpexpPluginHelper
 {
 	 //get the fields of the desired table
-	 function getJsJoomlaField($table)
+	public static function getJsJoomlaField($table)
 		    {
 		        $db = JFactory::getDBO();
 		    	$conf = JFactory::getConfig();
@@ -37,6 +37,9 @@ class ImpexpPluginHelper
 				  }
 				  else{ 
 				    	 $joomlaField_name =$db->loadColumn();
+						// to append the usertype to the array if it does not exist.
+				    	 if($table == '#__users' && !in_array( 'usertype', $joomlaField_name))
+				    	 array_push($joomlaField_name, 'usertype');
 				   }
 		            return $joomlaField_name;
 		    }
