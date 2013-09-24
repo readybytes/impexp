@@ -36,7 +36,7 @@ class ImpexpPluginImportHelper
 		//store the user table entry 
 	function storeJoomlaUser($userValues, $joomlaFieldMapping, $mysess, $overwrite_user_id = null)
 		{
-			$db = JFactory::getDBO();
+	    $db = JFactory::getDBO();
             $user 		   = clone(JFactory::getUser());
             $importUserIds =  $mysess->get('userid');
             $newUsertype = self::getNewUserType($joomlaFieldMapping,$userValues,$user,$overwrite_user_id);
@@ -79,7 +79,7 @@ class ImpexpPluginImportHelper
 			$usrid = $user->get('id');
 	         if(isset($usrid))
 			     if($importUserIds==1){
-			     	self::insertRowInDB($usrid,$user);
+			     	self::insertRowInDB($usrid,$user,$overwrite_user_id);
 	         }
 			//Store the user data in the database
 			if (!$table->store())
@@ -156,8 +156,10 @@ class ImpexpPluginImportHelper
 			$importUserIds =  $mysess->get('userid');
 			if($importUserIds=='0'){
 			$getUsersID = 0;
-			if($overwrite==true && $overwrite_user_id)
-			$getUsersID=$overwrite_user_id;
+			if($overwrite==true && $overwrite_user_id){
+				$getUsersID=$overwrite_user_id;
+				
+			}
 		  }
 		  
 		if($importUserIds=='1'){	 
@@ -176,14 +178,39 @@ class ImpexpPluginImportHelper
 		return $getUsersID;
 	   }
 	   
-	   function insertRowInDB($usrid,$user)
+	   function insertRowInDB($usrid,$user,$overwrite_user_id)
 	   {
-	    $db =  JFactory::getDBO();
+		    $db =  JFactory::getDBO();
 	    $table = ImpexpPluginHelper::findTableName('#__users');
 		$sql="SELECT * FROM ".$table."where "."id =".$usrid;
 		$db->setQuery($sql);
 		$allData=$db->loadAssocList('id');
 		if(empty($allData)){
+			if($overwrite_user_id)
+                       {
+                                $sqlQuery="DELETE From ".$table." WHERE `id` =".$overwrite_user_id;
+                                $db->setQuery($sqlQuery);
+                                $db->query();
+                                     $isInstalled = ImpexpPluginHelper::jomsocialEnabled();
+	                                if($isInstalled == true){
+		                                $jsTable          = ImpexpPluginHelper::findTableName('#__community_users');
+			                            $jsvTable          = ImpexpPluginHelper::findTableName('#__community_fields_values');
+			                            $sqlQuery = "DELETE From ".$jsTable." WHERE `userid` =".$overwrite_user_id;
+				                       $db->setQuery($sqlQuery);
+				                       $db->query();
+				                       $sqlQuery = "DELETE From ".$jsvTable." WHERE `id` =".$overwrite_user_id;
+				                       $db->setQuery($sqlQuery);
+				                       $db->query();
+	                                }
+                            $usergrouptable = ImpexpPluginHelper::findTableName('#__user_usergroup_map');
+                           
+                         
+                        $sql = "DELETE FROM". $usergrouptable." WHERE `user_id` = ".$overwrite_user_id;
+                        $db->setQuery($sql);
+                        $db->query();
+                       }
+ 
+			
 			$sql = 'INSERT INTO '.$table.'(id) VALUES ('.($usrid).')';
 			$db->setQuery($sql);
 			$db->query();
@@ -260,9 +287,9 @@ class ImpexpPluginImportHelper
 			    $jsTable 	 = ImpexpPluginHelper::findTableName('#__community_users');
 			    $jsvTable 	 = ImpexpPluginHelper::findTableName('#__community_fields_values');
 			    
-			    $sqlQuery = "DELETE * From".$jsTable." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+			    $sqlQuery = "DELETE From".$jsTable." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		        $db->setQuery($sqlQuery);
-		        $sqlQuery = "DELETE * From".$jsvTable." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
+		        $sqlQuery = "DELETE From".$jsvTable." WHERE `id` =".$userValues[$joomlaFieldMapping['id']];
 		        $db->setQuery($sqlQuery);
 			}
 			   $finalCsv    = ImpexpPluginExport::setDataForCsv($completeCsv,$Impexp_JoomlaJs,$user_id,',');
