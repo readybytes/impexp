@@ -40,6 +40,10 @@ class ImpexpPluginImportHelper
             $user 		   = clone(JFactory::getUser());
             $importUserIds =  $mysess->get('userid');
             $newUsertype = self::getNewUserType($joomlaFieldMapping,$userValues,$user,$overwrite_user_id);
+            if(empty($newUsertype))
+            {
+            	$newUsertype = array('2');
+            }
 //			$user->set('usertype', $newUsertype);
 			$id = self::getUserId($mysess,$overwrite_user_id,$joomlaFieldMapping,$userValues);
 			$user->set('id',$id);
@@ -135,13 +139,11 @@ class ImpexpPluginImportHelper
 				// explode the usertype from the pattern "<ut>2^%%^12</ut>"	
 				$newUsertype = array_key_exists('usertype',$joomlaFieldMapping) ? $userValues[$joomlaFieldMapping['usertype']] : 'Registered'; 
 				$newUsertype = str_ireplace(array('<ut>','</ut>'), '', $newUsertype);
-				$newUsertype = explode('^%%^', $newUsertype);
-				
-					if(empty($newUsertype))
-					{
+				if(empty($newUsertype)){
 						$newUsertype='Registered';
-					}
-					$newUsertype= self::getUserTypeId($newUsertype);	
+				}
+				$newUsertype = explode('^%%^', $newUsertype);		
+				$newUsertype= self::getUserTypeId($newUsertype);
 			}
 			return $newUsertype;
 	   }
