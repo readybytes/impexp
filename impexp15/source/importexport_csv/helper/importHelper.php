@@ -102,7 +102,7 @@ class ImpexpPluginImportHelper
                }
 		
         $table = ImpexpPluginHelper::findTableName('#__user_usergroup_map');
-        if(isset($userValues[$joomlaFieldMapping['usertype']]))
+        if(isset($joomlaFieldMapping['usertype']))
         {
 			
 			 // it is required to delete all the rows first because we cant 
