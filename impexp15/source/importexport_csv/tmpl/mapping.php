@@ -57,7 +57,7 @@ if(!defined('_JEXEC')) die('Restricted access');
 <div style="padding:0;border:2px solid #ccc;">
 				<form action="<?php echo JRoute::_($currentUrl, false); ?>" method="post" name="adminForm" id="adminForm" >
 					<div style="width:100%;background:#6699cc;font-size:16px;color:#fff;padding:7px 0;font-weight:bold;"><span style="margin-left:10px;"><?php echo JText::_('PLG_IMPORTEXPORT_CSV_PLEASE_MAP_FIELDS_OF_CSV_IN_JOOMLA_SETUP'); ?></span></div>
-				<div style="padding:0 10px;">
+				<div style="padding:0 10px;  font-size: 12px;">
 					<ol>
 						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_THREE_FIELDS_MUST_EXIST'); ?></li>
 						<li><?php echo JText::_('PLG_IMPORTEXPORT_CSV_THERE_MUST_BE_ONE_TO_ONE_MAPPING');?></li>						

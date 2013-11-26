@@ -105,8 +105,8 @@ class plgSystemImportExport_csv extends JPlugin
 						
 			$document = JFactory::getDocument();
 			$document->setBuffer($html, 'component');
-			JFactory::getApplication()->render();
-			echo JResponse::toString(JFactory::getApplication()->getCfg('gzip'));
+			echo $html;
+			echo JResponse::toString(JFactory::getApplication()->get('gzip'));
 			exit;		
 		}
 	}	

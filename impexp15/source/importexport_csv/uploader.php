@@ -34,7 +34,7 @@ class JElementUploader extends impexpElement
         $buttonMap->set('text', JText::_('PLG_IMPORTEXPORT_CSV_UPLOAD_FILE'));
         $buttonMap->set('name', 'image');
         $buttonMap->set('modalname', 'uploaderPopup');
-        $buttonMap->set('options', "{handler: 'iframe', size: {x: 600, y: 450}}");
+        $buttonMap->set('options', "{handler: 'iframe', size: {x: 610, y: 550}}");
         $buttonMap->set('link', $link);
         
         $html = '<a style="font-size:12px;font-weight:bold;position:relative; line-height:25px;"
@@ -67,7 +67,7 @@ class JFormFieldUploader extends impexpField
 	        $buttonMap->set('text', JText::_('PLG_IMPORTEXPORT_CSV_UPLOAD_FILE'));
 	        $buttonMap->set('name', 'image');
 	        $buttonMap->set('modalname', 'uploaderPopup');
-	        $buttonMap->set('options', "{handler: 'iframe', size: {x: 600, y: 450}}");
+	        $buttonMap->set('options', "{handler: 'iframe', size: {x: 610, y: 558}}");
 	        $buttonMap->set('link', $link);
 	        
 	        $html = '<a style="font-size:12px;font-weight:bold;position:relative; line-height:25px;"
