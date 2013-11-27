@@ -5,6 +5,10 @@
 **/
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
+if (!defined('DS'))
+  {
+     define('DS', DIRECTORY_SEPARATOR);
+  }
 require_once(dirname(__FILE__)  .DS. 'elements' .DS. 'field.php');
 require_once(dirname(__FILE__)  .DS. 'elements' .DS. 'impexpElement.php');
 jimport('joomla.html.parameter.element');
