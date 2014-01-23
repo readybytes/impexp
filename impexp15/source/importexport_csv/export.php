@@ -251,7 +251,7 @@ class ImpexpPluginExport
 		}   
 		 foreach ($jsJoomlaUsers as $user){
 	    	foreach ($user as $name => $value){ 
-	    		$str = $value;
+	    		$str = trim($value,",");
 	    		$csvUser[$userTable][$user[$id]][$name] = preg_replace('!\r+!', '\\r', preg_replace('!\n+!', '\\n', $str));
 	    		if($name == 'params' && strrpos($value,',') == true)
 	    		{
