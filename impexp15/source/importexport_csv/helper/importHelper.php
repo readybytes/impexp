@@ -15,9 +15,9 @@ if(!defined('_JEXEC')) die('Restricted access');
 
 class ImpexpPluginImportHelper
 {
-	function checkUsernameinJoomla($username,$email)
+	public static function checkUsernameinJoomla($username,$email)
 		{
-			$db = & JFactory::getDBO();
+			$db = JFactory::getDBO();
 	
 			$query = 'SELECT id FROM #__users WHERE username = ' . $db->Quote( $username ).
 					' OR email = ' . $db->Quote( $email );
@@ -25,16 +25,16 @@ class ImpexpPluginImportHelper
 			return $db->loadResult();
 		}
 		
-    function checkIdinJoomla($id)
+    public static function checkIdinJoomla($id)
 	{
-		$db = & JFactory::getDBO();
+		$db =  JFactory::getDBO();
 		$query = "SELECT username,email FROM #__users WHERE id = ". $db->Quote( $id );
 		$db->setQuery($query, 0, 1);
 		return $db->loadAssocList();
 	}
 		
 		//store the user table entry 
-	function storeJoomlaUser($userValues, $joomlaFieldMapping, $mysess, $overwrite_user_id = null)
+	public static function storeJoomlaUser($userValues, $joomlaFieldMapping, $mysess, $overwrite_user_id = null)
 		{
 	    $db = JFactory::getDBO();
             $user 		   = clone(JFactory::getUser());
@@ -124,7 +124,7 @@ class ImpexpPluginImportHelper
 			return $user->id;
 	   }
 	   
-	   function getNewUserType($joomlaFieldMapping,$userValues,$user,$overwrite_user_id)
+	 public static function getNewUserType($joomlaFieldMapping,$userValues,$user,$overwrite_user_id)
 	   {
 	    if(IMPEXP_JVERSION === '1.5')
 			{
@@ -151,7 +151,7 @@ class ImpexpPluginImportHelper
 	   	   	
 	    //Set the userid according to the condition that whether the overwrite option is set or not
 	    //or want to import userid or not.
-	   function getUserId($mysess,$overwrite_user_id,$joomlaFieldMapping,$userValues)
+	   public static function getUserId($mysess,$overwrite_user_id,$joomlaFieldMapping,$userValues)
 	   {
 	   	    $Impexp_JoomlaJs  = $mysess->get('importDataTo');
 	   		$overwrite     = $mysess->get('overwrite');
@@ -180,7 +180,7 @@ class ImpexpPluginImportHelper
 		return $getUsersID;
 	   }
 	   
-	   function insertRowInDB($usrid,$user,$overwrite_user_id)
+	   public static function insertRowInDB($usrid,$user,$overwrite_user_id)
 	   {
 		    $db =  JFactory::getDBO();
 	    $table = ImpexpPluginHelper::findTableName('#__users');
@@ -239,7 +239,7 @@ class ImpexpPluginImportHelper
 		}
 	   }
 	   
-	  function getUserTypeId($usertype = array('Registered'))
+	 public static function getUserTypeId($usertype = array('Registered'))
 	  {
 		// in joomla1.5, usergroup name exist and in j1.5+ version ids are there.
 		// if ids are there, then no need to do further work.
@@ -259,7 +259,7 @@ class ImpexpPluginImportHelper
 	
 	  //store all the table(joomla user,jomsocial user,community users value)fields 
 	  //value of the user that are replaced.
-      function storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount,$Impexp_JoomlaJs)
+      public static function storeDeleteReplaceUser($userValues,$joomlaFieldMapping,$replaceCount,$Impexp_JoomlaJs)
 	  {     
 	        $db          = JFactory::getDBO();
 	      	$table  = ImpexpPluginHelper::findTableName('#__users');
@@ -304,7 +304,7 @@ class ImpexpPluginImportHelper
 		     return $replaceCount;
 		}
 		//get all the values of joomla user table and store in the database.
-		function getValueFields($userValues,$joomlaFieldMapping,$name)
+		public static function getValueFields($userValues,$joomlaFieldMapping,$name)
 		{
 			  $joomlaField_name = ImpexpPluginHelper::getJsJoomlaField('#__users');
 			  $data = array();
@@ -334,7 +334,7 @@ class ImpexpPluginImportHelper
 		    
 
 	       //remove seperator and store values in form of array
-           function removeQuotes($data,$seperator)
+           public static function removeQuotes($data,$seperator)
 		      {
 				$tempValues = array();
 				$value           = explode($seperator,array_shift($data));
@@ -363,7 +363,7 @@ class ImpexpPluginImportHelper
 				return $tempValues;
 	     }
 
-	function getExistUserInCSV($users,$filename)
+	public static function getExistUserInCSV($users,$filename)
 		{
 			$file = JPATH_ROOT.DS.'cache'.DS.$filename;	
 	    	$content="";
@@ -381,7 +381,7 @@ class ImpexpPluginImportHelper
 			return;		
 		}
 		
-	function deleteCSV($filename,$content)
+	public static function deleteCSV($filename,$content)
 		{
 			$file = JPATH_ROOT.DS.'cache'.DS.$filename;
 	    	if(file_exists($file)){

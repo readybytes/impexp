@@ -17,7 +17,7 @@ class ImpexpJsHelper
 {
 	   
 	   //store the values in community user table
-	   function storeCommunityUser($userid, $userValues,$jsFieldMapping)
+	  public static function storeCommunityUser($userid, $userValues,$jsFieldMapping)
 	   {
 			$user = clone(CFactory::getUser($userid));
 			if(empty($jsFieldMapping))
@@ -55,7 +55,7 @@ class ImpexpJsHelper
 		}
 		
 	  //store the values in community users values table
-	  function storeCustomFields($userid, $userValues, $customFieldMapping,$mysess)
+	  public static function storeCustomFields($userid, $userValues, $customFieldMapping,$mysess)
 			{
 			   $user = clone(CFactory::getUser($userid));
 			   $cModel  = CFactory::getModel('Profile');
@@ -84,7 +84,7 @@ class ImpexpJsHelper
 			}
 			
 
-    function insertJsFields($userid,$customFieldMapping)
+   public static  function insertJsFields($userid,$customFieldMapping)
       {
   	      $db 	  = JFactory::getDBO();
   	       $jsvtable = ImpexpPluginHelper::findTableName('#__community_fields_values');  
@@ -107,7 +107,7 @@ class ImpexpJsHelper
 	     /**
 	 * Store 'Community_field_values' table data
 	 */
-    function storeComFieldValues($userTable,$csvUser,$userIds)
+   public static  function storeComFieldValues($userTable,$csvUser,$userIds)
 	 {
    	    $csvUser[$userTable] = array();
 		$db = JFactory::getDBO();
@@ -145,7 +145,7 @@ class ImpexpJsHelper
 	 * Select informations from 'community_users' table,store it in $jsUserData variable
 	 * @param $userIds-store userid
 	 */
-   function getJsUser($userIds)
+   public static function getJsUser($userIds)
    { 
 	   	 $db = JFactory::getDBO();
 	     $condition = "";
@@ -165,7 +165,7 @@ class ImpexpJsHelper
 /**
 	 * Get all the custom fields
 	 */
-	 function getCustomFieldIds()
+	 public static function getCustomFieldIds()
 	 {
 		$db	    =  JFactory::getDBO();
 		$jsftable = ImpexpPluginHelper::findTableName('#__community_fields');  

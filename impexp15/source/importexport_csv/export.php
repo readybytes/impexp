@@ -18,7 +18,7 @@ jimport( 'joomla.filesystem.archive' );
 
 class ImpexpPluginExport 
 { 
-    function getExportHtml()
+    function getExportHtml($currentUrl)
     {
     	ob_start();
 		require_once( dirname(__FILE__).DS. 'tmpl' .DS. 'download.php');
@@ -115,7 +115,7 @@ class ImpexpPluginExport
 	    	 }
 	        $end=$start+$limit;
 			fclose($fp);
-		    self::refreshExport($end,$Impexp_JoomlaJs,$exportSeparator);
+		    $this->refreshExport($end,$Impexp_JoomlaJs,$exportSeparator);
 	    }
 		fclose($fp);
 		$this->setDataInCSV($storagePath);
@@ -270,7 +270,7 @@ class ImpexpPluginExport
 	 function setFinalLimit($startTime)
 	 {  
 	 	$value = new ImpexpPluginImport();
-	 	$space = (JProfiler::getMemory()); //consumed space 
+	 	$space = memory_get_usage(); //consumed space 
 	    $limit= (int)(($value->memory_limit/$space)*IMPEXP_EXP_LIMIT*0.80); //80% of next possible limit
 	 	return $limit;
 	 }
@@ -341,7 +341,7 @@ class ImpexpPluginExport
 	}
 	
 	//Get all the fields of table
-     function getAllFields($Impexp_JoomlaJs,$exportSeparator)
+     public static function getAllFields($Impexp_JoomlaJs,$exportSeparator)
 	 {
 	    $csvFileFields="";
 	    $joomlaField_name = ImpexpPluginHelper::getJsJoomlaField('#__users');
@@ -373,7 +373,7 @@ class ImpexpPluginExport
 	function createZipFile($storagePath)
 	{
 		$zip = new JArchive();
-		$zip_adapter   = & JArchive::getAdapter('zip'); // compression type
+		$zip_adapter   =  JArchive::getAdapter('zip'); // compression type
 		$zip_file_name = $storagePath."exportData.zip";
 		$data = JFile::read($storagePath.DS.'exportdata.csv'); 
 		$filesToZip[] = array('name' => 'exportdata.csv', 'data' => $data); 
@@ -383,10 +383,12 @@ class ImpexpPluginExport
 		   // Above code will generate exportData.zip
 		   //then send the headers to foce download the zip file
 		   if(file_exists($zip_file_name)){
-				header("Content-type: application/zip");
-				header("Content-Disposition: attachment; filename= exportData.zip");
-				header("Pragma: no-cache");
-				header("Expires: 0");
+				if(!headers_sent()){
+			   		header("Content-type: application/zip");
+					header("Content-Disposition: attachment; filename= exportData.zip");
+					header("Pragma: no-cache");
+					header("Expires: 0");
+				}
 				readfile("$zip_file_name");
 				self::deleteFile($storagePath);
 				exit;
@@ -400,7 +402,7 @@ class ImpexpPluginExport
 		 $name='writeFields';
 		 $currentUrl->delVar($name);
 	     $currentUrl->setVar('end',$end);
-	     $html=self::getExportHtml();
+	     $html=$this->getExportHtml($currentUrl);
 	     ?>
 			  <script>
 			       window.onload = function()

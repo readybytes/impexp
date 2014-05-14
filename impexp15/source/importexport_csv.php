@@ -94,7 +94,7 @@ class plgSystemImportExport_csv extends JPlugin
 			
 			else if($stage == 'complete')
 			{
-			    $mysess       = & JFactory::getSession();
+			    $mysess       = JFactory::getSession();
 				$count        = $mysess->get('count',0);
                 $discardCount = $mysess->get('discardCount',0);
                 $icount       = $mysess->get('icount',0);

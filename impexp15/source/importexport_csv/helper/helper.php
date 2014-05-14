@@ -47,7 +47,7 @@ class ImpexpPluginHelper
 	 /**
 	   *replace the prefix of the table and add prefix(that is used by the current database) to tablename.
        */
-     function replacePrefix($table)
+     public static function replacePrefix($table)
        {   
            if(substr($table,0,3) == '#__')
              {
@@ -58,7 +58,7 @@ class ImpexpPluginHelper
        }
        
        //determine whether jomsocial is enabled or not.
-       function jomsocialEnabled()
+       public static function jomsocialEnabled()
        {
 		   	$db = JFactory::getDBO();
 		   	$component = ImpexpPluginHelper::findTableName("#__components");

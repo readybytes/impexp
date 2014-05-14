@@ -219,7 +219,7 @@ class ImpexpPluginImport
 
 		function getJoomlaFieldOptions()
 			{
-				$db	=& JFactory::getDBO();	
+				$db	= JFactory::getDBO();	
 				if(IMPEXP_JVERSION <= '2.5')
 				{
 				$allColumns = $db->getTableFields('#__users');
@@ -245,7 +245,7 @@ class ImpexpPluginImport
 			
 		function getJSFieldOptions()
 			{
-				$db	=& JFactory::getDBO();		
+				$db	= JFactory::getDBO();		
 				if(IMPEXP_JVERSION <= '2.5')
 				{	
 						$allColumns = $db->getTableFields('#__community_users');
@@ -267,7 +267,7 @@ class ImpexpPluginImport
 				
 		function getCustomFieldOptions()
 			{
-				$db	=& JFactory::getDBO();
+				$db	= JFactory::getDBO();
 				$table = ImpexpPluginHelper::findTableName('#__community_fields');
 				
 				$query  = "  SELECT * "
