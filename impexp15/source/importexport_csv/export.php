@@ -143,7 +143,7 @@ class ImpexpPluginExport
 	 }
 	
 	
-	function loadHtmlForWarning($msg)
+	public static function loadHtmlForWarning($msg)
 		{
 			?>
 			<div style="width:100%;margin:75px 0;text-align:center;color:#6699cc;">
@@ -423,3 +423,4 @@ class ImpexpPluginExport
     } 
 }
 	
+

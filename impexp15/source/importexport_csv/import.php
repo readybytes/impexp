@@ -533,12 +533,13 @@ class ImpexpPluginImport
 		//get status of consumed time and space
 		function getCurrentStatus($startTime)
 		{   static $time = 0;
-			$time = $time + (JProfiler::getmicrotime()-$startTime);
-			$space = JProfiler::getMemory();
+			$time = $time + (microtime()-$startTime);
+			$space = memory_get_usage();
 			//check the percentage of memory and time remaining
 		    if( (1 - $time / $this->max_exec_time) > IMPEXP_PERCENTAGE  &&  (1 - $space / $this->memory_limit) > IMPEXP_MEM_PERCENT_LEFT)
 			   return false;
 		    return true;
 		}
 }
+
 
