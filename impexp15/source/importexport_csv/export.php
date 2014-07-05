@@ -19,7 +19,8 @@ jimport( 'joomla.filesystem.archive' );
 class ImpexpPluginExport 
 { 
     function getExportHtml($currentUrl)
-    {
+	{ 
+		$currentUrl = JURI::getInstance()->toString();	
     	ob_start();
 		require_once( dirname(__FILE__).DS. 'tmpl' .DS. 'download.php');
 		$html = ob_get_contents();
