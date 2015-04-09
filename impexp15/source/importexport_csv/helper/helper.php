@@ -108,10 +108,10 @@ class ImpexpPluginHelper
                }
        
                $lendif = strlen($replace) - strlen($search);
-               $search = utf8_strtolower($search);
+               $search = mb_strtolower($search);
        
                $search = preg_quote($search,"/");
-               $lstr = utf8_strtolower($str);
+               $lstr = mb_strtolower($str);
                $i = 0;
                $matched = 0;
                while ( preg_match('/(.*)'.$search.'/Us',$lstr, $matches) ) {
