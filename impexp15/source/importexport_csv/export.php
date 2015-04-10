@@ -300,18 +300,21 @@ class ImpexpPluginExport
 	        		$users['joomla'][$userId][$name] = '<ut>'.$users['joomla'][$userId][$name].'</ut>';
         		}
 		    	if(!empty($users['joomla'][$userId][$name])){
+					$users['joomla'][$userId][$name] = trim($users['joomla'][$userId][$name],$exportSeparator);
 		    		$finalCsv[$userId].='"'.$users['joomla'][$userId][$name].'"'.$exportSeparator;
 			 	}	
 		     	else{ 
-		    	$finalCsv[$userId].='""'.$exportSeparator;
+		    		$finalCsv[$userId].='""'.$exportSeparator;
 		    	}
         	}
         	if($Impexp_JoomlaJs !='Joomla'){
 		  	   $fields = ImpexpJsHelper::getCustomFieldIds();
 		  	   //getting community field values's table values
 			   foreach($fields as $f){
-				    if(array_key_exists($f->id, $users['cFieldValues'][$userId]))
+				    if(array_key_exists($f->id, $users['cFieldValues'][$userId])){
+						$users['cFieldValues'][$userId][$f->id] = trim($users['cFieldValues'][$userId][$f->id], $exportSeparator);
 						$finalCsv[$userId].='"'.$users['cFieldValues'][$userId][$f->id].'"'.$exportSeparator;
+				    }
 					else
 						$finalCsv[$userId].= '""'.$exportSeparator;
 			   }
@@ -320,8 +323,10 @@ class ImpexpPluginExport
 			   foreach ($JSfield_name as $name){
 			      	if($name=='userid')
 			    		continue;
-					if(!empty($users['jomsocial'][$userId][$name]))
+					if(!empty($users['jomsocial'][$userId][$name])){
+						$users['jomsocial'][$userId][$name] = trim($users['jomsocial'][$userId][$name],$exportSeparator );
 						$finalCsv[$userId].='"'.$users['jomsocial'][$userId][$name].'"'.$exportSeparator;	
+					}
 					else 
 					 	$finalCsv[$userId].='""'.$exportSeparator;
 			   }
