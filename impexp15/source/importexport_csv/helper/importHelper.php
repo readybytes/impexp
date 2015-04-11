@@ -36,8 +36,8 @@ class ImpexpPluginImportHelper
 		//store the user table entry 
 	public static function storeJoomlaUser($userValues, $joomlaFieldMapping, $mysess, $overwrite_user_id = null)
 		{
-	    $db = JFactory::getDBO();
-            $user 		   = clone(JFactory::getUser());
+	        $db = JFactory::getDBO();
+	    	$user          = new JUser();
             $importUserIds =  $mysess->get('userid');
             $newUsertype = self::getNewUserType($joomlaFieldMapping,$userValues,$user,$overwrite_user_id);
             if(empty($newUsertype))
@@ -398,3 +398,4 @@ class ImpexpPluginImportHelper
 			fclose($fh);
 		}	
 }
+
