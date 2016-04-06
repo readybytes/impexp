@@ -15,6 +15,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
 require_once(dirname(__FILE__) .DS. 'helper' .DS. 'helper.php');
 require_once(dirname(__FILE__) .DS. 'helper' .DS. 'jsHelper.php');
 jimport( 'joomla.filesystem.archive' );
+jimport('joomla.filesystem.stream');
 
 class ImpexpPluginExport 
 { 
@@ -55,30 +56,11 @@ class ImpexpPluginExport
 		           exit();
 		        }
         }
-		
-		$db = JFactory::getDBO();
-		if(IMPEXP_JVERSION == '1.5')
-		{
-		$sql = "SELECT COUNT(*) FROM ".$db->nameQuote('#__users')
-			   ."WHERE ".$db->nameQuote('block'). "=". "0"." AND ".$db->nameQuote('usertype')
-			   ."NOT IN ('Administrator','Super Administrator','deprecated','Super Users')";
-		$db->setQuery($sql);
-		$total_user = $db->loadResult();
-		}
-		else 
-		{
-			$sql = "SELECT g.`user_id` FROM ". $db->quoteName('#__user_usergroup_map')." as g "
-					." INNER JOIN". $db->quoteName('#__usergroups')."as u on g. `group_id` = u.`id`	
-					WHERE u. `title` IN ('Administrator','Super Administrator','deprecated','Super Users')";
-			$db->setQuery($sql);
-			$user = $db->loadColumn();
-			
-			$sql = "SELECT COUNT(*) FROM ".$db->quoteName('#__users')
-			   ."WHERE ".$db->quoteName('block'). "=". "0"." AND ".$db->quoteName('id')
-			   ."NOT IN (".implode(',', $user).")";
+			$db = JFactory::getDBO();	
+			$sql = "SELECT COUNT(*) FROM ".$db->quoteName('#__users');
 			$db->setQuery($sql);
 			$total_user = $db->loadResult();
-		}
+		
         $filePath   = $storagePath.'exportdata.csv';
 	    //if existing file is not writable 
 		if ( file_exists($filePath) &&
@@ -88,7 +70,10 @@ class ImpexpPluginExport
 		}
 		
 		//open a file which contain the data fetched from the database
-		$fp     = fopen($filePath,"a");
+//		$fp     = fopen($filePath,"a");
+			  $stream = new JStream();
+			  $stream->open($filePath, 'a');
+			
 
 		//get the starting position from where to process	
 		$start  = JRequest::getVar('end',0);	
@@ -107,7 +92,9 @@ class ImpexpPluginExport
 		    foreach ($finalCsv as $userid=>$result)
 			 {
 			  $result = rtrim($result, $exportSeparator);
-			  fwrite($fp,$result);
+			//  fwrite($fp,$result);
+				  $stream->write($result);
+			
 			 }
 			//for testing purpose
 		    if(defined('TESTMODE'))
@@ -115,10 +102,11 @@ class ImpexpPluginExport
 	    		return true;
 	    	 }
 	        $end=$start+$limit;
-			fclose($fp);
+			 $stream->close();
 		    $this->refreshExport($end,$Impexp_JoomlaJs,$exportSeparator);
 	    }
-		fclose($fp);
+	//	fclose($fp);
+		$stream->close();
 		$this->setDataInCSV($storagePath);
 	}
 	
@@ -127,9 +115,15 @@ class ImpexpPluginExport
      {
 			$csvFileFields = "";
 			self::deleteFile($storagePath);
-	    	$fp = fopen($storagePath.'exportdata.csv',"a");
+//	    	$fp = fopen($storagePath.'exportdata.csv',"a");
 	    	$csvFileFields = self::getAllFields($Impexp_JoomlaJs,$exportSeparator);
-	    	fwrite($fp,$csvFileFields);
+//	    	fwrite($fp,$csvFileFields);
+	    	
+	    	$stream = new JStream();
+	    	$stream->open($storagePath.'exportdata.csv',"a");
+	    	$stream->write($csvFileFields);
+	    	$stream->close();
+	    	
 	 }
 	 
 	 //function to delete temporary file,if exist
@@ -176,9 +170,15 @@ class ImpexpPluginExport
 		$userIds = array_keys($joomlaUsers);
 	   
 		// storing userids in temperory file
-		$fp = fopen(IMPEXP_TEMP_FILE_PATH, 'w');
-        fwrite($fp, serialize($userIds));
-        fclose($fp);
+//		$fp = fopen(IMPEXP_TEMP_FILE_PATH, 'w');
+//        fwrite($fp, serialize($userIds));
+//        fclose($fp);
+
+			  $stream = new JStream();
+			  $stream->open(IMPEXP_TEMP_FILE_PATH, 'w');
+			  $data = serialize($userIds);
+			  $stream->write(serialize($userIds));
+			  $stream->close();
 
 		if($Impexp_JoomlaJs != 'Joomla'){
         	//for jomsocial custom fields 
@@ -207,23 +207,15 @@ class ImpexpPluginExport
 		if(IMPEXP_JVERSION == '1.5')
 		{
 		 $sql = "SELECT * FROM ".$db->nameQuote('#__users')
-		  	   ."WHERE ".$db->nameQuote('block'). "="."0"." AND ".$db->nameQuote('usertype')
-			   ."NOT IN ('Administrator','Super Administrator','deprecated','Super Users') LIMIT ".$start.",".$limit;
+		  	   ."LIMIT ".$start.",".$limit;
 		 $db->setQuery($sql);
 		 $joomlaUserData = $db->loadAssocList('id');
 		 return $joomlaUserData;
 		}
 		else 
 		{
-			 $sql = "SELECT g.`user_id` FROM ". $db->quoteName('#__user_usergroup_map')." as g "
-						." INNER JOIN". $db->quoteName('#__usergroups')."as u on g. `group_id` = u.`id`	
-						WHERE u. `title` IN ('Administrator','Super Administrator','deprecated','Super Users')";
-				$db->setQuery($sql);
-				$user = $db->loadColumn();
-				
 			 $sql = "SELECT u .* , group_concat( g.`group_id` ) as usertype FROM ".$db->quoteName('#__users')."as u , ". $db->quoteName('#__user_usergroup_map')." as g "
-			  	   ."WHERE u.`id` = g.`user_id` AND ".$db->quoteName('block'). "="."0"." AND ".$db->quoteName('id')
-				   ."NOT IN (".implode(',', $user).") GROUP BY g.`user_id` LIMIT ".$start.",".$limit;
+			  	   ."WHERE u.`id` = g.`user_id`"." GROUP BY g.`user_id` LIMIT ".$start.",".$limit;
 			 $db->setQuery($sql);
 			 $joomlaUserData = $db->loadAssocList('id');
 			 return $joomlaUserData;
@@ -242,8 +234,11 @@ class ImpexpPluginExport
 			$id = 'userid';
 			//if data in community_users doesn't exist for users
 		    //then add a blank array for further processing
-	       $fp      = fopen(IMPEXP_TEMP_FILE_PATH, 'r');
-	       $result  = file_get_contents(IMPEXP_TEMP_FILE_PATH);
+	     //  $fp      = fopen(IMPEXP_TEMP_FILE_PATH, 'r');
+	     	$stream = new JStream();
+	    	$stream->open(IMPEXP_TEMP_FILE_PATH,"a");
+
+	       $result  = JFile::read(IMPEXP_TEMP_FILE_PATH);
 	       $userIds = unserialize($result);
 		   foreach($userIds as $userId){
 			  if(!isset($jsJoomlaUsers[$userId]))
@@ -283,9 +278,16 @@ class ImpexpPluginExport
     {   
        if(!isset($userIds))
        {
-	       $fp    = fopen(IMPEXP_TEMP_FILE_PATH, 'r');
-	       $result = file_get_contents(IMPEXP_TEMP_FILE_PATH);
-	       $userIds = unserialize($result);
+//	       $fp    = fopen(IMPEXP_TEMP_FILE_PATH, 'r');
+//	       $result = file_get_contents(IMPEXP_TEMP_FILE_PATH);
+	       
+			
+       		$stream = new JStream();
+       		$stream->open(IMPEXP_TEMP_FILE_PATH, 'r');
+       		
+       		$result = JFile::read(IMPEXP_TEMP_FILE_PATH);
+       		$userIds = unserialize($result);
+       		
        }
 
     	foreach($userIds as $userId){

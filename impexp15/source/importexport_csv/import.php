@@ -16,6 +16,7 @@ if(!class_exists('JProfiler'))
 require_once(JPATH_ROOT.DS.'libraries'.DS.'joomla'.DS.'error'.DS.'profiler.php');
 require_once(dirname(__FILE__) .DS.'helper' .DS. 'importHelper.php');
 jimport( 'joomla.filesystem.archive' );
+jimport('joomla.filesystem.stream');
 
 class ImpexpPluginImport
 {
@@ -100,9 +101,13 @@ class ImpexpPluginImport
 			      JFile::delete($destination.DS.'import.csv');
 			 JFile::copy($fileCSV['tmp_name'], $destination.DS.'import.csv');
 		}
-		$file 	 = fopen($destination.DS.'import.csv', "r");
+		//$file 	 = fopen($destination.DS.'import.csv', "r");
+		
+		$stream = new JStream();
+		$stream->open($destination.DS.'import.csv', "r");
 
         //fgetsv removes the doubleQuotes from the first field of string.
+        $file = $stream->getFileHandle();
 		$columns = fgetcsv($file, 0, "\n");
 
 	  /**XITODO:
@@ -349,7 +354,14 @@ class ImpexpPluginImport
 				}
 				
 				$html='';
-				$file = fopen($storagePath.'importData'.DS.'import.csv', "r");
+				
+				$stream = new JStream();
+				$stream->open($storagePath.'importData'.DS.'import.csv', "r");
+		
+		        //fgetsv removes the doubleQuotes from the first field of string.
+		        $file = $stream->getFileHandle();
+				
+				//$file = fopen($storagePath.'importData'.DS.'import.csv', "r");
 				
 				//check whether offset is set or not because in 1 block(1000) of
 				// users,if all users can't be processed in one request then offset

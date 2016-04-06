@@ -12,6 +12,7 @@
 
 // no direct access
 if(!defined('_JEXEC')) die('Restricted access');
+jimport('joomla.filesystem.stream');
 
 class ImpexpPluginImportHelper
 {
@@ -68,7 +69,7 @@ class ImpexpPluginImportHelper
 				$user->set('activation', JUtility::getHash( JUserHelper::genRandomPassword()) );
 				$user->params = $user->_params->toString();
 			}
-			$user->set('block', '0');
+		
 			if(IMPEXP_JVERSION != '1.5'){
 //			 $groups=array();
 //			 $groups[$newUsertype]=$newUsertype;
@@ -316,11 +317,6 @@ class ImpexpPluginImportHelper
 				  $data[$fieldName]=$name;
 				  continue;
 				}
-
-				if($fieldName == 'block'){
-				  $data[$fieldName]=0;
-				  continue;
-				}
 				if($fieldName == 'password'){
 				  $data['password2']=$userValues[$joomlaFieldMapping[$fieldName]];
 				}
@@ -375,9 +371,15 @@ class ImpexpPluginImportHelper
 			}
 			else 
 			  $content.= $users;
-			$fh = fopen($file, 'a') or die("can't open file");
-					fwrite($fh, $content);
-					fclose($fh);
+			  $stream = new JStream();
+			  $stream->open($filename, 'a');
+			  $stream->write($content);
+			  $stream->close();
+			  
+			  
+//			$fh = fopen($file, 'a') or die("can't open file");
+//					fwrite($fh, $content);
+//					fclose($fh);
 			return;		
 		}
 		
@@ -393,9 +395,14 @@ class ImpexpPluginImportHelper
 				$content.= "\n".'"'.JText::_('username');
 				$content.= '","'.JText::_('email').'"';
 	    	}
-			$fh = fopen($file, 'w') or die("can't open file");
-			fwrite($fh, $content);
-			fclose($fh);
+//			$fh = fopen($file, 'w') or die("can't open file");
+//			fwrite($fh, $content);
+//			fclose($fh);
+			
+	    	  $stream = new JStream();
+			  $stream->open($filename, 'a');
+			  $stream->write($content);
+			  $stream->close();
 		}	
 }
 
